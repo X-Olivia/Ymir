@@ -44,7 +44,7 @@ class _TopicSelectorWidgetState extends State<TopicSelectorWidget> {
           ),
           child: Column(
             children: [
-              // 顶部拖拽指示器
+              // Top Drag Indicator
               Container(
                 margin: const EdgeInsets.only(top: 8),
                 width: 40,
@@ -55,7 +55,7 @@ class _TopicSelectorWidgetState extends State<TopicSelectorWidget> {
                 ),
               ),
               
-              // 标题栏
+              // Title Bar
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                 child: Row(
@@ -63,15 +63,15 @@ class _TopicSelectorWidgetState extends State<TopicSelectorWidget> {
                   children: [
                     TextButton(
                       onPressed: () => Navigator.pop(context),
-                      child: const Text('取消', style: TextStyle(color: Colors.grey, fontSize: 16)),
+                      child: const Text('Cancel', style: TextStyle(color: Colors.grey, fontSize: 16)),
                     ),
-                    const Text('添加话题', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    const Text('Add Topic', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     TextButton(
                       onPressed: () {
                         widget.onTopicsChanged(tempSelectedTopics);
                         Navigator.pop(context);
                       },
-                      child: Text('完成', style: TextStyle(color: widget.themeColor, fontWeight: FontWeight.bold, fontSize: 16)),
+                      child: Text('Done', style: TextStyle(color: widget.themeColor, fontWeight: FontWeight.bold, fontSize: 16)),
                     ),
                   ],
                 ),
@@ -83,7 +83,7 @@ class _TopicSelectorWidgetState extends State<TopicSelectorWidget> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // 自定义输入区域
+                      // Custom Input Area
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
@@ -95,7 +95,7 @@ class _TopicSelectorWidgetState extends State<TopicSelectorWidget> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '自定义话题',
+                              'Custom Topic',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
@@ -112,7 +112,7 @@ class _TopicSelectorWidgetState extends State<TopicSelectorWidget> {
                                       tempCustomTopic = value;
                                     },
                                     decoration: InputDecoration(
-                                      hintText: '输入话题名称',
+                                      hintText: 'Enter topic name',
                                       hintStyle: TextStyle(color: Colors.grey.shade400),
                                       filled: true,
                                       fillColor: Colors.white,
@@ -162,10 +162,10 @@ class _TopicSelectorWidgetState extends State<TopicSelectorWidget> {
                       
                       const SizedBox(height: 24),
                       
-                      // 已选择的话题
+                      // Selected topic
                       if (tempSelectedTopics.isNotEmpty) ...[
                         Text(
-                          '已选择 (${tempSelectedTopics.length})',
+                          'Selected (${tempSelectedTopics.length})',
                           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                         ),
                         const SizedBox(height: 12),
@@ -218,9 +218,9 @@ class _TopicSelectorWidgetState extends State<TopicSelectorWidget> {
                         const SizedBox(height: 24),
                       ],
                       
-                      // 推荐话题
+                      // Suggested topic
                       const Text(
-                        '推荐话题',
+                        'Recommended Topics',
                         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                       ),
                       const SizedBox(height: 12),
@@ -287,7 +287,7 @@ class _TopicSelectorWidgetState extends State<TopicSelectorWidget> {
                 ),
               ),
               
-              // 底部安全区域
+              // Bottom safe area.
               const SizedBox(height: 20),
             ],
           ),
@@ -301,7 +301,7 @@ class _TopicSelectorWidgetState extends State<TopicSelectorWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 显示已选择的话题
+        // Show Selected Topics
         if (widget.selectedTopics.isNotEmpty)
           Container(
             width: double.infinity,
@@ -346,12 +346,12 @@ class _TopicSelectorWidgetState extends State<TopicSelectorWidget> {
             ),
           ),
         
-        // 功能按钮行
+        // Function button row
         Row(
           children: [
             GestureDetector(
               onTap: _showTopicSelector,
-              child: _buildFunctionButton(Icons.tag, '话题'),
+              child: _buildFunctionButton(Icons.tag, 'Topic'),
             ),
             const SizedBox(width: 24),
           ],
@@ -360,7 +360,7 @@ class _TopicSelectorWidgetState extends State<TopicSelectorWidget> {
     );
   }
 
-  // 构建功能按钮
+  // Build function button
   Widget _buildFunctionButton(IconData icon, String text) {
     return Row(
       mainAxisSize: MainAxisSize.min,

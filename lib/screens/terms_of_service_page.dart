@@ -14,7 +14,7 @@ class TermsOfServicePage extends StatelessWidget {
     
     return Scaffold(
       appBar: AppBar(
-        title: const Text('服务条款'),
+        title: const Text('Terms of Service'),
         backgroundColor: Colors.transparent,
         elevation: 0,
         foregroundColor: effectiveThemeColor,
@@ -25,99 +25,99 @@ class TermsOfServicePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSection(
-              '生效日期',
-              '本服务条款自2025年6月14日起生效。',
+              'Effective Date',
+              'These Terms of Service are effective as of June 14, 2025.',
             ),
             _buildSection(
-              '接受条款',
-              '通过下载、安装或使用Ymir应用，您表示同意遵守本服务条款。如果您不同意这些条款，请不要使用本应用。',
+              'Acceptance of Terms',
+              'By downloading, installing, or using the Ymir app, you agree to comply with these Terms of Service. If you do not agree to these terms, do not use the app.',
             ),
             _buildSection(
-              '服务描述',
-              '''Ymir提供以下服务：
+              'Service Description',
+              '''Ymir provides the following services:
 
-• AI图片分析和描述生成
-• 智能文案创作辅助
-• 多角色AI聊天互动
-• 本地内容管理和存储
+• AI image analysis and description generation
+• AI-assisted caption writing
+• Multi-character AI chat
+• Local content management and storage
 
-本应用主要在您的设备上运行，仅在必要时连接网络以提供AI服务。''',
+The app runs primarily on your device and connects to the internet only when necessary to provide AI services.''',
             ),
             _buildSection(
-              '用户责任',
-              '''使用本应用时，您同意：
+              'User Responsibilities',
+              '''When using the app, you agree to:
 
-• 仅将应用用于合法目的
-• 不上传违法、有害或不当的内容
-• 不尝试破解、逆向工程或干扰应用功能
-• 遵守所有适用的法律法规
-• 对您的设备和账户安全负责''',
+• Use the app only for lawful purposes
+• Not upload illegal, harmful, or inappropriate content
+• Not attempt to crack, reverse-engineer, or interfere with the app
+• Comply with all applicable laws and regulations
+• Take responsibility for the security of your device and account''',
             ),
             _buildSection(
-              '内容所有权',
-              '''• 您保留对上传内容的所有权利
-• 您授权我们在提供服务时使用您的内容
-• AI生成的内容归您所有
-• 我们不声称对用户内容的所有权
-• 您有责任确保上传内容不侵犯他人权利''',
+              'Content Ownership',
+              '''• You retain all rights to content you upload
+• You authorize us to use your content to provide the service
+• You own AI-generated content
+• We do not claim ownership of user content
+• You are responsible for ensuring uploaded content does not infringe the rights of others''',
             ),
             _buildSection(
-              '服务可用性',
-              '''• 我们努力保持服务的可用性，但不保证100%无中断
-• AI服务依赖第三方提供商，可能偶尔不可用
-• 我们可能因维护、更新或其他原因暂停服务
-• 本地功能不受网络服务影响''',
+              'Service Availability',
+              '''• We strive to keep the service available but do not guarantee uninterrupted availability
+• AI services depend on third-party providers and may occasionally be unavailable
+• We may suspend the service for maintenance, updates, or other reasons
+• Local features are unaffected by network service availability''',
             ),
             _buildSection(
-              '免责声明',
-              '''• 本应用按"现状"提供，不提供任何明示或暗示的保证
-• 我们不保证AI生成内容的准确性或适用性
-• 您使用AI生成的内容需自行承担风险
-• 我们不对因使用应用而产生的任何损失负责''',
+              'Disclaimer',
+              '''• The app is provided "as is," without express or implied warranties
+• We do not guarantee the accuracy or suitability of AI-generated content
+• You use AI-generated content at your own risk
+• We are not liable for losses arising from use of the app''',
             ),
             _buildSection(
-              '责任限制',
-              '''在法律允许的最大范围内：
+              'Limitation of Liability',
+              '''To the fullest extent permitted by law:
 
-• 我们的责任限于您支付的费用（如适用）
-• 我们不对间接、偶然或后果性损害负责
-• 我们不对数据丢失或设备损坏负责
-• 您同意自行承担使用风险''',
+• Our liability is limited to the fees you paid, if applicable
+• We are not liable for indirect, incidental, or consequential damages
+• We are not liable for data loss or device damage
+• You agree to use the app at your own risk''',
             ),
             _buildSection(
-              '知识产权',
-              '''• Ymir应用及其设计受知识产权法保护
-• 您不得复制、修改或分发应用代码
-• 应用中的商标和标识归我们所有
-• 第三方内容的权利归其各自所有者''',
+              'Intellectual Property',
+              '''• The Ymir app and its design are protected by intellectual property laws
+• You may not copy, modify, or distribute the app's code
+• Trademarks and logos in the app belong to us
+• Rights to third-party content belong to their respective owners''',
             ),
             _buildSection(
-              '隐私保护',
-              '我们重视您的隐私。请查看我们的隐私政策了解详细信息。本服务条款与隐私政策共同构成我们与您之间的完整协议。',
+              'Privacy',
+              'We value your privacy. Please review our Privacy Policy for details. These Terms of Service and the Privacy Policy together constitute the entire agreement between you and us.',
             ),
             _buildSection(
-              '服务终止',
-              '''• 您可以随时停止使用应用并删除它
-• 我们可能因违反条款而终止您的使用权
-• 终止后，相关条款仍然有效
-• 本地数据在卸载应用时会被删除''',
+              'Termination',
+              '''• You may stop using and delete the app at any time
+• We may terminate your right to use the app if you violate these terms
+• Relevant provisions remain effective after termination
+• Local data is deleted when the app is uninstalled''',
             ),
             _buildSection(
-              '条款修改',
-              '我们可能会更新这些服务条款。重大变更时，我们会在应用内通知您。继续使用应用表示您接受修改后的条款。',
+              'Changes to These Terms',
+              'We may update these Terms of Service. We will notify you in the app of material changes. Continued use of the app means you accept the revised terms.',
             ),
             _buildSection(
-              '适用法律',
-              '本服务条款受中华人民共和国法律管辖。任何争议应通过友好协商解决，协商不成的，提交有管辖权的人民法院解决。',
+              'Governing Law',
+              'These Terms of Service are governed by the laws of the People\'s Republic of China. Any dispute should first be resolved through amicable negotiation. If negotiation fails, the dispute shall be submitted to a people\'s court with jurisdiction.',
             ),
             _buildSection(
-              '联系信息',
-              '''如果您对本服务条款有任何疑问，请联系我们：
+              'Contact Information',
+              '''If you have any questions about these Terms of Service, please contact us:
 
-邮箱：xj_olivia@outlook.com
+Email: xj_olivia@outlook.com
 
 
-我们会及时回复您的询问。''',
+We will respond to your inquiry promptly.''',
             ),
             const SizedBox(height: 32),
           ],

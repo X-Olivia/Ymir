@@ -3,7 +3,7 @@ import 'dart:io';
 import '../models/post_model.dart';
 
 class PostViewUIComponents {
-  // 构建图片轮播
+  // Builds the image carousel
   static Widget buildImageCarousel({
     required List<File> images,
     required PageController pageController,
@@ -13,7 +13,7 @@ class PostViewUIComponents {
   }) {
     return Column(
       children: [
-        // 图片轮播
+        // Image carousel
         SizedBox(
           height: 300,
           child: PageView.builder(
@@ -57,7 +57,7 @@ class PostViewUIComponents {
           ),
         ),
         
-        // 图片指示器
+        // Image indicator
         if (images.length > 1) ...[
           const SizedBox(height: 12),
           Row(
@@ -84,7 +84,7 @@ class PostViewUIComponents {
     );
   }
 
-  // 构建话题标签
+  // Builds topic tags
   static Widget buildTopicTags({
     required List<String> topics,
     required Color themeColor,
@@ -115,7 +115,7 @@ class PostViewUIComponents {
     );
   }
 
-  // 构建底部交互栏
+  // Builds the bottom interaction bar
   static Widget buildBottomInteractionBar({
     required String? replyingToCommentId,
     required String? replyingToUserName,
@@ -143,7 +143,7 @@ class PostViewUIComponents {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // 回复提示
+            // Reply indicator
             if (replyingToCommentId != null) ...[
               Container(
                 width: double.infinity,
@@ -157,7 +157,7 @@ class PostViewUIComponents {
                   children: [
                     Expanded(
                       child: Text(
-                        '回复 $replyingToUserName',
+                        'Replying to $replyingToUserName',
                         style: TextStyle(
                           color: themeColor,
                           fontSize: 14,
@@ -178,12 +178,12 @@ class PostViewUIComponents {
               ),
             ],
             
-            // 单行交互栏：点赞、收藏、评论输入框、发送
+            // Single-row controls: like, favorite, comment field, and send
             Padding(
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  // 点赞按钮
+                  // Like button
                   GestureDetector(
                     onTap: onToggleLike,
                     child: Row(
@@ -203,7 +203,7 @@ class PostViewUIComponents {
                   ),
                   const SizedBox(width: 20),
                   
-                  // 收藏按钮
+                  // Favorite button
                   GestureDetector(
                     onTap: onToggleCollect,
                     child: Icon(
@@ -214,16 +214,16 @@ class PostViewUIComponents {
                   ),
                   const SizedBox(width: 20),
                   
-                  // 评论输入框
+                  // Comment input field
                   Expanded(
                     child: GestureDetector(
                       onTap: onShowInputModal,
                       child: Container(
-                        height: 30, // 设置固定高度
+                        height: 30, // Uses a fixed height
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(15), // 调整圆角以匹配高度
+                          borderRadius: BorderRadius.circular(15), // Matches the corner radius to the height
                           border: Border.all(
                             color: Colors.grey.withOpacity(0.3),
                             width: 1,
@@ -232,8 +232,8 @@ class PostViewUIComponents {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           replyingToCommentId != null 
-                              ? '回复 $replyingToUserName...' 
-                              : '说点什么...',
+                              ? 'Reply to $replyingToUserName...'
+                              : 'Say something...',
                           style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 14,
@@ -244,19 +244,19 @@ class PostViewUIComponents {
                   ),
                   const SizedBox(width: 12),
                   
-                  // 发送按钮
+                  // Send button
                   GestureDetector(
                     onTap: onSubmitComment,
                     child: Container(
-                      height: 30, // 与输入框相同高度
+                      height: 30, // Matches the input field height
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       decoration: BoxDecoration(
                         color: themeColor,
-                        borderRadius: BorderRadius.circular(15), // 与输入框相同圆角
+                        borderRadius: BorderRadius.circular(15), // Matches the input field corner radius
                       ),
-                      alignment: Alignment.center, // 内容居中
+                      alignment: Alignment.center, // Centers the content
                       child: const Text(
-                        '发送',
+                        'Send',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 14,
@@ -274,7 +274,7 @@ class PostViewUIComponents {
     );
   }
 
-  // 构建用户信息区域
+  // Builds the user information section
   static Widget buildUserInfoSection({
     required bool isLoadingUserInfo,
     required String userNickname,
@@ -291,7 +291,7 @@ class PostViewUIComponents {
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Row(
         children: [
-          // 用户头像
+          // User avatar
           isLoadingUserInfo
               ? CircleAvatar(
                   radius: 20,
@@ -323,7 +323,7 @@ class PostViewUIComponents {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  isLoadingUserInfo ? '加载中...' : userNickname,
+                  isLoadingUserInfo ? 'Loading...' : userNickname,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -344,7 +344,7 @@ class PostViewUIComponents {
     );
   }
 
-  // 构建帖子内容区域
+  // Builds the post content section
   static Widget buildPostContent({
     required String title,
     required String? description,
@@ -358,7 +358,7 @@ class PostViewUIComponents {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 标题
+        // Title
         Text(
           title,
           style: const TextStyle(
@@ -368,7 +368,7 @@ class PostViewUIComponents {
         ),
         const SizedBox(height: 8),
         
-        // 描述
+        // Description
         if (description?.isNotEmpty == true) ...[
           Text(
             description!,
@@ -381,13 +381,13 @@ class PostViewUIComponents {
           const SizedBox(height: 12),
         ],
         
-        // 话题标签
+        // Topic tags
         if (topics.isNotEmpty) ...[
           buildTopicTags(topics: topics, themeColor: themeColor),
           const SizedBox(height: 16),
         ],
         
-        // 图片轮播
+        // Image carousel
         if (images.isNotEmpty) ...[
           buildImageCarousel(
             images: images,

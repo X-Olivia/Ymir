@@ -1,206 +1,206 @@
-# Ymir App Store 提交检查清单
+# Ymir App Store Submission Checklist
 
-## ✅ 已完成项目
+## ✅ Completed Items
 
-### 1. 应用基本信息
-- ✅ **应用名称**: Ymir
+### 1. Basic App Information
+- ✅ **App Name**: Ymir
 - ✅ **Bundle ID**: com.jing.ymir
-- ✅ **版本号**: 1.0.0+1
-- ✅ **应用描述**: "Ymir - 智能AI社交助手，让日常聊天更有趣。支持图片解读、智能文案生成和24小时AI陪伴，告别社交尴尬。"
+- ✅ **Version**: 1.0.0+1
+- ✅ **App Description**: "Ymir - An intelligent AI social assistant that makes everyday conversations more engaging. It offers image interpretation, intelligent caption generation, and 24/7 AI companionship to eliminate social awkwardness."
 
-### 2. 应用图标
-- ✅ **iOS图标**: 已配置所有尺寸的图标
-- ✅ **Android图标**: 已配置launcher_icon
-- ✅ **透明通道处理**: 已设置remove_alpha_ios: true
-- ✅ **图标生成**: 已运行flutter_launcher_icons生成所有平台图标
+### 2. App Icons
+- ✅ **iOS Icons**: Icons are configured for all sizes
+- ✅ **Android Icon**: `launcher_icon` is configured
+- ✅ **Alpha Channel Handling**: `remove_alpha_ios: true` is set
+- ✅ **Icon Generation**: `flutter_launcher_icons` has generated icons for all platforms
 
-### 3. 权限配置
-- ✅ **iOS权限描述**: 
-  - NSPhotoLibraryUsageDescription: "此应用需要访问您的照片库以选择和上传图片"
-- ✅ **Android权限**: 
+### 3. Permission Configuration
+- ✅ **iOS Permission Description**:
+  - NSPhotoLibraryUsageDescription: "This app needs access to your photo library to select and upload images"
+- ✅ **Android Permissions**:
   - READ_EXTERNAL_STORAGE
   - READ_MEDIA_IMAGES
 
-### 4. 部署目标
-- ✅ **iOS最低版本**: 12.0 (符合App Store要求)
-- ✅ **Android最低版本**: API 21 (Android 5.0)
+### 4. Deployment Targets
+- ✅ **Minimum iOS Version**: 12.0 (meets App Store requirements)
+- ✅ **Minimum Android Version**: API 21 (Android 5.0)
 
-### 5. 代码质量
-- ✅ **移除TODO注释**: 已清理所有TODO和"开发中"提示
-- ✅ **测试文件**: 已更新为Ymir应用的基础测试
-- ✅ **编译错误**: photo_manager插件问题已解决
+### 5. Code Quality
+- ✅ **TODO Comments Removed**: All TODOs and "under development" notices have been removed
+- ✅ **Test File**: Updated with a basic test for the Ymir app
+- ✅ **Compilation Errors**: The `photo_manager` plugin issue has been resolved
 
-### 6. 功能完整性
-- ✅ **核心功能**: 图片分析、AI聊天、内容创作
-- ✅ **用户界面**: 完整的UI设计和交互
-- ✅ **数据存储**: Hive本地数据库配置
-- ✅ **权限管理**: 隐私设置页面
+### 6. Feature Completeness
+- ✅ **Core Features**: Image analysis, AI chat, and content creation
+- ✅ **User Interface**: Complete UI design and interactions
+- ✅ **Data Storage**: Hive local database configuration
+- ✅ **Permission Management**: Privacy settings page
 
-### 7. 设备兼容性测试
-- ✅ **iPhone兼容性**: 已在iPhone 16 Pro模拟器测试通过
-- ✅ **iPad兼容性**: 已在iPad Pro 11-inch (M4)模拟器测试通过
-- ✅ **图片功能**: 图片选择、显示、路径修复功能正常
-- ✅ **核心功能**: 笔记、草稿、问候等功能在iPad上正常运行
+### 7. Device Compatibility Testing
+- ✅ **iPhone Compatibility**: Passed testing on an iPhone 16 Pro simulator
+- ✅ **iPad Compatibility**: Passed testing on an iPad Pro 11-inch (M4) simulator
+- ✅ **Image Features**: Image selection, display, and path correction work correctly
+- ✅ **Core Features**: Notes, drafts, greetings, and other features work correctly on iPad
 
-### 1. 隐私政策和服务条款
-- ✅ **隐私政策**: 已创建详细的隐私政策页面，适合单机应用
-- ✅ **服务条款**: 已创建服务条款页面，明确用户责任和权利
-- ✅ **用户协议**: 服务条款包含用户协议内容
-- ✅ **法律文档导航**: 已在隐私设置页面添加法律文档链接
+### 1. Privacy Policy and Terms of Service
+- ✅ **Privacy Policy**: A detailed privacy policy page suitable for a standalone app has been created
+- ✅ **Terms of Service**: A terms page defining user responsibilities and rights has been created
+- ✅ **User Agreement**: The terms of service include the user agreement
+- ✅ **Legal Document Navigation**: Legal document links have been added to the privacy settings page
 
-**说明**: 所有法律文档都针对单机应用且仅联网请求API的特点进行了定制。
+**Note**: All legal documents are tailored to a standalone app that connects to the internet only for API requests.
 
-## ⚠️ 需要注意的项目
+## ⚠️ Items Requiring Attention
 
-### 1. Bundle ID配置
-- ✅ **开发者Bundle ID**: 已更新为com.jing.ymir，与Apple Developer后台一致
-- ✅ **开发团队**: 已配置正确的开发团队ID (Xu Jing)
+### 1. Bundle ID Configuration
+- ✅ **Developer Bundle ID**: Updated to `com.jing.ymir` to match Apple Developer
+- ✅ **Development Team**: The correct development team ID (Xu Jing) is configured
 
-### 2. AI服务配置
-- ✅ **API密钥**: 生产环境的API密钥配置正确
-- ✅ **网络请求**: 所有网络请求都有适当的错误处理
+### 2. AI Service Configuration
+- ✅ **API Keys**: Production API keys are configured correctly
+- ✅ **Network Requests**: All network requests have appropriate error handling
 
-### 3. 应用商店资源
-- ✅ **应用截图**: 已准备各种设备尺寸的截图
-- ✅ **应用商店描述**: 已完成详细的应用描述和简短描述
-- ✅ **关键词设置**: 已准备主要关键词和长尾关键词
-- ✅ **应用分类**: 社交/娱乐
-- ✅ **年龄分级**: 4+ (适合所有年龄)
-- ❌ **应用预览视频**: 可选但推荐
+### 3. App Store Assets
+- ✅ **App Screenshots**: Screenshots are ready for various device sizes
+- ✅ **App Store Description**: Long and short descriptions are complete
+- ✅ **Keywords**: Primary and long-tail keywords are ready
+- ✅ **App Categories**: Social Networking/Entertainment
+- ✅ **Age Rating**: 4+ (suitable for all ages)
+- ❌ **App Preview Video**: Optional but recommended
 
-## 📋 提交前必做清单
+## 📋 Required Pre-Submission Checklist
 
-### 技术要求
-- ✅ 在真实设备上测试所有功能
-- ✅ 确保应用在iPad上正常运行
-- ✅ 测试所有权限请求流程
-- ✅ 验证网络连接异常时的应用行为
-- [ ] 检查内存泄漏和性能问题
+### Technical Requirements
+- ✅ Test all features on a physical device
+- ✅ Confirm that the app works correctly on iPad
+- ✅ Test all permission request flows
+- ✅ Verify app behavior during network failures
+- [ ] Check for memory leaks and performance issues
 
-### 法律要求
-- ✅ 创建隐私政策页面
-- ✅ 创建服务条款页面
-- ✅ 确保符合GDPR和其他数据保护法规
-- ✅ 如果面向儿童，确保符合COPPA要求
+### Legal Requirements
+- ✅ Create a privacy policy page
+- ✅ Create a terms of service page
+- ✅ Ensure compliance with GDPR and other data protection regulations
+- ✅ Ensure COPPA compliance if the app targets children
 
-### App Store Connect配置
-- ✅ 更新Bundle ID为正式的开发者ID
-- ✅ 配置正确的开发团队
-- ✅ 准备应用截图（iPhone和iPad）
-- ✅ 编写应用商店描述
-- ✅ 设置应用分类和关键词
-- [ ] 配置应用内购买（如果有）
-- ✅ 设置年龄分级
+### App Store Connect Configuration
+- ✅ Update the Bundle ID to the official developer ID
+- ✅ Configure the correct development team
+- ✅ Prepare app screenshots (iPhone and iPad)
+- ✅ Write the App Store description
+- ✅ Set app categories and keywords
+- [ ] Configure in-app purchases (if applicable)
+- ✅ Set the age rating
 
-### 最终测试
-- [ ] Archive构建成功
-- [ ] TestFlight内部测试
-- [ ] 外部测试（可选）
-- [ ] 最终功能验证
+### Final Testing
+- [ ] Archive build succeeds
+- [ ] Internal TestFlight testing
+- [ ] External testing (optional)
+- [ ] Final feature verification
 
-## 🚨 关键问题
+## 🚨 Critical Issues
 
-### ~~photo_manager插件编译问题~~
-~~当前iOS编译存在photo_manager插件相关的错误，需要解决后才能提交~~
+### ~~`photo_manager` Plugin Compilation Issue~~
+~~The current iOS build has an error related to the `photo_manager` plugin that must be resolved before submission.~~
 
-✅ **已解决**: photo_manager插件编译问题已解决，应用可以在iPad和iPhone上正常运行。
+✅ **Resolved**: The `photo_manager` plugin compilation issue has been resolved, and the app runs correctly on iPad and iPhone.
 
-## 📞 联系信息
+## 📞 Contact Information
 
-如需帮助解决任何问题，请联系开发团队。
-
----
-
-## 📝 App Store 描述和关键词
-
-### App Store 应用描述
-
-**简短描述 (30字符以内):**
-AI社交助手，让聊天更有趣
-
-**完整描述:**
-
-Ymir是一款智能AI社交助手，专为现代社交生活设计。当你在社交平台上需要快速回应，或者想要更有趣的聊天体验时，Ymir就是你最好的伙伴。
-
-**核心功能:**
-
-智能图片解读
-- 上传任意图片，AI立即帮你分析并生成有趣的描述
-- 快速理解图片内容，再也不用担心看不懂朋友分享的图
-- 一键生成适合发朋友圈、小红书的文案
-
-AI聊天伙伴
-- 多个性格鲜明的AI角色陪你聊天
-- 24小时在线，随时给你有趣的回应
-- 不同话题都有专门的AI来陪伴，告别无聊时光
-
-快速文案助手
-- 基于图片内容智能生成社交媒体文案
-- 多种风格可选，幽默、文艺、日常随你挑
-- 让你的社交动态更加生动有趣
-
-贴心功能
-- 智能草稿箱，随时保存有趣的对话和文案
-- 本地存储，保护你的隐私安全
-- 简洁界面，操作简单，老少皆宜
-
-**适用场景:**
-- 朋友圈、小红书发图时需要配文案
-- 群聊时想要更有趣的回复
-- 无聊时找AI聊天解闷
-- 看到有趣图片想快速了解内容
-- 需要灵感时的创意助手
-
-**为什么选择Ymir:**
-告别社交尴尬，不再为回复慢而烦恼。无论是日常聊天还是社交发布，Ymir都能给你最及时、最有趣的AI陪伴。让每一次社交互动都充满乐趣！
-
-**隐私保护:**
-Ymir重视用户隐私，所有个人数据均在本地设备存储，确保信息安全。我们不会收集或分享您的个人聊天记录和图片内容。
-
-立即下载Ymir，让AI成为你最贴心的社交伙伴，享受更有趣的数字生活！
-
-### 关键词设置
-
-**主要关键词 (按重要性排序):**
-1. AI聊天
-2. 社交助手
-3. 图片识别
-4. 文案生成
-5. 智能回复
-6. 朋友圈助手
-7. 小红书工具
-8. AI陪伴
-9. 聊天机器人
-10. 社交工具
-
-**次要关键词:**
-11. 智能助手
-12. 图片分析
-13. 文案助手
-14. 社交媒体
-15. 智能对话
-16. 创意文案
-17. 聊天伙伴
-18. 社交神器
-19. AI互动
-20. 趣味聊天
-
-**长尾关键词:**
-- AI社交聊天助手
-- 智能图片文案生成
-- 朋友圈配图文案
-- 小红书文案助手
-- 24小时AI陪聊
-
-### App Store 分类建议
-
-**主分类:** 社交
-**副分类:** 娱乐
-
-### 年龄分级建议
-
-**年龄分级:** 4+
-**内容描述:** 无不当内容，适合所有年龄段用户使用
+Contact the development team if you need help resolving any issues.
 
 ---
-*最后更新: 2025年6月* 
+
+## 📝 App Store Description and Keywords
+
+### App Store Description
+
+**Short Description (up to 30 characters):**
+AI social assistant for better chats
+
+**Full Description:**
+
+Ymir is an intelligent AI social assistant designed for modern social life. Whether you need a quick response on a social platform or want more engaging conversations, Ymir is your ideal companion.
+
+**Core Features:**
+
+Intelligent Image Interpretation
+- Upload any image and let AI analyze it instantly and generate an engaging description
+- Quickly understand image content without struggling to interpret pictures shared by friends
+- Generate captions suitable for social media with one tap
+
+AI Chat Companions
+- Chat with multiple AI characters with distinct personalities
+- Available 24/7 with engaging responses whenever you need them
+- Dedicated AI companions for different topics keep boredom away
+
+Quick Caption Assistant
+- Intelligently generate social media captions based on image content
+- Choose from humorous, literary, casual, and other styles
+- Make your social posts more vivid and engaging
+
+Thoughtful Features
+- Smart drafts save interesting conversations and captions at any time
+- Local storage protects your privacy
+- A clean, easy-to-use interface suitable for everyone
+
+**Use Cases:**
+- Writing captions when posting images on social media
+- Finding more engaging replies for group chats
+- Chatting with AI for entertainment
+- Quickly understanding interesting images
+- Getting creative assistance when inspiration is needed
+
+**Why Choose Ymir:**
+Leave social awkwardness and slow replies behind. Whether you are chatting casually or posting on social media, Ymir provides timely and engaging AI companionship that makes every interaction more enjoyable.
+
+**Privacy:**
+Ymir values user privacy. All personal data is stored locally on your device to keep it secure. We do not collect or share your private conversations or image content.
+
+Download Ymir now and make AI your most attentive social companion for a more engaging digital life.
+
+### Keywords
+
+**Primary Keywords (in priority order):**
+1. AI chat
+2. Social assistant
+3. Image recognition
+4. Caption generation
+5. Smart replies
+6. Social media assistant
+7. Social media tool
+8. AI companion
+9. Chatbot
+10. Social tool
+
+**Secondary Keywords:**
+11. Smart assistant
+12. Image analysis
+13. Caption assistant
+14. Social media
+15. Intelligent conversation
+16. Creative captions
+17. Chat companion
+18. Social utility
+19. AI interaction
+20. Fun chat
+
+**Long-Tail Keywords:**
+- AI social chat assistant
+- Intelligent image caption generation
+- Social media image captions
+- Social media caption assistant
+- 24/7 AI chat companion
+
+### Suggested App Store Categories
+
+**Primary Category:** Social Networking
+**Secondary Category:** Entertainment
+
+### Suggested Age Rating
+
+**Age Rating:** 4+
+**Content Description:** No objectionable content; suitable for users of all ages
+
+---
+*Last Updated: June 2025*

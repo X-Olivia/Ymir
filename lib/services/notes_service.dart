@@ -7,20 +7,20 @@ import '../models/post_model.dart';
 class NotesService {
   static const String _notesKey = 'user_notes';
 
-  // 保存帖子到笔记
+  // Save post to notes
   static Future<PostModel> savePostAsNote(PostModel post) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final notesJson = prefs.getString(_notesKey) ?? '[]';
       final List<dynamic> notesList = json.decode(notesJson);
 
-      // 检查是否已存在相同ID的笔记
+      // Check if the same already existsIDNotes
       final existingIndex = notesList.indexWhere((note) => note['id'] == post.id);
       
       List<String> finalImagePaths;
       
       if (existingIndex != -1) {
-        // 更新现有笔记：保留原有图片路径，只更新其他数据
+        // Update existing notes: keep the original image path and only update other data
         final existingNote = notesList[existingIndex];
         finalImagePaths = List<String>.from(existingNote['imagePaths']);
         
@@ -29,16 +29,16 @@ class NotesService {
           'title': post.title,
           'description': post.description,
           'topics': post.topics,
-          'imagePaths': finalImagePaths, // 保留原有图片路径
+          'imagePaths': finalImagePaths, // Keep original image path
           'source': post.source.toString(),
-          'createdAt': existingNote['createdAt'], // 保留原创建时间
-          'comments': post.comments, // 更新评论
-          'isGeneratingComments': post.isGeneratingComments, // 更新生成状态
+          'createdAt': existingNote['createdAt'], // Keep original creation time
+          'comments': post.comments, // Update comment
+          'isGeneratingComments': post.isGeneratingComments, // Update build status
         };
         
         notesList[existingIndex] = updatedNoteData;
       } else {
-        // 创建新笔记：需要复制图片到持久化目录
+        // Create a new note: need to copy the image to the persistence directory
         finalImagePaths = await _copyImagesToNotesDirectory(post.images, post.id);
         
         final noteData = {
@@ -53,24 +53,24 @@ class NotesService {
           'isGeneratingComments': post.isGeneratingComments,
         };
         
-        // 添加到笔记列表开头（最新的在前面）
+        // Add to the beginning of the note list (newest first)
         notesList.insert(0, noteData);
       }
 
-      // 保存到本地存储
+      // Save to local storage
       await prefs.setString(_notesKey, json.encode(notesList));
       
-      // 返回更新了图片路径的PostModel
+      // Return the updated image pathPostModel
       return post.copyWith(
         images: finalImagePaths.map((path) => File(path)).toList(),
       );
     } catch (e) {
-      print('保存笔记失败: $e');
-      throw Exception('保存笔记失败');
+      print('Failed to save note: $e');
+      throw Exception('Failed to save note');
     }
   }
 
-  // 将图片复制到笔记专用目录
+  // Copy the image to the note-specific directory
   static Future<List<String>> _copyImagesToNotesDirectory(List<File> images, String postId) async {
     List<String> persistentPaths = [];
     
@@ -78,7 +78,7 @@ class NotesService {
       final appDir = await getApplicationDocumentsDirectory();
       final notesImageDir = Directory('${appDir.path}/notes_images');
       
-      // 确保目录存在
+      // Make sure the directory exists
       if (!await notesImageDir.exists()) {
         await notesImageDir.create(recursive: true);
       }
@@ -87,51 +87,51 @@ class NotesService {
         final imageFile = images[i];
         
         if (await imageFile.exists()) {
-          // 创建唯一的文件名，使用帖子ID和索引
+          // Create unique filename, use postIDand index
           final fileName = '${postId}_$i.jpg';
           final persistentPath = '${notesImageDir.path}/$fileName';
           
-          // 检查目标文件是否已经存在
+          // Check if the target file already exists
           final targetFile = File(persistentPath);
           if (await targetFile.exists()) {
-            // 如果文件已存在，直接使用现有文件
+            // If the file already exists, use the existing file directly
             persistentPaths.add(persistentPath);
-            print('图片文件已存在，跳过复制: $persistentPath');
+            print('Image file already exists, skip copying: $persistentPath');
           } else {
-            // 复制文件到笔记图片目录
+            // Copy the file to the note image directory
             await imageFile.copy(persistentPath);
             persistentPaths.add(persistentPath);
-            print('图片已复制到持久化目录: $persistentPath');
+            print('The image has been copied to the persistence directory: $persistentPath');
           }
         } else {
-          print('警告：图片文件不存在，跳过: ${imageFile.path}');
+          print('Warning: Image file does not exist, skip: ${imageFile.path}');
         }
       }
     } catch (e) {
-      print('复制图片到笔记目录失败: $e');
-      // 如果复制失败，返回原始路径作为后备
+      print('Failed to copy images to note directory: $e');
+      // If copying fails, return the original path as a fallback
       return images.map((file) => file.path).toList();
     }
     
     return persistentPaths;
   }
 
-  // 删除图片文件
+  // Delete image files
   static Future<void> _deleteImageFiles(List<String> imagePaths) async {
     for (final path in imagePaths) {
       try {
         final file = File(path);
         if (await file.exists()) {
           await file.delete();
-          print('已删除图片文件: $path');
+          print('Image file deleted: $path');
         }
       } catch (e) {
-        print('删除图片文件失败: $path, error: $e');
+        print('Failed to delete image file: $path, error: $e');
       }
     }
   }
 
-  // 获取所有笔记
+  // Get all notes
   static Future<List<Map<String, dynamic>>> getAllNotes() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -140,42 +140,42 @@ class NotesService {
       
       return notesList.cast<Map<String, dynamic>>();
     } catch (e) {
-      print('获取笔记失败: $e');
+      print('Failed to get notes: $e');
       return [];
     }
   }
 
-  // 删除笔记
+  // Delete note
   static Future<void> deleteNote(String noteId) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final notesJson = prefs.getString(_notesKey) ?? '[]';
       final List<dynamic> notesList = json.decode(notesJson);
 
-      // 找到要删除的笔记，获取其图片路径
+      // Find the note you want to delete and get its image path
       final noteToDelete = notesList.firstWhere(
         (note) => note['id'] == noteId,
         orElse: () => null,
       );
       
       if (noteToDelete != null) {
-        // 删除笔记对应的图片文件
+        // Delete the image file corresponding to the note
         final imagePaths = List<String>.from(noteToDelete['imagePaths'] ?? []);
         await _deleteImageFiles(imagePaths);
       }
 
-      // 移除指定ID的笔记
+      // Remove assignmentIDNotes
       notesList.removeWhere((note) => note['id'] == noteId);
 
-      // 保存更新后的列表
+      // Save updated list
       await prefs.setString(_notesKey, json.encode(notesList));
     } catch (e) {
-      print('删除笔记失败: $e');
-      throw Exception('删除笔记失败');
+      print('Failed to delete note: $e');
+      throw Exception('Failed to delete note');
     }
   }
 
-  // 根据笔记数据创建PostModel对象
+  // Created from note dataPostModelobject
   static Future<PostModel?> createPostFromNote(Map<String, dynamic> noteData) async {
     try {
       final imagePaths = List<String>.from(noteData['imagePaths'] ?? []);
@@ -189,7 +189,7 @@ class NotesService {
       }
 
       if (validImages.isEmpty) {
-        return null; // 如果图片文件不存在，返回null
+        return null; // If the image file does not exist, returnnull
       }
 
       final sourceString = noteData['source'] ?? 'PostSource.imagePost';
@@ -198,7 +198,7 @@ class NotesService {
         source = PostSource.captionSuggest;
       }
 
-      // 处理评论数据
+      // Process comment data
       final commentsData = noteData['comments'];
       List<Map<String, dynamic>> comments = [];
       if (commentsData is List) {
@@ -217,42 +217,42 @@ class NotesService {
         isGeneratingComments: noteData['isGeneratingComments'] ?? false,
       );
     } catch (e) {
-      print('创建PostModel失败: $e');
+      print('createPostModelfail: $e');
       return null;
     }
   }
 
-  // 清空所有笔记
+  // Clear all notes
   static Future<void> clearAllNotes() async {
     try {
-      // 先获取所有笔记的图片路径并删除
+      // First get the image paths of all notes and delete them
       final notes = await getAllNotes();
       for (final note in notes) {
         final imagePaths = List<String>.from(note['imagePaths'] ?? []);
         await _deleteImageFiles(imagePaths);
       }
       
-      // 删除整个笔记图片目录
+      // Delete the entire note image directory
       try {
         final appDir = await getApplicationDocumentsDirectory();
         final notesImageDir = Directory('${appDir.path}/notes_images');
         if (await notesImageDir.exists()) {
           await notesImageDir.delete(recursive: true);
-          print('已删除笔记图片目录');
+          print('Deleted note image directory');
         }
       } catch (e) {
-        print('删除笔记图片目录失败: $e');
+        print('Failed to delete note image directory: $e');
       }
       
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_notesKey);
     } catch (e) {
-      print('清空笔记失败: $e');
-      throw Exception('清空笔记失败');
+      print('Failed to clear notes: $e');
+      throw Exception('Failed to clear notes');
     }
   }
 
-  // 启动时修复所有笔记的图片路径
+  // Fix image paths for all notes on startup
   static Future<void> fixAllNotesImagePaths() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -270,23 +270,23 @@ class NotesService {
         for (final path in imagePaths) {
           File imageFile = File(path);
           
-          // 如果原路径的文件不存在，尝试修复
+          // If the file in the original path does not exist, try to repair it
           if (!imageFile.existsSync()) {
             final fileName = path.split('/').last;
             final fixedPath = await _tryFixImagePath(fileName);
             if (fixedPath != null) {
               fixedPaths.add(fixedPath);
               noteHasChanges = true;
-              print('启动修复图片路径: $fileName -> $fixedPath');
+              print('Repairing image path: $fileName -> $fixedPath');
             } else {
-              fixedPaths.add(path); // 保留原路径
+              fixedPaths.add(path); // Keep original path
             }
           } else {
-            fixedPaths.add(path); // 路径有效，保留
+            fixedPaths.add(path); // The path is valid, keep it
           }
         }
         
-        // 如果这个笔记有路径变化，更新它
+        // If the path of this note changes, update it
         if (noteHasChanges) {
           notesList[i] = {
             ...note,
@@ -296,17 +296,17 @@ class NotesService {
         }
       }
       
-      // 如果有任何变化，保存到本地存储
+      // If there are any changes, save to local storage
       if (hasChanges) {
         await prefs.setString(_notesKey, json.encode(notesList));
-        print('启动时修复了笔记图片路径');
+        print('Fixed note image path on startup');
       }
     } catch (e) {
-      print('启动时修复笔记图片路径失败: $e');
+      print('Failed to fix note image path at startup: $e');
     }
   }
 
-  // 尝试修复图片路径
+  // Try fixing the image path
   static Future<String?> _tryFixImagePath(String fileName) async {
     try {
       final appDir = await getApplicationDocumentsDirectory();
@@ -316,12 +316,12 @@ class NotesService {
         final fixedPath = '${notesImageDir.path}/$fileName';
         final file = File(fixedPath);
         if (await file.exists()) {
-          print('修复图片路径成功: $fileName -> $fixedPath');
+          print('Repair image path successfully: $fileName -> $fixedPath');
           return fixedPath;
         }
       }
     } catch (e) {
-      print('修复图片路径失败: $fileName, error: $e');
+      print('Failed to fix image path: $fileName, error: $e');
     }
     return null;
   }

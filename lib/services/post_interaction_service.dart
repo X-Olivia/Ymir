@@ -1,11 +1,11 @@
 import 'dart:async';
 
 class PostInteractionService {
-  // 点赞增长相关
+  // Like growth related
   Timer? _likeGrowthTimer;
   bool _isLikeGrowthActive = false;
   
-  // 回调函数
+  // callback function
   Function(int)? _onLikeCountChanged;
 
   PostInteractionService({
@@ -14,22 +14,22 @@ class PostInteractionService {
     _onLikeCountChanged = onLikeCountChanged;
   }
 
-  // 启动交互功能
+  // Start interactive features
   void startInteractiveFeatures() {
     startLikeGrowth();
   }
 
-  // 启动点赞数量增长
+  // Start growing the number of likes
   void startLikeGrowth({int currentLikeCount = 42}) {
     if (_isLikeGrowthActive) return;
     
     _isLikeGrowthActive = true;
     final random = DateTime.now().millisecondsSinceEpoch % 100;
-    final targetLikeCount = currentLikeCount + 30 + (random % 70); // 30-99的增长
+    final targetLikeCount = currentLikeCount + 30 + (random % 70); // Increase by 30–99 likes
     
-    // 5分钟内缓慢增长
+    // Increase gradually over five minutes
     const totalDuration = Duration(minutes: 5);
-    const updateInterval = Duration(seconds: 10); // 每10秒更新一次
+    const updateInterval = Duration(seconds: 10); // Update every 10 seconds
     final totalUpdates = totalDuration.inSeconds ~/ updateInterval.inSeconds;
     final incrementPerUpdate = (targetLikeCount - currentLikeCount) / totalUpdates;
     
@@ -49,32 +49,32 @@ class PostInteractionService {
     });
   }
 
-  // 格式化时间戳
+  // Format timestamp
   static String formatTimestamp(DateTime dateTime) {
     final now = DateTime.now();
     final difference = now.difference(dateTime);
     
     if (difference.inMinutes < 1) {
-      return '刚刚';
+      return 'Just now';
     } else if (difference.inMinutes < 60) {
-      return '${difference.inMinutes}分钟前';
+      return '${difference.inMinutes} minutes ago';
     } else if (difference.inHours < 24) {
-      return '${difference.inHours}小时前';
+      return '${difference.inHours} hours ago';
     } else {
-      return '${difference.inDays}天前';
+      return '${difference.inDays} days ago';
     }
   }
 
-  // 停止所有交互功能
+  // Stop all interactive functions
   void stopInteractiveFeatures() {
     _likeGrowthTimer?.cancel();
     _isLikeGrowthActive = false;
   }
 
-  // 检查是否正在进行点赞增长
+  // Check if likes growth is taking place
   bool get isLikeGrowthActive => _isLikeGrowthActive;
 
-  // 清理资源
+  // Clean up resources
   void dispose() {
     stopInteractiveFeatures();
   }

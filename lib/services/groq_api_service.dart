@@ -28,13 +28,13 @@ class GroqResponse {
       } else {
         return GroqResponse(
           success: false,
-          error: '响应格式错误：未找到有效内容',
+          error: 'Response format error: No valid content found',
         );
       }
     } catch (e) {
       return GroqResponse(
         success: false,
-        error: '解析响应失败: $e',
+        error: 'Failed to parse response: $e',
       );
     }
   }
@@ -61,23 +61,23 @@ class GroqApiService {
       );
       
       if (character.isEmpty) {
-        return GroqResponse.error('未找到指定的AI角色: $characterName');
+        return GroqResponse.error('The specified AI role was not found: $characterName');
       }
 
-      // 构建prompt
+      // Build the prompt
       String prompt = character['imageCommentPrompt'] ?? '';
       
-      // 添加用户上下文
+      // Add user context
       if (customPrompt != null && customPrompt.isNotEmpty) {
-        prompt += '\n\n用户补充信息: $customPrompt';
+        prompt += '\n\nAdditional user context: $customPrompt';
       }
       
-      // 添加图片数量信息
+      // Add image quantity information
       if (imagePaths.length > 1) {
-        prompt += '\n\n用户上传了${imagePaths.length}张图片，请生成详细的图片描述';
+        prompt += '\n\nThe user uploaded ${imagePaths.length} images. Generate a detailed description of them.';
       }
 
-      // 构建消息内容
+      // Build message content
       List<Map<String, dynamic>> content = [
         {
           'type': 'text',
@@ -85,13 +85,13 @@ class GroqApiService {
         },
       ];
 
-      // 添加图片 
+      // Add images
       for (String imagePath in imagePaths) {
         content.add({
           'type': 'image_url',
           'image_url': {
             'url': _encodeImageToBase64(imagePath),
-            'detail': 'high', // 保持高质量设置
+            'detail': 'high', // Maintain high quality settings
           },
         });
       }
@@ -110,7 +110,7 @@ class GroqApiService {
         hasImages: true,
       );
     } catch (e) {
-      return GroqResponse.error('发送图片评论请求失败: $e');
+      return GroqResponse.error('Failed to send image comment request: $e');
     }
   }
 
@@ -126,27 +126,27 @@ class GroqApiService {
       );
       
       if (character.isEmpty) {
-        return GroqResponse.error('未找到指定的AI角色: $characterName');
+        return GroqResponse.error('The specified AI role was not found: $characterName');
       }
 
-      // 构建prompt
+      // Build the prompt
       String prompt = character['captionSuggestPrompt'] ?? '';
       
-      // 添加用户输入的信息
+      // Add user-entered information
       if (customPrompt != null && customPrompt.isNotEmpty) {
-        prompt += '\n\n用户标题: $customPrompt';
+        prompt += '\n\nUser title: $customPrompt';
       }
       
       if (customPrompt != null && customPrompt.isNotEmpty) {
-        prompt += '\n\n用户描述: $customPrompt';
+        prompt += '\n\nUser description: $customPrompt';
       }
       
-      // 添加图片数量信息
+      // Add image quantity information
       if (imagePaths.length > 1) {
-        prompt += '\n\n用户上传了${imagePaths.length}张图片，请生成详细的图片描述';
+        prompt += '\n\nThe user uploaded ${imagePaths.length} images. Generate a detailed description of them.';
       }
 
-      // 构建消息内容
+      // Build message content
       List<Map<String, dynamic>> content = [
         {
           'type': 'text',
@@ -154,7 +154,7 @@ class GroqApiService {
         },
       ];
 
-      // 添加图片
+      // Add images
       for (String imagePath in imagePaths) {
         content.add({
           'type': 'image_url',
@@ -179,7 +179,7 @@ class GroqApiService {
         hasImages: true,
       );
     } catch (e) {
-      return GroqResponse.error('发送配文建议请求失败: $e');
+      return GroqResponse.error('Failed to send caption suggestion request: $e');
     }
   }
 
@@ -194,10 +194,10 @@ class GroqApiService {
       );
       
       if (character.isEmpty) {
-        return GroqResponse.error('未找到指定的AI角色: $characterName');
+        return GroqResponse.error('The specified AI role was not found: $characterName');
       }
 
-      // 构建完整prompt
+      // Build the complete prompt
       final fullPrompt = '${character['basePersonality']}\n\n$message';
 
       final messages = [
@@ -213,7 +213,7 @@ class GroqApiService {
         maxTokens: character['maxTokens'] ?? ApiConfig.defaultMaxTokens,
       );
     } catch (e) {
-      return GroqResponse.error('发送文本请求失败: $e');
+      return GroqResponse.error('Failed to send text request: $e');
     }
   }
 
@@ -226,10 +226,10 @@ class GroqApiService {
     http.Response? response;
     try {
       if (!ApiConfig.isApiKeyConfigured) {
-        return GroqResponse.error('API密钥未配置，请在ApiConfig中设置正确的Groq API密钥');
+        return GroqResponse.error('The API key is not configured. Set a valid Groq API key in ApiConfig.');
       }
 
-      // 根据是否包含图片选择合适的模型
+      // Choose the appropriate model based on whether it contains images or not
       String modelToUse = hasImages ? ApiConfig.defaultVisionModel : ApiConfig.defaultModel;
 
       final requestBody = {
@@ -251,40 +251,40 @@ class GroqApiService {
       } else {
         final errorData = json.decode(response.body);
         final errorMessage = errorData['error']?['message'] ?? 'Unknown error';
-        return GroqResponse.error('API请求失败 (${response.statusCode}): $errorMessage');
+        return GroqResponse.error('API request failed (${response.statusCode}): $errorMessage');
       }
     } on SocketException {
-      return GroqResponse.error('网络连接失败，请检查网络设置');
+      return GroqResponse.error('Network connection failed, please check network settings');
     } on HttpException {
       final statusCode = response?.statusCode ?? 0;
-      return GroqResponse.error('HTTP请求失败 ($statusCode)');
+      return GroqResponse.error('HTTP request failed ($statusCode)');
     } on FormatException {
-      return GroqResponse.error('响应数据格式错误');
+      return GroqResponse.error('Response data format error');
     } on TimeoutException {
-      return GroqResponse.error('请求超时，请检查网络连接');
+      return GroqResponse.error('Request timed out, please check network connection');
     } catch (e) {
-      return GroqResponse.error('网络请求失败: $e');
+      return GroqResponse.error('Network request failed: $e');
     }
   }
 
-  /// 将本地图片编码为base64格式
+  /// Encode a local image in base64 format
   static String _encodeImageToBase64(String imagePath) {
     try {
       final file = File(imagePath);
       if (!file.existsSync()) {
-        throw Exception('图片文件不存在: $imagePath');
+        throw Exception('Image file does not exist: $imagePath');
       }
       
       final bytes = file.readAsBytesSync();
       
-      // 检查文件大小
+      // Check file size
       if (bytes.length > ApiConfig.maxImageSize) {
-        throw Exception('图片文件过大，最大支持${ApiConfig.maxImageSize ~/ (1024 * 1024)}MB');
+        throw Exception('The image file is too large. The maximum supported size is ${ApiConfig.maxImageSize ~/ (1024 * 1024)} MB.');
       }
       
       final base64String = base64Encode(bytes);
       
-      // 根据文件扩展名确定MIME类型
+      // Determine the MIME type from the file extension
       String mimeType = 'image/jpeg';
       final extension = imagePath.toLowerCase().split('.').last;
       switch (extension) {
@@ -303,16 +303,16 @@ class GroqApiService {
       
       return 'data:$mimeType;base64,$base64String';
     } catch (e) {
-      throw Exception('图片编码失败: $e');
+      throw Exception('Image encoding failed: $e');
     }
   }
 
-  /// 验证API密钥是否有效
+  /// Verify that the API key is valid
   static Future<bool> validateApiKey() async {
     try {
       final response = await sendTextRequest(
-        characterName: '混沌原体Y',
-        message: '请回复"测试成功"',
+        characterName: 'Chaos Primarch Y',
+        message: 'Please reply with "Test successful".',
       );
       return response.success;
     } catch (e) {
@@ -320,10 +320,10 @@ class GroqApiService {
     }
   }
 
-  /// 获取API使用统计（Groq不直接提供此功能）
+  /// Get API usage statistics (not provided directly by Groq)
   static Future<Map<String, dynamic>?> getUsageStats() async {
-    // Groq API不直接提供使用统计，需要通过其他方式获取
-    // 可以考虑在本地记录API调用次数和token使用量
+    // The Groq API does not expose usage statistics directly.
+    // Consider recording API call counts and token usage locally.
     return null;
   }
 } 

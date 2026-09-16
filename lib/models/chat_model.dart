@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// 聊天消息模型
+/// Chat message model
 class ChatMessage {
   final String id;
   final String content;
@@ -8,7 +8,7 @@ class ChatMessage {
   final String senderAvatar;
   final Color senderColor;
   final DateTime timestamp;
-  final bool isUser; // 是否是用户发送的消息
+  final bool isUser; // Whether the user sent the message
 
   ChatMessage({
     required this.id,
@@ -20,14 +20,14 @@ class ChatMessage {
     required this.isUser,
   });
 
-  /// 创建用户消息
+  /// Creates a user message
   factory ChatMessage.user({
     required String content,
   }) {
     return ChatMessage(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       content: content,
-      senderName: '我',
+      senderName: 'Me',
       senderAvatar: '',
       senderColor: Colors.blue,
       timestamp: DateTime.now(),
@@ -35,7 +35,7 @@ class ChatMessage {
     );
   }
 
-  /// 创建AI消息
+  /// Creates an AI message
   factory ChatMessage.ai({
     required String content,
     required String aiName,
@@ -54,12 +54,12 @@ class ChatMessage {
   }
 }
 
-/// 聊天会话模型
+/// Chat session model
 class ChatSession {
   final String id;
   final String title;
   final List<ChatMessage> messages;
-  final List<String> participants; // 参与者名称列表
+  final List<String> participants; // List of participant names
   final DateTime createdAt;
   final DateTime lastMessageAt;
 
@@ -72,7 +72,7 @@ class ChatSession {
     required this.lastMessageAt,
   });
 
-  /// 添加消息
+  /// Adds a message
   ChatSession addMessage(ChatMessage message) {
     return ChatSession(
       id: id,
@@ -84,7 +84,7 @@ class ChatSession {
     );
   }
 
-  /// 获取最后一条消息
+  /// Gets the last message
   ChatMessage? get lastMessage {
     return messages.isNotEmpty ? messages.last : null;
   }

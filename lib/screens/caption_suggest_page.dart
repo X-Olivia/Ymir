@@ -11,9 +11,9 @@ import '../widgets/topic_selector_widget.dart';
 
 class CaptionSuggestPage extends StatefulWidget {
   final Color? themeColor;
-  final String? draftId; // 添加草稿ID参数，用于编辑现有草稿
-  final VoidCallback? onBack; // 添加返回回调
-  final Function(PostModel)? onPostPublished; // 添加发布回调
+  final String? draftId; // Draft ID for editing an existing draft
+  final VoidCallback? onBack; // Back callback
+  final Function(PostModel)? onPostPublished; // Publish callback
   
   const CaptionSuggestPage({super.key, this.themeColor, this.draftId, this.onBack, this.onPostPublished});
 
@@ -25,49 +25,49 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   
-  // 选中的图片列表
+  // Selected images
   List<AssetEntity> _selectedAssets = [];
   
-  // 选中的话题列表
+  // Selected topics
   List<String> _selectedTopics = [];
   
-  // 草稿相关状态
+  // Draft state
   String? _currentDraftId;
   bool _isLoadingDraft = false;
-  List<File> _draftImages = []; // 从草稿加载的图片文件
+  List<File> _draftImages = []; // Image files loaded from the draft
   
-  // 推荐话题列表
+  // Recommended topics
   final List<String> _recommendedTopics = [
-    '日常生活',
-    '美食分享',
-    '旅行记录',
-    '穿搭搭配',
-    '风景摄影',
-    '宠物日常',
-    '健身运动',
-    '美妆护肤',
-    '家居装饰',
-    '手工制作',
-    '读书笔记',
-    '音乐分享',
-    '电影推荐',
-    '咖啡时光',
-    '夕阳美景',
-    '街拍摄影',
-    '花草植物',
-    '甜品烘焙',
-    '艺术创作',
-    '心情随笔'
+    'Daily Life',
+    'Food',
+    'Travel',
+    'Outfits',
+    'Landscape Photography',
+    'Pets',
+    'Fitness',
+    'Beauty and Skincare',
+    'Home Decor',
+    'Crafts',
+    'Book Notes',
+    'Music',
+    'Movie Recommendations',
+    'Coffee Time',
+    'Sunsets',
+    'Street Photography',
+    'Plants and Flowers',
+    'Desserts and Baking',
+    'Art',
+    'Personal Reflections'
   ];
 
-  // 获取主题色
+  // Get the theme color
   Color get themeColor => widget.themeColor ?? Theme.of(context).primaryColor;
 
   @override
   void initState() {
     super.initState();
-    // 设置默认标题
-    _titleController.text = '请帮我想想文案:D';
+    // Set the default title
+    _titleController.text = 'Help me come up with a caption :D';
     _loadDraftIfNeeded();
   }
 
@@ -78,7 +78,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
     super.dispose();
   }
 
-  // 加载草稿内容
+  // Load draft content
   Future<void> _loadDraftIfNeeded() async {
     if (widget.draftId != null) {
       setState(() {
@@ -93,7 +93,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('加载草稿失败: $e')),
+            SnackBar(content: Text('Failed to load draft: $e')),
           );
         }
       }
@@ -102,12 +102,12 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
         _isLoadingDraft = false;
       });
     } else {
-      // 如果没有指定草稿ID，尝试加载最新的草稿
+      // If no draft ID is specified, try loading the latest draft
       _loadLatestDraft();
     }
   }
 
-  // 加载最新草稿
+  // Load the latest draft
   Future<void> _loadLatestDraft() async {
     try {
       final latestDraft = DraftService.getCurrentCaptionDraft();
@@ -115,21 +115,21 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
         await _loadDraftContent(latestDraft);
       }
     } catch (e) {
-      print('加载最新草稿失败: $e');
+      print('Failed to load the latest draft: $e');
     }
   }
 
-  // 加载草稿内容到编辑器
+  // Load draft content into the editor
   Future<void> _loadDraftContent(DraftModel draft) async {
     _currentDraftId = draft.id;
-    // 只有草稿有标题时才覆盖默认标题
+    // Override the default title only when the draft has a title
     if (draft.title.isNotEmpty) {
       _titleController.text = draft.title;
     }
     _descriptionController.text = draft.description;
     _selectedTopics = List.from(draft.topics);
 
-    // 加载草稿图片
+    // Load draft images
     _draftImages.clear();
     for (final imagePath in draft.imagePaths) {
       final file = await DraftService.getImageFile(imagePath);
@@ -143,14 +143,14 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
     }
   }
 
-  // 从相册选择图片
+  // Select images from the photo library
   Future<void> _pickImageFromGallery() async {
-    // 检查当前图片总数（草稿图片 + 已选择图片）
+    // Check the current image count (draft images + selected images)
     final currentImageCount = _draftImages.length + _selectedAssets.length;
     if (currentImageCount >= 3) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('最多只能上传3张图片，因为开发者太穷了:)'),
+          content: const Text('You can upload up to 3 images because the developer is broke :)'),
           backgroundColor: Colors.orange,
         ),
       );
@@ -161,11 +161,11 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
       final List<AssetEntity>? assets = await AssetPicker.pickAssets(
         context,
         pickerConfig: AssetPickerConfig(
-          maxAssets: 3 - _draftImages.length, // 动态计算可选择的图片数量
+          maxAssets: 3 - _draftImages.length, // Calculate the available selection count dynamically
           selectedAssets: _selectedAssets,
           requestType: RequestType.image,
           textDelegate: const AssetPickerTextDelegate(),
-          themeColor: themeColor, // 使用主题色
+          themeColor: themeColor, // Use the theme color
         ),
       );
       
@@ -176,14 +176,14 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('选择图片失败: $e')),
+        SnackBar(content: Text('Failed to select images: $e')),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // 如果正在加载草稿，显示加载指示器
+    // Show a loading indicator while the draft is loading
     if (_isLoadingDraft) {
       return Scaffold(
         body: Center(
@@ -192,7 +192,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
             children: [
               CircularProgressIndicator(color: themeColor),
               const SizedBox(height: 16),
-              const Text('正在加载草稿...', style: TextStyle(fontSize: 16)),
+              const Text('Loading draft...', style: TextStyle(fontSize: 16)),
             ],
           ),
         ),
@@ -205,15 +205,15 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 图片选择区域
+            // Image selection area
             _buildImageSelector(),
             const SizedBox(height: 24),
             
-            // 标题输入
+            // Title input
             TextField(
               controller: _titleController,
               decoration: InputDecoration(
-                hintText: '请输入标题',
+                hintText: 'Enter a title',
                 hintStyle: const TextStyle(color: Colors.grey, fontSize: 16),
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey.shade300),
@@ -229,11 +229,11 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
             ),
             const SizedBox(height: 16),
             
-            // 正文输入
+            // Body input
             TextField(
               controller: _descriptionController,
               decoration: InputDecoration(
-                hintText: '输入需求：）',
+                hintText: 'Describe what you need :)',
                 hintStyle: const TextStyle(color: Colors.grey, fontSize: 16),
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey.shade300),
@@ -251,7 +251,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
             ),
             const SizedBox(height: 24),
             
-            // 标签区域
+            // Topic area
             TopicSelectorWidget(
               themeColor: themeColor,
               selectedTopics: _selectedTopics,
@@ -264,7 +264,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
             ),
             const SizedBox(height: 24),
             
-            // 底部留出空间给发布按钮
+            // Leave space at the bottom for the publish button
             const SizedBox(height: 100),
           ],
         ),
@@ -273,16 +273,16 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
     );
   }
 
-  // 构建图片选择器
+  // Build the image picker
   Widget _buildImageSelector() {
-    // 合并草稿图片和新选择的图片
+    // Combine draft images with newly selected images
     List<Widget> imageWidgets = [];
     
-    // 计算当前图片总数
+    // Calculate the current image count
     final currentImageCount = _draftImages.length + _selectedAssets.length;
     final canAddMore = currentImageCount < 3;
     
-    // 添加草稿中的图片
+    // Add images from the draft
     for (int i = 0; i < _draftImages.length; i++) {
       final imageFile = _draftImages[i];
       imageWidgets.add(
@@ -296,7 +296,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
           ),
           child: Stack(
             children: [
-              // 显示草稿图片
+              // Display the draft image
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Image.file(
@@ -306,7 +306,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
                   fit: BoxFit.cover,
                 ),
               ),
-              // 删除按钮
+              // Delete button
               Positioned(
                 top: 4,
                 right: 4,
@@ -331,7 +331,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
                   ),
                 ),
               ),
-              // 草稿标识
+              // Draft badge
               Positioned(
                 bottom: 4,
                 left: 4,
@@ -342,7 +342,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: const Text(
-                    '草稿',
+                    'Draft',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 8,
@@ -357,7 +357,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
       );
     }
     
-    // 添加新选择的图片
+    // Add newly selected images
     for (int i = 0; i < _selectedAssets.length; i++) {
       final asset = _selectedAssets[i];
       imageWidgets.add(
@@ -371,7 +371,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
           ),
           child: Stack(
             children: [
-              // 图片缩略图
+              // Image thumbnail
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: AssetEntityImage(
@@ -381,7 +381,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
                   fit: BoxFit.cover,
                 ),
               ),
-              // 删除按钮
+              // Delete button
               Positioned(
                 top: 4,
                 right: 4,
@@ -415,12 +415,12 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 图片数量提示
+        // Image count
         if (currentImageCount > 0)
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: Text(
-              '已选择 $currentImageCount/3 张图片${canAddMore ? '' : ' (已达上限)'}',
+              '$currentImageCount/3 images selected${canAddMore ? '' : ' (limit reached)'}',
               style: TextStyle(
                 fontSize: 12,
                 color: canAddMore ? Colors.grey[600] : themeColor,
@@ -429,7 +429,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
             ),
           ),
         
-        // 显示图片（草稿图片 + 新选择的图片）
+        // Display images (draft images + newly selected images)
         if (imageWidgets.isNotEmpty)
           Container(
             height: 100,
@@ -438,7 +438,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
               scrollDirection: Axis.horizontal,
               children: [
                 ...imageWidgets,
-                // 添加图片按钮（只有在未达到上限时显示）
+                // Add image button (shown only below the limit)
                 if (canAddMore)
                   Container(
                     margin: const EdgeInsets.only(left: 8),
@@ -462,7 +462,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              '添加图片',
+                              'Add Images',
                               style: TextStyle(
                                 fontSize: 10,
                                 color: themeColor,
@@ -477,7 +477,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
             ),
           )
         else
-          // 如果没有图片，只显示添加按钮
+          // If there are no images, show only the add button
           Row(
             children: [
               GestureDetector(
@@ -508,7 +508,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
     );
   }
 
-  // 构建底部栏
+  // Build the bottom bar
   Widget _buildBottomBar() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -516,7 +516,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
       child: SafeArea(
         child: Row(
           children: [
-            // 存草稿按钮
+            // Save draft button
             const SizedBox(width: 6),
             GestureDetector(
               onTap: _showSaveDraftDialog,
@@ -525,7 +525,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
                 children: [
                   const Icon(Icons.drafts_outlined),
                   const SizedBox(width: 10),
-                  const Text('存草稿', style: TextStyle(fontSize: 14, color: Colors.grey)),
+                  const Text('Save Draft', style: TextStyle(fontSize: 14, color: Colors.grey)),
                 ],
               ),
             ),
@@ -533,7 +533,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
             
             const Spacer(),
             
-            // 发布笔记按钮
+            // Publish post button
             SizedBox(
               width: 270,
               height: 45,
@@ -546,7 +546,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
                     borderRadius: BorderRadius.circular(25),
                   ),
                 ),
-                child: const Text('发布帖子', style: TextStyle(fontSize: 16)),
+                child: const Text('Publish Post', style: TextStyle(fontSize: 16)),
               ),
             ),
           ],
@@ -555,7 +555,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
     );
   }
 
-  // 显示存草稿确认弹窗
+  // Show the save draft confirmation dialog
   void _showSaveDraftDialog() {
     showDialog(
       context: context,
@@ -564,24 +564,24 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
           borderRadius: BorderRadius.circular(16),
         ),
         title: const Text(
-          '确认保存至草稿箱吗？',
+          'Save to drafts?',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         content: const Text(
-          '当前内容将保存到草稿箱，你可以稍后继续编辑。',
+          'The current content will be saved to drafts so you can continue editing later.',
           style: TextStyle(fontSize: 16, color: Colors.grey),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text(
-              '取消',
+              'Cancel',
               style: TextStyle(color: Colors.grey, fontSize: 16),
             ),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.pop(context); // 关闭对话框
+              Navigator.pop(context); // Close the dialog
               _saveDraft();
             },
             style: ElevatedButton.styleFrom(
@@ -592,7 +592,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
               ),
             ),
             child: const Text(
-              '保存',
+              'Save',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
             ),
           ),
@@ -601,18 +601,18 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
     );
   }
 
-  // 保存草稿
+  // Save the draft
   void _saveDraft() async {
     try {
-      // 检查是否有内容可以保存
+      // Check whether there is content to save
       if (isContentEmpty()) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('没有内容可以保存')),
+          const SnackBar(content: Text('There is no content to save')),
         );
         return;
       }
 
-      // 显示保存中提示
+      // Show the saving indicator
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -636,7 +636,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
                 ),
                 SizedBox(width: 12),
                 Text(
-                  '保存中...',
+                  'Saving...',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -649,27 +649,27 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
         ),
       );
 
-      // 准备已存在的图片路径
+      // Prepare existing image paths
       List<String> existingImagePaths = _draftImages.map((file) => file.path).toList();
 
-      // 保存草稿
+      // Save the draft
       final draft = await DraftService.saveCaptionDraft(
         draftId: _currentDraftId,
         title: _titleController.text.trim(),
         description: _descriptionController.text.trim(),
         topics: _selectedTopics,
         selectedAssets: _selectedAssets,
-        existingImagePaths: existingImagePaths, // 传递已存在的图片路径
+        existingImagePaths: existingImagePaths, // Pass existing image paths
       );
 
       _currentDraftId = draft.id;
 
-      // 关闭保存中提示
+      // Close the saving indicator
       if (mounted) {
         Navigator.of(context).pop();
       }
 
-      // 显示保存成功提示
+      // Show the success message
       if (mounted) {
         showDialog(
           context: context,
@@ -687,7 +687,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
                   Icon(Icons.check_circle, color: Colors.white, size: 24),
                   SizedBox(width: 12),
                   Text(
-                    '保存成功',
+                    'Saved',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -701,39 +701,39 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
         );
       }
 
-      // 延迟返回主页面
+      // Return to the main page after a delay
       Future.delayed(const Duration(milliseconds: 1200), () {
         if (mounted) {
-          Navigator.of(context).pop(); // 关闭提示对话框
-          // 使用回调或简单返回
+          Navigator.of(context).pop(); // Close the message dialog
+          // Use the callback or simply return
           if (widget.onBack != null) {
             widget.onBack!();
           } else {
-            // 如果没有回调，尝试 pop 一次
+            // If there is no callback, try popping once
             Navigator.of(context).pop();
           }
         }
       });
 
     } catch (e) {
-      // 关闭保存中提示
+      // Close the saving indicator
       if (mounted) {
         Navigator.of(context).pop();
       }
       
-      // 显示错误提示
+      // Show an error message
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('保存草稿失败: $e')),
+          SnackBar(content: Text('Failed to save draft: $e')),
         );
       }
     }
   }
 
-  // 检查内容是否为空
+  // Check whether the content is empty
   bool isContentEmpty() {
-    // 检查标题是否为默认标题
-    final isDefaultTitle = _titleController.text.trim() == '请帮我想想文案:D';
+    // Check whether the title is the default title
+    final isDefaultTitle = _titleController.text.trim() == 'Help me come up with a caption :D';
     
     return isDefaultTitle && 
            _descriptionController.text.trim().isEmpty && 
@@ -742,13 +742,13 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
            _draftImages.isEmpty;
   }
 
-  // 静默保存草稿（不显示UI提示）
+  // Save the draft silently without showing UI feedback
   Future<void> saveDraftSilently() async {
     try {
-      // 准备已存在的图片路径
+      // Prepare existing image paths
       List<String> existingImagePaths = _draftImages.map((file) => file.path).toList();
 
-      // 保存草稿
+      // Save the draft
       final draft = await DraftService.saveCaptionDraft(
         draftId: _currentDraftId,
         title: _titleController.text.trim(),
@@ -760,28 +760,28 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
 
       _currentDraftId = draft.id;
     } catch (e) {
-      print('静默保存草稿失败: $e');
+      print('Failed to save draft silently: $e');
     }
   }
 
-  // 发布帖子
+  // Publish the post
   Future<void> _publishPost() async {
     try {
-      // 验证必填内容 - 只检查标题是否为空
+      // Validate required content - only check whether the title is empty
       if (_titleController.text.trim().isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('请输入标题')),
+          const SnackBar(content: Text('Please enter a title')),
         );
         return;
       }
 
-      // 检查是否有图片
+      // Check whether there are any images
       List<File> allImages = [];
       
-      // 添加草稿中的图片
+      // Add images from the draft
       allImages.addAll(_draftImages);
       
-      // 添加新选择的图片
+      // Add newly selected images
       for (final asset in _selectedAssets) {
         final file = await asset.file;
         if (file != null) {
@@ -791,12 +791,12 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
 
       if (allImages.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('请至少选择一张图片')),
+          const SnackBar(content: Text('Please select at least one image')),
         );
         return;
       }
 
-      // 创建帖子数据
+      // Create post data
       final postData = PostModel(
         title: _titleController.text.trim(),
         description: _descriptionController.text.trim().isNotEmpty 
@@ -806,20 +806,20 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
         images: allImages,
         source: PostSource.captionSuggest,
         createdAt: DateTime.now(),
-        // 新字段使用默认值，会自动生成ID
+        // New fields use defaults, and the ID is generated automatically
       );
 
-      // 保存帖子到笔记
+      // Save the post to posts
       final savedPostData = await NotesService.savePostAsNote(postData);
 
-      // 清空当前草稿
+      // Clear the current draft
       await DraftService.clearAllCaptionDrafts();
 
-      // 使用回调显示帖子详情页面，传递更新后的PostModel
+      // Use the callback to show post details with the updated PostModel
       if (widget.onPostPublished != null) {
         widget.onPostPublished!(savedPostData);
       } else {
-        // 如果没有回调，使用导航（向下兼容）
+        // If no callback is provided, use navigation for backward compatibility
         if (mounted) {
           Navigator.pushReplacementNamed(
             context, 
@@ -832,7 +832,7 @@ class CaptionSuggestPageState extends State<CaptionSuggestPage> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('发布失败: $e')),
+          SnackBar(content: Text('Failed to publish: $e')),
         );
       }
     }

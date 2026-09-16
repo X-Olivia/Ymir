@@ -9,7 +9,7 @@ class AvatarPickerDialog extends StatelessWidget {
     this.themeColor,
   });
 
-  // 获取所有头像资源路径
+  // Gets all avatar asset paths
   List<String> get _avatarPaths => [
     'assets/images/User/IMG_6334.PNG',
     'assets/images/User/IMG_6335.PNG',
@@ -28,16 +28,16 @@ class AvatarPickerDialog extends StatelessWidget {
     
     return Stack(
       children: [
-        // 背景模糊层（不变暗）
+        // Blurred background layer without darkening
         Positioned.fill(
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
             child: Container(
-              color: Colors.white.withOpacity(0.1), // 轻微提亮背景
+              color: Colors.white.withOpacity(0.1), // Light Highlighting Background
             ),
           ),
         ),
-        // 弹窗
+        // Dialog
         Dialog(
           backgroundColor: Colors.transparent,
           child: Container(
@@ -85,12 +85,12 @@ class AvatarPickerDialog extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // 标题
+                      // Title
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text(
-                            '选择头像',
+                            'Select Avatar',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -105,7 +105,7 @@ class AvatarPickerDialog extends StatelessWidget {
                       ),
                       const SizedBox(height: 20),
                       
-                      // 头像网格
+                      // Avatar grid
                       Expanded(
                         child: GridView.builder(
                           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

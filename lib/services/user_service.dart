@@ -10,13 +10,13 @@ class UserService {
   static const String _ymirIdKey = 'ymir_id';
   static const String _genderKey = 'user_gender';
 
-  // 默认用户信息
-  static const String _defaultNickname = '用户昵称';
+  // Default user information
+  static const String _defaultNickname = 'User nickname';
   static const String _defaultAvatarPlaceholder = 'U';
   static const Color _defaultAvatarColor = Colors.blue;
   static const String _defaultGender = 'none';
 
-  // 生成随机Ymir号
+  // Generate a random Ymir ID
   static String _generateYmirId() {
     final random = Random();
     String id = '';
@@ -26,7 +26,7 @@ class UserService {
     return id;
   }
 
-  // 获取或生成Ymir号
+  // Get or generate the Ymir ID
   static Future<String> getYmirId() async {
     final prefs = await SharedPreferences.getInstance();
     String? ymirId = prefs.getString(_ymirIdKey);
@@ -39,37 +39,37 @@ class UserService {
     return ymirId;
   }
 
-  // 保存用户昵称
+  // Save user nickname
   static Future<void> saveNickname(String nickname) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_nicknameKey, nickname);
   }
 
-  // 获取用户昵称
+  // Get user nickname
   static Future<String> getNickname() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_nicknameKey) ?? _defaultNickname;
   }
 
-  // 保存头像占位符
+  // Save avatar placeholder
   static Future<void> saveAvatarPlaceholder(String placeholder) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_avatarPlaceholderKey, placeholder);
   }
 
-  // 获取头像占位符
+  // Get avatar placeholder
   static Future<String> getAvatarPlaceholder() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_avatarPlaceholderKey) ?? _defaultAvatarPlaceholder;
   }
 
-  // 保存头像颜色
+  // Save avatar color
   static Future<void> saveAvatarColor(Color color) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(_avatarColorKey, color.value);
   }
 
-  // 获取头像颜色
+  // Get avatar color
   static Future<Color> getAvatarColor() async {
     final prefs = await SharedPreferences.getInstance();
     final colorValue = prefs.getInt(_avatarColorKey);
@@ -79,7 +79,7 @@ class UserService {
     return _defaultAvatarColor;
   }
 
-  // 保存头像路径
+  // Save avatar path
   static Future<void> saveAvatarPath(String? path) async {
     final prefs = await SharedPreferences.getInstance();
     if (path != null) {
@@ -89,25 +89,25 @@ class UserService {
     }
   }
 
-  // 获取头像路径
+  // Get avatar path
   static Future<String?> getAvatarPath() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_avatarPathKey);
   }
 
-  // 保存性别设置
+  // Save gender settings
   static Future<void> saveGender(String gender) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_genderKey, gender);
   }
 
-  // 获取性别设置
+  // Get gender settings
   static Future<String> getGender() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_genderKey) ?? _defaultGender;
   }
 
-  // 获取完整用户信息
+  // Get complete user information
   static Future<Map<String, dynamic>> getUserInfo() async {
     final nickname = await getNickname();
     final avatarPlaceholder = await getAvatarPlaceholder();
@@ -126,7 +126,7 @@ class UserService {
     };
   }
 
-  // 保存完整用户信息
+  // Save complete user information
   static Future<void> saveUserInfo({
     required String nickname,
     required String avatarPlaceholder,

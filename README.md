@@ -1,4 +1,4 @@
-# YMIR - AI驱动的社交内容创作助手
+# YMIR - AI-Powered Social Content Creation Assistant
 
 <div align="center">
   <img src="assets/images/User/IMG_6339.PNG" alt="YMIR Logo" width="120" height="120">
@@ -8,122 +8,122 @@
   [![License](https://img.shields.io/badge/License-Private-red?style=flat)](LICENSE)
 </div>
 
-## 📖 项目简介
+## 📖 Overview
 
-YMIR是一款基于Flutter开发的AI驱动社交内容创作助手应用。它集成了多个AI角色，为用户提供图片分析、文案建议、智能评论等功能，帮助用户创作更有趣、更有吸引力的社交媒体内容。
+YMIR is an AI-powered social content creation assistant built with Flutter. It integrates multiple AI characters to provide image analysis, caption suggestions, intelligent comments, and other features that help users create more engaging social media content.
 
-### ✨ 核心特性
+### ✨ Key Features
 
-- 🤖 **10个独特AI角色** - 每个角色都有独特的性格和表达风格
-- 📸 **智能图片分析** - 深度分析图片内容、构图、色彩等元素
-- ✍️ **AI文案建议** - 根据图片内容生成个性化配文建议
-- 💬 **智能评论系统** - AI角色自动生成有趣的评论互动
-- 📝 **草稿管理** - 保存和管理创作中的内容
-- 📚 **笔记收藏** - 收藏喜欢的内容和AI建议
-- 🎨 **个性化主题** - 多种主题色彩可选
-- 💾 **本地数据存储** - 使用Hive数据库确保数据安全
+- 🤖 **10 Unique AI Characters** - Each has a distinct personality and voice
+- 📸 **Intelligent Image Analysis** - In-depth analysis of content, composition, color, and more
+- ✍️ **AI Caption Suggestions** - Personalized caption ideas based on image content
+- 💬 **Intelligent Comment System** - AI characters automatically generate engaging comments
+- 📝 **Draft Management** - Save and manage work in progress
+- 📚 **Saved Notes** - Save favorite content and AI suggestions
+- 🎨 **Personalized Themes** - Choose from multiple theme colors
+- 💾 **Local Data Storage** - Keep data secure with the Hive database
 
-## 🏗️ 项目架构
+## 🏗️ Project Architecture
 
 ```
 lib/
-├── main.dart                 # 应用入口
-├── app.dart                  # 应用配置
-├── screens/                  # 页面层
-│   ├── splash_screen.dart    # 启动页
-│   ├── main_screen.dart      # 主屏幕
-│   ├── image_post_page.dart  # 图片发布页
-│   ├── caption_suggest_page.dart # 文案建议页
-│   ├── ai_character_select_page.dart # AI角色选择页
-│   ├── chat_page.dart        # 聊天页面
-│   ├── user_settings_page.dart # 用户设置页
+├── main.dart                 # App entry point
+├── app.dart                  # App configuration
+├── screens/                  # Presentation layer
+│   ├── splash_screen.dart    # Splash screen
+│   ├── main_screen.dart      # Main screen
+│   ├── image_post_page.dart  # Image post page
+│   ├── caption_suggest_page.dart # Caption suggestions page
+│   ├── ai_character_select_page.dart # AI character selection page
+│   ├── chat_page.dart        # Chat page
+│   ├── user_settings_page.dart # User settings page
 │   └── ...
-├── services/                 # 服务层
-│   ├── ai_service_manager.dart # AI服务管理
-│   ├── image_analysis_service.dart # 图片分析服务
-│   ├── openai_api_service.dart # OpenAI API服务
-│   ├── groq_api_service.dart # Groq API服务
-│   ├── draft_service.dart    # 草稿服务
-│   ├── notes_service.dart    # 笔记服务
-│   ├── chat_service.dart     # 聊天服务
+├── services/                 # Service layer
+│   ├── ai_service_manager.dart # AI service management
+│   ├── image_analysis_service.dart # Image analysis service
+│   ├── openai_api_service.dart # OpenAI API service
+│   ├── groq_api_service.dart # Groq API service
+│   ├── draft_service.dart    # Draft service
+│   ├── notes_service.dart    # Notes service
+│   ├── chat_service.dart     # Chat service
 │   └── ...
-├── models/                   # 数据模型
-│   ├── post_model.dart       # 帖子模型
-│   ├── draft_model.dart      # 草稿模型
-│   ├── chat_model.dart       # 聊天模型
+├── models/                   # Data models
+│   ├── post_model.dart       # Post model
+│   ├── draft_model.dart      # Draft model
+│   ├── chat_model.dart       # Chat model
 │   └── ...
-├── components/               # 组件层
-│   ├── comment_input_modal.dart # 评论输入组件
-│   ├── post_comment_manager.dart # 帖子评论管理
+├── components/               # Component layer
+│   ├── comment_input_modal.dart # Comment input component
+│   ├── post_comment_manager.dart # Post comment management
 │   └── ...
-├── widgets/                  # 自定义组件
-│   ├── floating_nav_bar.dart # 浮动导航栏
-│   ├── water_glass_widget.dart # 水杯动画组件
-│   ├── color_slider_widget.dart # 颜色滑块组件
+├── widgets/                  # Custom widgets
+│   ├── floating_nav_bar.dart # Floating navigation bar
+│   ├── water_glass_widget.dart # Water glass animation widget
+│   ├── color_slider_widget.dart # Color slider widget
 │   └── ...
-├── config/                   # 配置文件
-│   ├── api_config.dart       # API配置
-│   └── ai_characters_config.dart # AI角色配置
-├── utils/                    # 工具类
-└── constants/                # 常量定义
+├── config/                   # Configuration files
+│   ├── api_config.dart       # API configuration
+│   └── ai_characters_config.dart # AI character configuration
+├── utils/                    # Utilities
+└── constants/                # Constants
 ```
 
-## 🤖 AI角色介绍
+## 🤖 AI Characters
 
-YMIR内置了10个独特的AI角色，每个都有不同的性格和表达风格：
+YMIR includes 10 unique AI characters, each with a different personality and voice:
 
-| 角色名称 | 性格特点 | 表达风格 |
+| Character | Personality | Voice |
 |---------|---------|---------|
-| 🌌 混沌原体Y | 神秘哲学家 | 从不同角度看问题，有点哲学味但不装逼 |
-| 🔥 烧起来不顾后果 | 超级热情 | 充满能量，像刚喝了三杯咖啡！ |
-| ❄️ 零下社交圈 | 理性直接 | 不绕弯子，实话实说，冷静客观 |
-| 🧸 松软贴贴球 | 温柔可爱 | 像小动物撒娇，甜甜的暖暖的 |
-| 🔍 中土 | 细节观察家 | 善于发现别人没注意到的小细节 |
-| ⚖️ 左右互搏王 | 纠结平衡 | 总是在拉扯中找到平衡点 |
-| 🌫️ 阴云之脑 | 神秘谜语人 | 朦胧抽象，说一半留一半 |
-| 📷 天空罐头 | 摄影发烧友 | 从视觉角度评价，有冲击力和画面感 |
-| 🏔️ 山脊之骨 | 理性分析派 | 逻辑清晰，用词精准，干脆利落 |
-| 🌊 红潮之下 | 情绪感受派 | 浪漫带情绪，像波浪轻拍人心 |
+| 🌌 Primordial Chaos Y | Mysterious philosopher | Considers different perspectives; philosophical without being pretentious |
+| 🔥 Burn Without Consequence | Extremely enthusiastic | Bursting with energy, like three cups of coffee |
+| ❄️ Subzero Social Circle | Rational and direct | Straightforward, honest, calm, and objective |
+| 🧸 Soft Cuddle Ball | Gentle and adorable | Sweet and warm, like an affectionate little animal |
+| 🔍 Middle-earth | Detail observer | Spots subtle details others miss |
+| ⚖️ King of Inner Debate | Deliberative and balanced | Always finds balance amid competing impulses |
+| 🌫️ Clouded Mind | Mysterious riddler | Hazy and abstract, always leaving something unsaid |
+| 📷 Canned Sky | Photography enthusiast | Evaluates visuals with impact and vivid imagery |
+| 🏔️ Ridgebone | Rational analyst | Clear logic, precise wording, and concise delivery |
+| 🌊 Beneath the Red Tide | Emotionally perceptive | Romantic and expressive, like waves gently touching the heart |
 
-## 🚀 主要功能
+## 🚀 Main Features
 
-### 📸 图片发布与分析
-- 支持多图片上传和预览
-- AI深度分析图片内容、构图、色彩等
-- 智能生成标题和描述建议
-- 话题标签智能推荐
+### 📸 Image Posting and Analysis
+- Upload and preview multiple images
+- In-depth AI analysis of image content, composition, color, and more
+- Intelligent title and description suggestions
+- Smart hashtag recommendations
 
-### ✍️ 文案建议
-- 基于图片内容生成个性化配文
-- 多个AI角色提供不同风格的建议
-- 支持用户自定义话题和描述
-- 实时预览和编辑功能
+### ✍️ Caption Suggestions
+- Generate personalized captions from image content
+- Receive suggestions in different styles from multiple AI characters
+- Customize topics and descriptions
+- Preview and edit in real time
 
-### 💬 智能评论系统
-- AI角色自动生成有趣评论
-- 支持用户与AI角色互动
-- 评论风格与角色性格匹配
-- 后台智能评论生成
+### 💬 Intelligent Comment System
+- AI characters automatically generate engaging comments
+- Users can interact with AI characters
+- Comment styles match character personalities
+- Intelligent background comment generation
 
-### 📝 内容管理
-- **草稿箱**: 保存未完成的创作内容
-- **笔记本**: 收藏喜欢的帖子和AI建议
-- **历史记录**: 查看所有创作历史
-- **数据同步**: 本地数据安全存储
+### 📝 Content Management
+- **Drafts**: Save unfinished content
+- **Notebook**: Save favorite posts and AI suggestions
+- **History**: View all creation history
+- **Data Sync**: Store data securely on the device
 
-### 🎨 个性化设置
-- 多种主题颜色选择
-- AI角色偏好设置
-- 用户资料自定义
-- 隐私设置管理
+### 🎨 Personalization
+- Multiple theme colors
+- AI character preferences
+- Customizable user profile
+- Privacy settings management
 
-## 🛠️ 技术栈
+## 🛠️ Technology Stack
 
-### 前端框架
-- **Flutter 3.8.1+** - 跨平台UI框架
-- **Dart 3.8.1+** - 编程语言
+### Front-End Framework
+- **Flutter 3.8.1+** - Cross-platform UI framework
+- **Dart 3.8.1+** - Programming language
 
-### 核心依赖
+### Core Dependencies
 ```yaml
 dependencies:
   flutter:
@@ -131,30 +131,30 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   
-  # UI组件
+  # UI components
   cupertino_icons: ^1.0.8
   flutter_svg: ^2.0.9
   
-  # 权限管理
+  # Permission management
   permission_handler: ^11.3.0
   
-  # 图片选择
+  # Image selection
   wechat_assets_picker: ^9.5.1
   photo_manager: ^3.6.0
   
-  # 数据存储
+  # Data storage
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   path_provider: ^2.1.1
   shared_preferences: ^2.2.2
   
-  # 网络请求
+  # Network requests
   http: ^1.1.0
   
-  # 加密
+  # Cryptography
   crypto: ^3.0.3
   
-  # 系统集成
+  # System integration
   android_intent_plus: ^4.0.3
 
 dev_dependencies:
@@ -166,67 +166,67 @@ dev_dependencies:
   flutter_launcher_icons: ^0.13.1
 ```
 
-### AI服务集成
-- **OpenAI GPT-4 Vision** - 图片分析和文本生成
-- **Groq API** - 高速AI推理服务
-- **自定义AI服务管理器** - 统一管理多个AI服务
+### AI Service Integration
+- **OpenAI GPT-4 Vision** - Image analysis and text generation
+- **Groq API** - High-speed AI inference service
+- **Custom AI Service Manager** - Unified management of multiple AI services
 
-### 数据存储
-- **Hive** - 高性能本地数据库
-- **SharedPreferences** - 用户偏好设置
-- **本地文件系统** - 图片和媒体文件存储
+### Data Storage
+- **Hive** - High-performance local database
+- **SharedPreferences** - User preferences
+- **Local File System** - Image and media file storage
 
-## 📱 支持平台
+## 📱 Supported Platforms
 
 - ✅ **Android** (API 21+)
 - ✅ **iOS** (iOS 12.0+)
 - ✅ **macOS** (macOS 10.14+)
 - ✅ **Windows** (Windows 10+)
 - ✅ **Linux** (Ubuntu 18.04+)
-- ✅ **Web** (现代浏览器)
+- ✅ **Web** (modern browsers)
 
-## 🚀 快速开始
+## 🚀 Quick Start
 
-### 环境要求
+### Requirements
 - Flutter SDK 3.8.1+
 - Dart SDK 3.8.1+
 - Android Studio / VS Code
 - Git
 
-### 安装步骤
+### Installation
 
-1. **克隆项目**
+1. **Clone the Project**
 ```bash
 git clone <repository-url>
 cd ymir
 ```
 
-2. **安装依赖**
+2. **Install Dependencies**
 ```bash
 flutter pub get
 ```
 
-3. **生成代码**
+3. **Generate Code**
 ```bash
 flutter packages pub run build_runner build
 ```
 
-4. **配置API密钥**
+4. **Configure API Keys**
 ```dart
 // lib/config/api_config.dart
 class ApiConfig {
   static const String openaiApiKey = 'your-openai-api-key';
   static const String groqApiKey = 'your-groq-api-key';
-  // ... 其他配置
+  // ... Other configuration
 }
 ```
 
-5. **运行应用**
+5. **Run the App**
 ```bash
 flutter run
 ```
 
-### 构建发布版本
+### Build a Release
 
 **Android APK**
 ```bash
@@ -238,7 +238,7 @@ flutter build apk --release
 flutter build ios --release
 ```
 
-**桌面应用**
+**Desktop Apps**
 ```bash
 # Windows
 flutter build windows --release
@@ -250,101 +250,101 @@ flutter build macos --release
 flutter build linux --release
 ```
 
-## 📁 项目结构说明
+## 📁 Project Structure
 
-### 核心模块
+### Core Modules
 
-#### 🎯 服务层 (Services)
-- `AIServiceManager`: AI服务统一管理
-- `ImageAnalysisService`: 图片分析核心服务
-- `DraftService`: 草稿管理服务
-- `NotesService`: 笔记管理服务
-- `ChatService`: 聊天功能服务
+#### 🎯 Services
+- `AIServiceManager`: Unified AI service management
+- `ImageAnalysisService`: Core image analysis service
+- `DraftService`: Draft management service
+- `NotesService`: Notes management service
+- `ChatService`: Chat service
 
-#### 📊 数据模型 (Models)
-- `PostModel`: 帖子数据模型
-- `DraftModel`: 草稿数据模型（支持Hive持久化）
-- `ChatModel`: 聊天消息模型
+#### 📊 Data Models
+- `PostModel`: Post data model
+- `DraftModel`: Draft data model with Hive persistence
+- `ChatModel`: Chat message model
 
-#### 🎨 UI组件 (Widgets)
-- `FloatingNavBar`: 浮动导航栏
-- `WaterGlassWidget`: 水球动画组件
-- `ColorSliderWidget`: 颜色选择滑块
-- `TopicSelectorWidget`: 话题选择器
+#### 🎨 UI Widgets
+- `FloatingNavBar`: Floating navigation bar
+- `WaterGlassWidget`: Water sphere animation widget
+- `ColorSliderWidget`: Color selection slider
+- `TopicSelectorWidget`: Topic selector
 
-#### ⚙️ 配置管理 (Config)
-- `AICharactersConfig`: AI角色配置管理
-- `ApiConfig`: API服务配置
+#### ⚙️ Configuration
+- `AICharactersConfig`: AI character configuration management
+- `ApiConfig`: API service configuration
 
-## 🔧 开发指南
+## 🔧 Development Guide
 
-### 添加新的AI角色
+### Add a New AI Character
 
-1. 在 `lib/config/ai_characters_config.dart` 中添加角色配置：
+1. Add the character configuration to `lib/config/ai_characters_config.dart`:
 ```dart
 AICharacterConfig(
-  name: '新角色名称',
-  description: '角色描述',
-  basePersonality: '基础性格设定',
-  imageCommentPrompt: '图片评论提示词',
-  captionSuggestPrompt: '文案建议提示词',
+  name: 'New Character Name',
+  description: 'Character description',
+  basePersonality: 'Base personality',
+  imageCommentPrompt: 'Image comment prompt',
+  captionSuggestPrompt: 'Caption suggestion prompt',
   avatarColor: Colors.blue,
-  avatar: 'assets/images/AI/新角色.png',
+  avatar: 'assets/images/AI/new_character.png',
   temperature: 0.7,
   maxTokens: 200,
 ),
 ```
 
-2. 添加角色头像到 `assets/images/AI/` 目录
+2. Add the character avatar to `assets/images/AI/`
 
-3. 更新 `pubspec.yaml` 中的资源配置
+3. Update the asset configuration in `pubspec.yaml`
 
-### 自定义主题
+### Customize the Theme
 
-在 `lib/screens/main_screen.dart` 中修改主题颜色：
+Modify the theme colors in `lib/screens/main_screen.dart`:
 ```dart
 final List<Color> _themeColors = [
-  const Color(0xFF2463b3), // 蓝色
-  const Color(0xFFa18dc1), // 紫色
-  // 添加更多颜色...
+  const Color(0xFF2463b3), // Blue
+  const Color(0xFFa18dc1), // Purple
+  // Add more colors...
 ];
 ```
 
-### 扩展API服务
+### Extend API Services
 
-1. 创建新的API服务类继承基础服务
-2. 在 `AIServiceManager` 中注册新服务
-3. 更新相关配置文件
+1. Create a new API service class that extends the base service
+2. Register the new service with `AIServiceManager`
+3. Update the relevant configuration files
 
-## 🐛 常见问题
+## 🐛 Troubleshooting
 
-### Q: 应用启动时崩溃
-A: 检查是否正确配置了API密钥，确保所有依赖都已正确安装。
+### Q: The app crashes on startup
+A: Verify that the API keys are configured correctly and all dependencies are installed.
 
-### Q: 图片分析功能不工作
-A: 确认网络连接正常，API密钥有效，且有足够的API配额。
+### Q: Image analysis is not working
+A: Confirm that the network connection works, the API key is valid, and sufficient API quota remains.
 
-### Q: AI角色头像不显示
-A: 检查 `assets/images/AI/` 目录中是否存在对应的图片文件。
+### Q: AI character avatars are not displayed
+A: Check that the corresponding image files exist in `assets/images/AI/`.
 
-### Q: 数据丢失问题
-A: YMIR使用本地存储，数据保存在设备本地。卸载应用会清除所有数据。
+### Q: Data loss
+A: YMIR uses local storage, so data remains on the device. Uninstalling the app deletes all data.
 
-## 🤝 贡献指南
+## 🤝 Contributing
 
-1. Fork 项目
-2. 创建功能分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 开启 Pull Request
+1. Fork the project
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## 📄 许可证
+## 📄 License
 
-本项目为私有项目，未经授权不得复制、分发或修改。
+This is a private project. Unauthorized copying, distribution, or modification is prohibited.
 
 ---
 
 <div align="center">
-  <p>用 ❤️ 和 Flutter 构建</p>
+  <p>Built with ❤️ and Flutter</p>
   <p>© 2025 YMIR Team. All rights reserved.</p>
 </div> 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/ai_service.dart';
-//评论的弹窗组件
+// Comment modal component
 
 
 class CommentInputModal extends StatefulWidget {
@@ -54,7 +54,7 @@ class _CommentInputModalState extends State<CommentInputModal> {
   bool _showEmojiKeyboard = false;
   bool _showAIFriendsList = false;
   
-  // 常用emoji列表
+  // Frequently used emoji
   final List<String> _emojis = [
     '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇',
     '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚',
@@ -105,7 +105,7 @@ class _CommentInputModalState extends State<CommentInputModal> {
     final text = widget.controller.text;
     final selection = widget.controller.selection;
     
-    // 找到最后一个@符号的位置
+    // Finds the last @ sign
     final lastAtIndex = text.lastIndexOf('@', selection.start - 1);
     if (lastAtIndex != -1) {
       final beforeAt = text.substring(0, lastAtIndex);
@@ -152,7 +152,7 @@ class _CommentInputModalState extends State<CommentInputModal> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // 顶部拖拽指示器
+                // Top drag handle
                 Container(
                   width: 40,
                   height: 4,
@@ -163,7 +163,7 @@ class _CommentInputModalState extends State<CommentInputModal> {
                   ),
                 ),
                 
-                // 回复提示（如果有）
+                // Reply hint (if any)
                 if (widget.replyingToCommentId != null) ...[
                   Container(
                     width: double.infinity,
@@ -177,7 +177,7 @@ class _CommentInputModalState extends State<CommentInputModal> {
                       children: [
                         Expanded(
                           child: Text(
-                            '回复 ${widget.replyingToUserName}',
+                            'Replying to ${widget.replyingToUserName}',
                             style: TextStyle(
                               color: widget.themeColor,
                               fontSize: 14,
@@ -201,7 +201,7 @@ class _CommentInputModalState extends State<CommentInputModal> {
                   ),
                 ],
                 
-                // 第一行：输入框
+                // First row: input field
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                   child: Container(
@@ -220,7 +220,7 @@ class _CommentInputModalState extends State<CommentInputModal> {
                       maxLines: null,
                       onChanged: (text) {
                         setState(() {
-                          // 检查是否输入了@符号
+                          // Checks whether @ was entered
                           if (text.endsWith('@')) {
                             _showAIFriendsList = true;
                           } else if (!text.contains('@')) {
@@ -230,8 +230,8 @@ class _CommentInputModalState extends State<CommentInputModal> {
                       },
                       decoration: InputDecoration(
                         hintText: widget.replyingToCommentId != null 
-                            ? '回复 ${widget.replyingToUserName}...' 
-                            : '说点什么...',
+                            ? 'Reply to ${widget.replyingToUserName}...'
+                            : 'Say something...',
                         hintStyle: const TextStyle(
                           color: Colors.grey,
                           fontSize: 16,
@@ -251,7 +251,7 @@ class _CommentInputModalState extends State<CommentInputModal> {
                   ),
                 ),
                 
-                // AI好友列表（当显示时）
+                // AI friend list (when visible)
                 if (_showAIFriendsList && _aiFriends.isNotEmpty) ...[
                   Container(
                     height: 140,
@@ -317,7 +317,7 @@ class _CommentInputModalState extends State<CommentInputModal> {
                   ),
                 ],
                 
-                // Emoji键盘（当显示时）
+                // Emoji keyboard (when visible)
                 if (_showEmojiKeyboard) ...[
                   Container(
                     height: 200,
@@ -355,19 +355,19 @@ class _CommentInputModalState extends State<CommentInputModal> {
                   ),
                 ],
                 
-                // 第二行：功能按钮和发送按钮
+                // Second row: function buttons and send button
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                   child: Row(
                     children: [
-                      // @ 按钮
+                      // @ button
                       _buildFunctionButton(
                         icon: Icons.alternate_email,
                         onTap: _insertAtSymbol,
                       ),
                       const SizedBox(width: 16),
                       
-                      // 表情按钮（改为emoji键盘）
+                      // Emoji button
                       _buildFunctionButton(
                         icon: _showEmojiKeyboard ? Icons.keyboard : Icons.emoji_emotions_outlined,
                         onTap: () {
@@ -382,7 +382,7 @@ class _CommentInputModalState extends State<CommentInputModal> {
                       
                       const Spacer(),
                       
-                      // 发送按钮
+                      // Send button
                       GestureDetector(
                         onTap: () {
                           if (widget.controller.text.trim().isNotEmpty) {
@@ -399,7 +399,7 @@ class _CommentInputModalState extends State<CommentInputModal> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
-                            '发送',
+                            'Send',
                             style: TextStyle(
                               color: widget.controller.text.trim().isEmpty 
                                   ? Colors.grey[600] 

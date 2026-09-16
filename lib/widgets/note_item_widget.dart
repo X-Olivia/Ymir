@@ -17,13 +17,13 @@ class NoteItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = noteData['title'] ?? '无标题';
+    final title = noteData['title'] ?? 'Untitled';
     final imagePaths = List<String>.from(noteData['imagePaths'] ?? []);
     final topics = List<String>.from(noteData['topics'] ?? []);
     final createdAt = DateTime.tryParse(noteData['createdAt'] ?? '') ?? DateTime.now();
     final source = noteData['source'] ?? '';
 
-    // 获取第一张有效图片
+    // Get the first valid picture
     String? firstImagePath;
     for (final path in imagePaths) {
       if (File(path).existsSync()) {
@@ -53,7 +53,7 @@ class NoteItemWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 图片区域
+              // Picture Area
               Expanded(
                 flex: 3,
                 child: Container(
@@ -67,7 +67,7 @@ class NoteItemWidget extends StatelessWidget {
                   ),
                   child: Stack(
                     children: [
-                      // 图片
+                      // Picture
                       firstImagePath != null
                           ? ClipRRect(
                               borderRadius: const BorderRadius.only(
@@ -89,7 +89,7 @@ class NoteItemWidget extends StatelessWidget {
                               ),
                             ),
                       
-                      // 来源标识（右上角）
+                      // Source identification (top right)
                       Positioned(
                         top: 8,
                         right: 8,
@@ -110,7 +110,7 @@ class NoteItemWidget extends StatelessWidget {
                         ),
                       ),
                       
-                      // 删除按钮（左上角）
+                      // Delete button (top left)
                       if (onDelete != null)
                         Positioned(
                           top: 8,
@@ -136,7 +136,7 @@ class NoteItemWidget extends StatelessWidget {
                 ),
               ),
               
-              // 内容区域
+              // Content Area
               Expanded(
                 flex: 2,
                 child: Padding(
@@ -144,7 +144,7 @@ class NoteItemWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // 标题
+                      // Title
                       Text(
                         title,
                         style: const TextStyle(
@@ -157,7 +157,7 @@ class NoteItemWidget extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       
-                      // 话题标签（最多显示1个）
+                      // Topical labels (highest 1 shown)
                       if (topics.isNotEmpty) ...[
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
@@ -179,7 +179,7 @@ class NoteItemWidget extends StatelessWidget {
                       
                       const Spacer(),
                       
-                      // 创建时间
+                      // Created
                       Text(
                         _formatDate(createdAt),
                         style: TextStyle(
@@ -198,28 +198,28 @@ class NoteItemWidget extends StatelessWidget {
     );
   }
 
-  // 获取来源名称
+  // Get Source Name
   String _getSourceName(String source) {
     if (source.contains('captionSuggest')) {
-      return '文案';
+      return 'Caption';
     } else {
-      return '图片';
+      return 'Image';
     }
   }
 
-  // 格式化日期
+  // Formatting Date
   String _formatDate(DateTime dateTime) {
     final now = DateTime.now();
     final difference = now.difference(dateTime);
 
     if (difference.inDays > 0) {
-      return '${difference.inDays}天前';
+      return '${difference.inDays} days ago';
     } else if (difference.inHours > 0) {
-      return '${difference.inHours}小时前';
+      return '${difference.inHours} hours ago';
     } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes}分钟前';
+      return '${difference.inMinutes} minutes ago';
     } else {
-      return '刚刚';
+      return 'Just now';
     }
   }
 } 

@@ -5,39 +5,39 @@ import '../config/api_config.dart';
 import '../services/openai_api_service.dart';
 import '../services/ai_service_manager.dart';
 
-/// API测试工具类
+/// API testing utility
 class ApiTest {
-  /// 测试基本的文本请求
+  /// Test basic text requests
   static Future<void> testTextRequest() async {
-    print('🧪 开始测试文本请求...');
+    print('🧪 Starting text request test...');
     
     try {
       final response = await OpenAIApiService.sendTextRequest(
-        characterName: '混沌原体Y',
-        prompt: '请简单回复"测试成功"',
+        characterName: 'Chaos Primordial Y',
+        prompt: 'Please reply with "Test successful."',
         maxTokens: 20,
       );
       
       if (response.success) {
-        print('✅ 文本请求测试成功！');
-        print('📝 回复内容: ${response.content}');
-        print('🔢 使用Token: ${response.tokensUsed}');
+        print('✅ Text request test succeeded!');
+        print('📝 Response: ${response.content}');
+        print('🔢 Tokens used: ${response.tokensUsed}');
       } else {
-        print('❌ 文本请求测试失败: ${response.error}');
+        print('❌ Text request test failed: ${response.error}');
       }
     } catch (e) {
-      print('❌ 文本请求测试异常: $e');
+      print('❌ Text request test threw an exception: $e');
     }
     
     print('');
   }
 
-  /// 测试图片请求支持
+  /// Tests image request support
   static Future<void> testImageSupport() async {
-    print('🖼️ 开始测试图片请求支持...');
+    print('🖼️ Starting image request support test...');
     
     try {
-      // 创建一个简单的测试图片base64编码
+      // Creates a simple Base64-encoded test image
       final testImageBase64 = _createTestImageBase64();
       
       final requestBody = {
@@ -48,7 +48,7 @@ class ApiTest {
             'content': [
               {
                 'type': 'text',
-                'text': '请描述这张图片，如果你能看到图片请回复"我可以看到图片"，如果不能请回复"我无法看到图片"',
+                'text': 'Please describe this image. If you can see it, reply "I can see the image"; otherwise, reply "I cannot see the image."',
               },
               {
                 'type': 'image_url',
@@ -78,121 +78,121 @@ class ApiTest {
           final content = choices[0]['message']['content'] ?? '';
           final usage = responseData['usage'];
           
-          print('✅ 图片请求测试成功！');
-          print('📝 回复内容: $content');
-          print('🔢 使用Token: ${usage?['total_tokens']}');
+          print('✅ Image request test succeeded!');
+          print('📝 Response: $content');
+          print('🔢 Tokens used: ${usage?['total_tokens']}');
           
-          // 判断是否支持图片
-          if (content.contains('可以看到') || content.toLowerCase().contains('image') || content.toLowerCase().contains('picture')) {
-            print('🎉 API支持图片请求！');
+          // Determines whether image requests are supported
+          if (content.contains('I can see the image') || content.toLowerCase().contains('image') || content.toLowerCase().contains('picture')) {
+            print('🎉 The API supports image requests!');
           } else {
-            print('⚠️ API可能不支持图片请求，或者图片格式有问题');
+            print('⚠️ The API may not support image requests, or the image format may be invalid');
           }
         } else {
-          print('❌ 图片请求测试失败: 无有效响应');
+          print('❌ Image request test failed: no valid response');
         }
       } else {
         final errorData = json.decode(response.body);
-        print('❌ 图片请求测试失败 (${response.statusCode}): ${errorData['error']?['message']}');
+        print('❌ Image request test failed (${response.statusCode}): ${errorData['error']?['message']}');
         
-        // 检查是否是不支持图片的错误
+        // Checks whether the error indicates that images are unsupported
         final errorMessage = errorData['error']?['message']?.toString().toLowerCase() ?? '';
         if (errorMessage.contains('image') || errorMessage.contains('vision') || errorMessage.contains('multimodal')) {
-          print('💡 提示: 该API可能不支持图片功能，建议使用纯文本模式');
+          print('💡 Tip: This API may not support images; consider using text-only mode');
         }
       }
     } catch (e) {
-      print('❌ 图片请求测试异常: $e');
+      print('❌ Image request test threw an exception: $e');
     }
     
     print('');
   }
 
-  /// 测试AI服务管理器
+  /// Tests the AI service manager
   static Future<void> testAIServiceManager() async {
-    print('🤖 开始测试AI服务管理器...');
+    print('🤖 Starting AI service manager test...');
     
     try {
-      // 测试获取AI角色信息
+      // Tests retrieving AI character information
       final characters = AIServiceManager.getAllAICharacters();
-      print('✅ 获取到${characters.length}个AI角色');
+      print('✅ Retrieved ${characters.length} AI characters');
       
-      // 测试发送文本消息
+      // Tests sending a text message
       final textResult = await AIServiceManager.sendTextMessage(
-        characterName: '混沌原体Y',
-        message: '你好，请简单介绍一下自己',
+        characterName: 'Chaos Primordial Y',
+        message: 'Hello, please briefly introduce yourself.',
       );
       
       if (textResult['success'] == true) {
-        print('✅ AI角色对话测试成功！');
+        print('✅ AI character conversation test succeeded!');
         print('📝 ${textResult['characterName']}: ${textResult['content']}');
       } else {
-        print('❌ AI角色对话测试失败: ${textResult['error']}');
+        print('❌ AI character conversation test failed: ${textResult['error']}');
       }
       
     } catch (e) {
-      print('❌ AI服务管理器测试异常: $e');
+      print('❌ AI service manager test threw an exception: $e');
     }
     
     print('');
   }
 
-  /// 运行所有测试
+  /// Runs all tests
   static Future<void> runAllTests() async {
-    print('🚀 开始API功能测试...\n');
+    print('🚀 Starting API functionality tests...\n');
     
-    // 检查API配置
+    // Checks the API configuration
     if (!ApiConfig.isApiKeyConfigured) {
-      print('❌ API密钥未配置！');
+      print('❌ API key is not configured!');
       return;
     }
     
-    print('🔑 API密钥已配置');
-    print('🌐 API地址: ${ApiConfig.apiUrl}');
-    print('🤖 使用模型: ${ApiConfig.defaultModel}\n');
+    print('🔑 API key is configured');
+    print('🌐 API URL: ${ApiConfig.apiUrl}');
+    print('🤖 Model: ${ApiConfig.defaultModel}\n');
     
-    // 运行测试
+    // Runs the tests
     await testTextRequest();
     await testImageSupport();
     await testAIServiceManager();
     
-    print('🏁 测试完成！');
+    print('🏁 Tests complete!');
   }
 
-  /// 创建一个简单的测试图片base64编码（1x1像素的红色PNG）
+  /// Creates a simple Base64-encoded test image (a 1x1 red PNG)
   static String _createTestImageBase64() {
-    // 这是一个1x1像素红色PNG图片的base64编码
+    // Base64 encoding of a 1x1 red PNG image
     const pngBase64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==';
     return 'data:image/png;base64,$pngBase64';
   }
 
-  /// 测试特定图片文件（如果存在）
+  /// Tests a specific image file (if it exists)
   static Future<void> testWithImageFile(String imagePath) async {
-    print('🖼️ 测试指定图片文件: $imagePath');
+    print('🖼️ Testing image file: $imagePath');
     
     try {
       final file = File(imagePath);
       if (!file.existsSync()) {
-        print('❌ 图片文件不存在: $imagePath');
+        print('❌ Image file does not exist: $imagePath');
         return;
       }
       
       final response = await OpenAIApiService.getImageComment(
-        characterName: '混沌原体Y',
+        characterName: 'Chaos Primordial Y',
         imagePaths: [imagePath],
-        userContext: '这是一个测试图片',
-        scenario: '测试场景',
+        userContext: 'This is a test image.',
+        scenario: 'Test scenario',
       );
       
       if (response.success) {
-        print('✅ 图片文件测试成功！');
-        print('📝 AI评论: ${response.content}');
-        print('🔢 使用Token: ${response.tokensUsed}');
+        print('✅ Image file test succeeded!');
+        print('📝 AI comment: ${response.content}');
+        print('🔢 Tokens used: ${response.tokensUsed}');
       } else {
-        print('❌ 图片文件测试失败: ${response.error}');
+        print('❌ Image file test failed: ${response.error}');
       }
     } catch (e) {
-      print('❌ 图片文件测试异常: $e');
+      print('❌ Image file test threw an exception: $e');
     }
   }
 } 

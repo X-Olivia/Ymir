@@ -7,22 +7,22 @@ class GreetingService {
   static const String _lastEveningGreetingKey = 'last_evening_greeting';
   static SharedPreferences? _prefs;
   
-  // 初始化服务
+  // Initialize service
   static Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
   }
   
-  // 检查问候功能是否启用
+  // Check if greeting feature is enabled
   static bool isGreetingEnabled() {
     return _prefs?.getBool(_greetingEnabledKey) ?? true;
   }
   
-  // 设置问候功能启用状态
+  // Set whether greetings are enabled
   static Future<void> setGreetingEnabled(bool enabled) async {
     await _prefs?.setBool(_greetingEnabledKey, enabled);
   }
 
-  // 获取当前时段
+  // Get the current period
   static String _getCurrentPeriod() {
     final hour = DateTime.now().hour;
     if (hour >= 5 && hour < 12) {
@@ -34,19 +34,19 @@ class GreetingService {
     }
   }
 
-  // 获取问候语
+  // Get greeting
   static String getGreetingMessage() {
     final hour = DateTime.now().hour;
     if (hour >= 5 && hour < 12) {
-      return '早安';
+      return 'Good morning';
     } else if (hour >= 12 && hour < 18) {
-      return '午安';
+      return 'Good afternoon';
     } else {
-      return '晚安';
+      return 'Good night';
     }
   }
   
-  // 检查当前时段是否应该显示问候
+  // Check if the greeting should be displayed for the current period
   static bool shouldShowGreetingNow() {
     if (!isGreetingEnabled()) return false;
 
@@ -69,7 +69,7 @@ class GreetingService {
     return lastGreetingDate != today;
   }
   
-  // 标记当前时段的问候已显示
+  // Mark the greeting for the current period as shown
   static Future<void> markGreetingShown() async {
     if (_prefs == null) return;
     
@@ -89,7 +89,7 @@ class GreetingService {
     }
   }
 
-  // 清除所有问候记录
+  // Clear all greeting records
   static Future<void> clearAllGreetingRecords() async {
     await _prefs?.remove(_lastMorningGreetingKey);
     await _prefs?.remove(_lastAfternoonGreetingKey);

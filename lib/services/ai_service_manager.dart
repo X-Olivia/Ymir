@@ -2,44 +2,44 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../config/ai_characters_config.dart';
 import 'openai_api_service.dart';
 
-/// AI服务管理器 - 服务管理层
+/// AI service manager - service management
 /// 
-/// 职责：
-/// 1. 管理AI角色选择和配置（用户偏好、随机模式）
-/// 2. 提供统一的AI服务接口，封装底层API调用
-/// 3. 处理并发请求和结果格式化
-/// 4. 作为业务层和API层之间的桥梁
+/// Responsibilities:
+/// 1. Manage AI character selection and configuration (user preferences and random mode)
+/// 2. Provide a unified AI service interface that encapsulates low-level API calls
+/// 3. Handling concurrent requests and result formatting
+/// 4. Bridge the business and API layers
 /// 
-/// 不负责：
-/// - 业务流程管理（由BackgroundCommentService等业务服务负责）
-/// - 状态管理和Stream通知（由具体业务服务负责）
-/// - 数据持久化（由具体业务服务负责）
+/// Not responsible for:
+/// - Business workflows (handled by BackgroundCommentService and other business services)
+/// - State management and stream notifications (handled by specific business services)
+/// - Data persistence (handled by specific business services)
 class AIServiceManager {
   static const String _selectedAIFriendsKey = 'selected_ai_friends';
   static const String _randomModeKey = 'random_mode';
 
-  // ==================== AI角色管理 ====================
+  // ==================== AI character management ====================
 
-  /// 获取所有AI角色信息
+  /// Get information about all AI characters
   static List<Map<String, dynamic>> getAllAICharacters() {
     return AICharactersConfig.getAllCharactersInfo();
   }
 
-  /// 获取当前选中的AI朋友
+  /// Get the currently selected AI friends
   static Future<List<AICharacterConfig>> getSelectedAIFriends() async {
     final prefs = await SharedPreferences.getInstance();
     final isRandomMode = prefs.getBool(_randomModeKey) ?? false;
     
     if (isRandomMode) {
-      // 随机模式：随机选择6个AI朋友
+      // Random mode: randomly select six AI friends
       final allCharacters = AICharactersConfig.characters;
       final shuffled = List<AICharacterConfig>.from(allCharacters)..shuffle();
       return shuffled.take(6).toList();
     } else {
-      // 用户选择模式：获取用户保存的选择
+      // User selection mode: Get the user’s saved selections
       final selectedIndices = prefs.getStringList(_selectedAIFriendsKey) ?? [];
       if (selectedIndices.isEmpty) {
-        // 如果没有保存的选择，返回全部角色（与AI角色选择页面的默认全选保持一致）
+        // If no selection is saved, return all characters to match the selection page default
         return AICharactersConfig.characters;
       }
       
@@ -54,38 +54,38 @@ class AIServiceManager {
     }
   }
 
-  /// 保存选中的AI朋友
+  /// Save the selected AI friends
   static Future<void> saveSelectedAIFriends(List<int> selectedIndices) async {
     final prefs = await SharedPreferences.getInstance();
     final stringIndices = selectedIndices.map((i) => i.toString()).toList();
     await prefs.setStringList(_selectedAIFriendsKey, stringIndices);
   }
 
-  /// 保存随机模式设置
+  /// Save random mode settings
   static Future<void> saveRandomMode(bool isRandomMode) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_randomModeKey, isRandomMode);
   }
 
-  /// 获取随机模式设置
+  /// Get random mode settings
   static Future<bool> getRandomMode() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(_randomModeKey) ?? false;
   }
 
-  /// 根据名称查找AI角色
+  /// Find an AI character by name
   static AICharacterConfig? findAIByName(String name) {
     return AICharactersConfig.getCharacterByName(name);
   }
 
-  // ==================== AI服务接口 ====================
+  // ==================== AI service interface ====================
 
-  /// 获取图片评论建议
+  /// Get image comment suggestions
   /// 
-  /// 这是一个通用接口，支持：
-  /// - 指定特定AI角色或使用用户选择的AI角色
-  /// - 并发请求多个AI角色
-  /// - 统一的结果格式化
+  /// This is a general interface that supports:
+  /// - Specify AI characters or use the user's selected characters
+  /// - Send concurrent requests for multiple AI characters
+  /// - Unified result formatting
   static Future<List<Map<String, dynamic>>> getImageComments({
     required List<String> imagePaths,
     String? userContext,
@@ -93,7 +93,7 @@ class AIServiceManager {
     List<String>? specificCharacters,
   }) async {
     try {
-      // 获取要使用的AI角色
+      // Get the AI characters to use
       List<AICharacterConfig> characters;
       if (specificCharacters != null && specificCharacters.isNotEmpty) {
         characters = specificCharacters
@@ -105,7 +105,7 @@ class AIServiceManager {
         characters = await getSelectedAIFriends();
       }
 
-      // 并发请求所有AI角色的建议
+      // Request suggestions from all AI characters concurrently
       final futures = characters.map((character) async {
         final response = await OpenAIApiService.getImageComment(
           characterName: character.name,
@@ -131,7 +131,7 @@ class AIServiceManager {
       return [
         {
           'characterName': 'Error',
-          'content': '获取AI建议时发生错误: $e',
+          'content': 'An error occurred while getting AI suggestions: $e',
           'success': false,
           'error': e.toString(),
         }
@@ -139,9 +139,9 @@ class AIServiceManager {
     }
   }
 
-  /// 获取配文建议
+  /// Get caption suggestions
   /// 
-  /// 类似getImageComments，但专门用于配文场景
+  /// Similar to getImageComments, but intended specifically for caption suggestions
   static Future<List<Map<String, dynamic>>> getCaptionSuggestions({
     required List<String> imagePaths,
     String? userTitle,
@@ -150,7 +150,7 @@ class AIServiceManager {
     List<String>? specificCharacters,
   }) async {
     try {
-      // 获取要使用的AI角色
+      // Get the AI characters to use
       List<AICharacterConfig> characters;
       if (specificCharacters != null && specificCharacters.isNotEmpty) {
         characters = specificCharacters
@@ -162,7 +162,7 @@ class AIServiceManager {
         characters = await getSelectedAIFriends();
       }
 
-      // 并发请求所有AI角色的建议
+      // Request suggestions from all AI characters concurrently
       final futures = characters.map((character) async {
         final response = await OpenAIApiService.getCaptionSuggestion(
           characterName: character.name,
@@ -189,7 +189,7 @@ class AIServiceManager {
       return [
         {
           'characterName': 'Error',
-          'content': '获取配文建议时发生错误: $e',
+          'content': 'An error occurred while getting caption suggestions: $e',
           'success': false,
           'error': e.toString(),
         }
@@ -197,9 +197,9 @@ class AIServiceManager {
     }
   }
 
-  /// 发送文本消息给特定AI角色
+  /// Send a text message to a specific AI character
   /// 
-  /// 用于单个AI角色的文本对话
+  /// Used for text conversations with a single AI character
   static Future<Map<String, dynamic>> sendTextMessage({
     required String characterName,
     required String message,
@@ -226,16 +226,16 @@ class AIServiceManager {
     } catch (e) {
       return {
         'characterName': characterName,
-        'content': '发送消息时发生错误: $e',
+        'content': 'An error occurred while sending the message: $e',
         'success': false,
         'error': e.toString(),
       };
     }
   }
 
-  // ==================== 系统管理 ====================
+  // ==================== System management ====================
 
-  /// 验证API配置
+  /// Verify the API configuration
   static Future<bool> validateApiConfiguration() async {
     return await OpenAIApiService.validateApiKey();
   }

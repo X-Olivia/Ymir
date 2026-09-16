@@ -6,9 +6,9 @@ import '../components/post_view_ui_components.dart';
 import '../components/post_comment_manager.dart';
 
 class PostViewPage extends StatefulWidget {
-  final PostModel? postData; // 接收帖子数据
-  final Color? themeColor; // 添加主题色参数
-  final VoidCallback? onBack; // 添加返回回调
+  final PostModel? postData; // Post data
+  final Color? themeColor; // Theme color parameter
+  final VoidCallback? onBack; // Back callback
 
   const PostViewPage({super.key, this.postData, this.themeColor, this.onBack});
 
@@ -17,32 +17,32 @@ class PostViewPage extends StatefulWidget {
 }
 
 class PostViewPageState extends State<PostViewPage> {
-  // 用户信息
-  String _userNickname = '用户昵称';
+  // User information
+  String _userNickname = 'Username';
   String _userAvatarPlaceholder = 'U';
   Color _userAvatarColor = Colors.blue;
-  String? _userAvatarPath; // 添加头像路径
+  String? _userAvatarPath; // Avatar path
   bool _isLoadingUserInfo = true;
   
-  // 图片轮播当前页面索引
+  // Current image carousel page index
   int _currentImageIndex = 0;
   late PageController _pageController;
   
-  // 交互状态
+  // Interaction state
   bool _isLiked = false;
   int _likeCount = 42;
   bool _isCollected = false;
   
-  // 评论数据（由评论管理器更新）
+  // Comment data (updated by the comment manager)
   List<Map<String, dynamic>> _comments = [];
   
-  // 交互功能服务
+  // Interaction service
   late PostInteractionService _interactionService;
   
-  // 评论管理器控制器
+  // Comment manager controller
   final PostCommentManagerController _commentController = PostCommentManagerController();
 
-  // 获取主题色
+  // Get the theme color
   Color get themeColor => widget.themeColor ?? Theme.of(context).primaryColor;
 
   @override
@@ -56,11 +56,11 @@ class PostViewPageState extends State<PostViewPage> {
   @override
   void dispose() {
     _pageController.dispose();
-    _interactionService.dispose(); // 清理交互服务
+    _interactionService.dispose(); // Dispose of the interaction service
     super.dispose();
   }
 
-  // 初始化交互服务
+  // Initialize the interaction service
   void _initializeInteractionService() {
     _interactionService = PostInteractionService(
       onLikeCountChanged: (newCount) {
@@ -73,7 +73,7 @@ class PostViewPageState extends State<PostViewPage> {
     );
   }
 
-  // 加载用户信息
+  // Load user information
   Future<void> _loadUserInfo() async {
     try {
       final userInfo = await UserService.getUserInfo();
@@ -81,18 +81,18 @@ class PostViewPageState extends State<PostViewPage> {
         _userNickname = userInfo['nickname'];
         _userAvatarPlaceholder = userInfo['avatarPlaceholder'];
         _userAvatarColor = userInfo['avatarColor'];
-        _userAvatarPath = userInfo['avatarPath']; // 加载头像路径
+        _userAvatarPath = userInfo['avatarPath']; // Load the avatar path
         _isLoadingUserInfo = false;
       });
     } catch (e) {
-      print('加载用户信息失败: $e');
+      print('Failed to load user information: $e');
       setState(() {
         _isLoadingUserInfo = false;
       });
     }
   }
 
-  // 处理评论更新回调
+  // Handle the comment update callback
   void _onCommentsUpdated(List<Map<String, dynamic>> comments) {
     setState(() {
       _comments = comments;
@@ -101,7 +101,7 @@ class PostViewPageState extends State<PostViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    // 如果没有传递帖子数据，显示错误页面
+    // Show an error page if no post data was provided
     if (widget.postData == null || !widget.postData!.isValid) {
       return Center(
         child: Column(
@@ -110,7 +110,7 @@ class PostViewPageState extends State<PostViewPage> {
             Icon(Icons.error_outline, size: 64, color: Colors.grey),
             SizedBox(height: 16),
             Text(
-              '没有找到帖子数据',
+              'Post data not found',
               style: TextStyle(fontSize: 18, color: Colors.grey),
             ),
           ],
@@ -156,7 +156,7 @@ class PostViewPageState extends State<PostViewPage> {
               },
             ),
 
-            // 评论管理组件
+            // Comment manager
             PostCommentManager(
               post: post,
               userNickname: _userNickname,
@@ -169,12 +169,12 @@ class PostViewPageState extends State<PostViewPage> {
               controller: _commentController,
             ),
             
-            // 底部留白，为固定的交互栏留出空间
+            // Bottom padding for the fixed interaction bar
             const SizedBox(height: 100),
           ],
         ),
       ),
-      // 固定在底部的交互栏
+      // Interaction bar fixed at the bottom
       bottomNavigationBar: PostViewUIComponents.buildBottomInteractionBar(
         replyingToCommentId: _commentController.replyingToCommentId,
         replyingToUserName: _commentController.replyingToUserName,
@@ -191,23 +191,23 @@ class PostViewPageState extends State<PostViewPage> {
     );
   }
 
-  // 格式化日期
+  // Format the date
   String _formatDate(DateTime dateTime) {
     final now = DateTime.now();
     final difference = now.difference(dateTime);
 
     if (difference.inDays > 0) {
-      return '${difference.inDays}天前';
+      return '${difference.inDays} days ago';
     } else if (difference.inHours > 0) {
-      return '${difference.inHours}小时前';
+      return '${difference.inHours} hours ago';
     } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes}分钟前';
+      return '${difference.inMinutes} minutes ago';
     } else {
-      return '刚刚';
+      return 'Just now';
     }
   }
 
-  // 获取来源颜色
+  // Get the source color
   Color _getSourceColor(PostSource source) {
     switch (source) {
       case PostSource.imagePost:

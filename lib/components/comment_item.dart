@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-//UI组件层
+// UI component layer
 
 
 class CommentItem extends StatelessWidget {
@@ -45,7 +45,7 @@ class CommentItem extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // 顶部拖动条
+              // Top drag handle
               Container(
                 width: 40,
                 height: 4,
@@ -55,28 +55,28 @@ class CommentItem extends StatelessWidget {
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              // 分享选项
+              // Share option
               ListTile(
                 leading: Icon(Icons.share, color: themeColor),
-                title: const Text('分享'),
+                title: const Text('Share'),
                 onTap: () {
                   Navigator.pop(context);
                   _shareComment(context);
                 },
               ),
-              // 复制选项
+              // Copy option
               ListTile(
                 leading: Icon(Icons.copy, color: themeColor),
-                title: const Text('复制'),
+                title: const Text('Copy'),
                 onTap: () {
                   Navigator.pop(context);
                   _copyComment(context);
                 },
               ),
-              // 删除选项
+              // Delete option
               ListTile(
                 leading: Icon(Icons.delete, color: themeColor),
-                title: Text('删除'),
+                title: Text('Delete'),
                 onTap: () {
                   Navigator.pop(context);
                   _showDeleteConfirmation(context);
@@ -97,7 +97,7 @@ class CommentItem extends StatelessWidget {
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('评论已复制到剪贴板'),
+          content: Text('Comment copied to clipboard'),
           duration: Duration(seconds: 2),
         ),
       );
@@ -109,7 +109,7 @@ class CommentItem extends StatelessWidget {
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('分享评论: $content'),
+          content: Text('Share comment: $content'),
           duration: Duration(seconds: 2),
         ),
       );
@@ -120,19 +120,19 @@ class CommentItem extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('删除评论'),
-        content: const Text('确定要删除这条评论吗？'),
+        title: const Text('Delete Comment'),
+        content: const Text('Are you sure you want to delete this comment?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('取消', style: TextStyle(color: Colors.grey[600])),
+            child: Text('Cancel', style: TextStyle(color: Colors.grey[600])),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               onDelete?.call(comment['id']);
             },
-            child: Text('删除', style: TextStyle(color: themeColor)),
+            child: Text('Delete', style: TextStyle(color: themeColor)),
           ),
         ],
       ),
@@ -162,7 +162,7 @@ class CommentItem extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        comment['name'] ?? '匿名用户',
+                        comment['name'] ?? 'Anonymous User',
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
@@ -172,7 +172,7 @@ class CommentItem extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    comment['content'] ?? '内容已删除',
+                    comment['content'] ?? 'Deleted',
                     style: const TextStyle(fontSize: 14),
                   ),
                   const SizedBox(height: 8),
@@ -210,9 +210,9 @@ class CommentItem extends StatelessWidget {
                         ),
                         const SizedBox(width: 16),
                         GestureDetector(
-                          onTap: () => onReply(commentId, comment['name'] ?? '匿名用户'),
+                          onTap: () => onReply(commentId, comment['name'] ?? 'Anonymous User'),
                           child: Text(
-                            '回复',
+                            'Reply',
                             style: TextStyle(
                               fontSize: 12,
                               color: Colors.grey[600],
@@ -222,7 +222,7 @@ class CommentItem extends StatelessWidget {
                       ],
                     ),
                   ),
-                  // 显示回复
+                  // Displays replies
                   if (comment['replies'] != null && comment['replies'].isNotEmpty) ...[
                     const SizedBox(height: 8),
                     ...comment['replies'].map<Widget>((reply) => ReplyItem(
@@ -274,13 +274,13 @@ class CommentItem extends StatelessWidget {
         );
       }
     } else {
-      // AI角色头像
+      // AI character avatar
       final avatarColor = comment['avatarColor'] != null 
           ? Color(comment['avatarColor']) 
           : Colors.blue;
       final avatarPath = comment['avatar'];
       
-      // 如果有头像路径，显示图片；否则显示文字
+      // Displays the image when an avatar path exists; otherwise displays text
       if (avatarPath != null && avatarPath.toString().isNotEmpty) {
         return CircleAvatar(
           radius: 16,
@@ -292,7 +292,7 @@ class CommentItem extends StatelessWidget {
               height: 32,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
-                // 如果图片加载失败，显示文字头像
+                // Displays a text avatar if the image fails to load
                 return Text(
                   comment['name']?[0] ?? 'A',
                   style: const TextStyle(color: Colors.white, fontSize: 12),
@@ -302,7 +302,7 @@ class CommentItem extends StatelessWidget {
           ),
         );
       } else {
-        // 没有头像路径时显示文字头像
+        // Displays a text avatar when no avatar path exists
         return CircleAvatar(
           radius: 16,
           backgroundColor: avatarColor,
@@ -315,7 +315,7 @@ class CommentItem extends StatelessWidget {
     }
   }
 
-  // 获取格式化的时间显示
+  // Gets the formatted time display
   String _getFormattedTime() {
     final timestampStr = comment['timestamp'];
     if (timestampStr != null && timestampStr.toString().isNotEmpty) {
@@ -323,27 +323,27 @@ class CommentItem extends StatelessWidget {
         final timestamp = DateTime.parse(timestampStr);
         return _formatTimestamp(timestamp);
       } catch (e) {
-        print('解析时间戳失败: $e');
+        print('Failed to parse timestamp: $e');
       }
     }
     
-    // 如果没有timestamp或解析失败，使用time字段作为后备
-    return comment['time'] ?? '未知时间';
+    // Falls back to the time field when no timestamp exists or parsing fails
+    return comment['time'] ?? 'Unknown time';
   }
 
-  // 格式化时间戳
+  // Formats a timestamp
   String _formatTimestamp(DateTime dateTime) {
     final now = DateTime.now();
     final difference = now.difference(dateTime);
     
     if (difference.inMinutes < 1) {
-      return '刚刚';
+      return 'Just now';
     } else if (difference.inMinutes < 60) {
-      return '${difference.inMinutes}分钟前';
+      return '${difference.inMinutes} minutes ago';
     } else if (difference.inHours < 24) {
-      return '${difference.inHours}小时前';
+      return '${difference.inHours} hours ago';
     } else {
-      return '${difference.inDays}天前';
+      return '${difference.inDays} days ago';
     }
   }
 }
@@ -376,10 +376,10 @@ class ReplyItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 头像
+          // Avatar
           _buildReplyAvatar(),
           const SizedBox(width: 8),
-          // 回复内容
+          // Reply content
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -387,16 +387,16 @@ class ReplyItem extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      reply['name'] ?? '匿名用户',
+                      reply['name'] ?? 'Anonymous User',
                       style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     if (reply['replyToUser'] != null) ...[
-                      const Text(' 回复 ', style: TextStyle(fontSize: 13, color: Colors.grey)),
+                      const Text(' replied to ', style: TextStyle(fontSize: 13, color: Colors.grey)),
                       Text(
-                        reply['replyToUser'] ?? '某人',
+                        reply['replyToUser'] ?? 'someone',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
@@ -408,7 +408,7 @@ class ReplyItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  reply['content'] ?? '内容已删除',
+                  reply['content'] ?? 'Deleted',
                   style: const TextStyle(fontSize: 13),
                 ),
                 const SizedBox(height: 4),
@@ -426,10 +426,10 @@ class ReplyItem extends StatelessWidget {
                       GestureDetector(
                         onTap: () => onDelete?.call(reply['id']),
                         child: Text(
-                          '删除',
+                          'Delete',
                           style: TextStyle(
                             fontSize: 11,
-                            color: Colors.grey[600], // 与时间颜色保持一致
+                            color: Colors.grey[600], // Consistent with time colours
                           ),
                         ),
                       ),
@@ -444,12 +444,12 @@ class ReplyItem extends StatelessWidget {
     );
   }
 
-  // 构建回复头像
+  // Builds the reply avatar
   Widget _buildReplyAvatar() {
     final isMyReply = reply['isMyComment'] == true || reply['name'] == userNickname;
     
     if (isMyReply) {
-      // 用户自己的回复头像
+      // Avatar for the user's own reply
       final avatarPath = reply['avatar'];
       if (avatarPath != null && avatarPath.toString().isNotEmpty) {
         return CircleAvatar(
@@ -481,7 +481,7 @@ class ReplyItem extends StatelessWidget {
         );
       }
     } else {
-      // AI角色的回复头像
+      // Uses a text avatar when no avatar path is available
       final avatarColor = reply['avatarColor'] != null 
           ? Color(reply['avatarColor']) 
           : Colors.blue;
@@ -519,7 +519,7 @@ class ReplyItem extends StatelessWidget {
     }
   }
 
-  // 获取回复的格式化时间显示
+  // Gets the formatted reply time
   String _getReplyFormattedTime() {
     final timestampStr = reply['timestamp'];
     if (timestampStr != null && timestampStr.toString().isNotEmpty) {
@@ -527,27 +527,27 @@ class ReplyItem extends StatelessWidget {
         final timestamp = DateTime.parse(timestampStr);
         return _formatReplyTimestamp(timestamp);
       } catch (e) {
-        print('解析回复时间戳失败: $e');
+        print('Failed to parse reply timestamp: $e');
       }
     }
     
-    // 如果没有timestamp或解析失败，使用time字段作为后备
-    return reply['time'] ?? '未知时间';
+    // Falls back to the time field when no timestamp exists or parsing fails
+    return reply['time'] ?? 'Unknown time';
   }
 
-  // 格式化回复时间戳
+  // Formats a reply timestamp
   String _formatReplyTimestamp(DateTime dateTime) {
     final now = DateTime.now();
     final difference = now.difference(dateTime);
     
     if (difference.inMinutes < 1) {
-      return '刚刚';
+      return 'Just now';
     } else if (difference.inMinutes < 60) {
-      return '${difference.inMinutes}分钟前';
+      return '${difference.inMinutes} minutes ago';
     } else if (difference.inHours < 24) {
-      return '${difference.inHours}小时前';
+      return '${difference.inHours} hours ago';
     } else {
-      return '${difference.inDays}天前';
+      return '${difference.inDays} days ago';
     }
   }
 } 

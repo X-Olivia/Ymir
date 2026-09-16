@@ -12,11 +12,11 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // 修复：使用 addPostFrameCallback 确保context已经准备好
+    // Fix: use addPostFrameCallback to ensure context is ready
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // 1秒后导航到主页
+      // Navigate to the home page after 1 second
       Timer(const Duration(seconds: 1), () {
-        if (mounted) {  // 添加检查确保组件仍然挂载
+        if (mounted) {  // Check that the widget is still mounted
           Navigator.pushReplacementNamed(context, '/main');
         }
       });
@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // 这里可以放置应用logo或名称
+            // The app logo or name can be placed here
             const Text(
               'YMIR',
               style: TextStyle(

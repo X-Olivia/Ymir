@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/services.dart';
 
-// 导入所有页面
+// Imports all pages
 import 'screens/splash_screen.dart';
 import 'screens/main_screen.dart';
 import 'screens/image_post_page.dart';
@@ -14,7 +14,7 @@ import 'screens/user_settings_page.dart';
 import 'screens/ai_character_select_page.dart';
 import 'screens/chat_page.dart';
 
-// 导入服务和模型
+// Imports services and models
 import 'services/draft_service.dart';
 import 'services/notes_service.dart';
 import 'models/post_model.dart';
@@ -24,13 +24,13 @@ import 'services/greeting_service.dart';
 import 'services/background_comment_service.dart';
 import 'services/chat_service.dart';
 
-// 全局导航键
+// Global navigation key
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-// 全局主屏幕状态键
+// Global main screen state key
 final GlobalKey<MainScreenState> mainScreenKey = GlobalKey<MainScreenState>();
 
-// 主题管理
+// Theme management
 class ThemeProvider extends ChangeNotifier {
   Color _themeColor = Colors.blue;
 
@@ -43,28 +43,28 @@ class ThemeProvider extends ChangeNotifier {
 }
 
 void main() async {
-  // 确保Flutter绑定初始化
+  // Ensures Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
   
-  // 初始化 Hive
+  // Initializes Hive
   await Hive.initFlutter();
   
-  // 注册适配器
+  // Registers adapters
   Hive.registerAdapter(DraftModelAdapter());
   
-  // 初始化草稿服务
+  // Initializes the draft service
   await DraftService.init();
   
   await GreetingService.init();
   
-  // 初始化聊天服务
+  // Initializes the chat service
   await ChatService.init();
   
-  // 启动时修复图片路径
+  // Repairs image paths at startup
   await NotesService.fixAllNotesImagePaths();
   await DraftService.fixAllDraftImagePaths();
   
-  // 后台评论服务已简化，不需要初始化
+  // The background comment service has been simplified and requires no initialization
   
   runApp(const MyApp());
 }
@@ -79,13 +79,13 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
       theme: ThemeData(
-        // 使用毛玻璃风格的主题
+        // Uses a frosted-glass theme
         brightness: Brightness.light,
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.blue,
           brightness: Brightness.light,
         ),
-        // 设置AppBar样式
+        // Configures the AppBar style
         appBarTheme: AppBarTheme(
           backgroundColor: Colors.white.withOpacity(0.8),
           elevation: 0,
@@ -97,7 +97,7 @@ class MyApp extends StatelessWidget {
           ),
           iconTheme: const IconThemeData(color: Colors.black87),
         ),
-        // 设置按钮样式
+        // Configures the button style
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.blue.withOpacity(0.9),
@@ -108,7 +108,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
-        // 卡片主题 - 修复类型错误
+        // Card theme - fixes a type error
         cardTheme: CardThemeData(
           color: Colors.white.withOpacity(0.8),
           elevation: 0,
@@ -116,7 +116,7 @@ class MyApp extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
           ),
         ),
-        // 输入框主题
+        // Input field theme
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
           fillColor: Colors.white.withOpacity(0.8),
@@ -129,15 +129,15 @@ class MyApp extends StatelessWidget {
             borderSide: const BorderSide(color: Colors.blue, width: 1),
           ),
         ),
-        // 底部导航栏主题
+        // Bottom navigation bar theme
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
           backgroundColor: Colors.white.withOpacity(0.8),
           selectedItemColor: Colors.blue,
           unselectedItemColor: Colors.grey,
         ),
       ),
-      // 定义路由
-      initialRoute: '/',  // 恢复初始路由
+      // Defines routes
+      initialRoute: '/',  // Restores the initial route
       routes: {
         '/': (context) => const SplashScreen(),
         '/main': (context) => MainScreen(key: mainScreenKey),
@@ -148,7 +148,7 @@ class MyApp extends StatelessWidget {
           return UserSettingsPage(
             themeColor: themeColor,
             onNavigateToPost: (post) {
-              // 使用PostViewWrapper提供内嵌导航栏的帖子详情页面
+              // Uses PostViewWrapper for a post details page with an embedded navigation bar
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -160,10 +160,10 @@ class MyApp extends StatelessWidget {
               );
             },
             onNavigateToDraft: (draft, isCaptionDraft) {
-              // 返回到主屏幕并导航到草稿编辑页面
+              // Returns to the main screen and opens the draft editor
               Navigator.popUntil(context, ModalRoute.withName('/main'));
               
-              // 通过全局键调用主屏幕的草稿导航方法
+              // Calls the main screen's draft navigation method through the global key
               Future.delayed(const Duration(milliseconds: 100), () {
                 mainScreenKey.currentState?.navigateToDraft(draft.id, isCaptionDraft);
               });
@@ -173,7 +173,7 @@ class MyApp extends StatelessWidget {
         '/ai_select': (context) => const AICharacterSelectPage(),
       },
       onGenerateRoute: (settings) {
-        // 处理带参数的路由
+        // Handles routes with arguments
         if (settings.name == '/post_view') {
           final args = settings.arguments;
           return MaterialPageRoute(
@@ -188,7 +188,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// 自定义毛玻璃容器组件，可在应用中多处使用
+// Reusable custom frosted-glass container
 class GlassmorphicContainer extends StatelessWidget {
   final Widget child;
   final double blur;

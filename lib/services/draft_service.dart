@@ -10,23 +10,23 @@ class DraftService {
   static Box<DraftModel>? _draftBox;
   static Box<DraftModel>? _captionDraftBox;
 
-  // 初始化 Hive
+  // initialization Hive
   static Future<void> init() async {
     final appDocumentDir = await getApplicationDocumentsDirectory();
     Hive.init(appDocumentDir.path);
     
-    // 注册适配器
+    // Register adapter
     if (!Hive.isAdapterRegistered(0)) {
       Hive.registerAdapter(DraftModelAdapter());
     }
     
-    // 打开草稿盒子
+    // Open draft box
     _draftBox = await Hive.openBox<DraftModel>(_draftBoxName);
-    // 打开文案草稿盒子
+    // Open copy draft box
     _captionDraftBox = await Hive.openBox<DraftModel>(_captionDraftBoxName);
   }
 
-  // 获取草稿盒子
+  // Get draft box
   static Box<DraftModel> get _box {
     if (_draftBox == null) {
       throw Exception('DraftService not initialized. Call DraftService.init() first.');
@@ -34,7 +34,7 @@ class DraftService {
     return _draftBox!;
   }
 
-  // 获取文案草稿盒子
+  // Get the caption draft box
   static Box<DraftModel> get _captionBox {
     if (_captionDraftBox == null) {
       throw Exception('DraftService not initialized. Call DraftService.init() first.');
@@ -42,7 +42,7 @@ class DraftService {
     return _captionDraftBox!;
   }
 
-  // 保存草稿
+  // save draft
   static Future<DraftModel> saveDraft({
     String? draftId,
     required String title,
@@ -52,10 +52,10 @@ class DraftService {
     List<String>? existingImagePaths,
   }) async {
     try {
-      // 保存新选择的图片到本地并获取路径
+      // Save the newly selected image locally and get the path
       List<String> newImagePaths = await _saveImagesToLocal(selectedAssets);
       
-      // 合并已存在的图片路径和新图片路径
+      // Merge existing image paths and new image paths
       List<String> allImagePaths = [
         ...(existingImagePaths ?? []),
         ...newImagePaths,
@@ -66,10 +66,10 @@ class DraftService {
       DraftModel draft;
       
       if (draftId != null) {
-        // 更新现有草稿
+        // Update existing draft
         final existingDraft = _box.get(draftId);
         if (existingDraft != null) {
-          // 如果没有提供 existingImagePaths，则保留原有的图片
+          // Preserve the original images when existingImagePaths is not provided
           if (existingImagePaths == null) {
             allImagePaths = [
               ...existingDraft.imagePaths,
@@ -85,7 +85,7 @@ class DraftService {
             updatedAt: now,
           );
         } else {
-          // 如果找不到现有草稿，创建新的
+          // If no existing draft is found, create a new one
           draft = DraftModel(
             id: draftId,
             title: title,
@@ -97,7 +97,7 @@ class DraftService {
           );
         }
       } else {
-        // 创建新草稿
+        // Create new draft
         final id = DateTime.now().millisecondsSinceEpoch.toString();
         draft = DraftModel(
           id: id,
@@ -110,82 +110,82 @@ class DraftService {
         );
       }
 
-      // 保存到 Hive
+      // save to Hive
       await _box.put(draft.id, draft);
       return draft;
     } catch (e) {
-      throw Exception('保存草稿失败: $e');
+      throw Exception('Failed to save draft: $e');
     }
   }
 
-  // 获取所有草稿
+  // Get all drafts
   static List<DraftModel> getAllDrafts() {
     try {
       final drafts = _box.values.toList();
-      // 按更新时间倒序排列
+      // Sort by update time in descending order
       drafts.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       return drafts;
     } catch (e) {
-      print('获取草稿列表失败: $e');
+      print('Failed to get draft list: $e');
       return [];
     }
   }
 
-  // 获取单个草稿
+  // Get a single draft
   static DraftModel? getDraft(String id) {
     try {
       return _box.get(id);
     } catch (e) {
-      print('获取草稿失败: $e');
+      print('Failed to get draft: $e');
       return null;
     }
   }
 
-  // 删除草稿
+  // Delete draft
   static Future<bool> deleteDraft(String id) async {
     try {
       final draft = _box.get(id);
       if (draft != null) {
-        // 删除关联的图片文件
+        // Delete associated image files
         await _deleteImageFiles(draft.imagePaths);
-        // 从数据库删除
+        // delete from database
         await _box.delete(id);
         return true;
       }
       return false;
     } catch (e) {
-      print('删除草稿失败: $e');
+      print('Delete draft failed: $e');
       return false;
     }
   }
 
-  // 清空所有草稿
+  // Clear all drafts
   static Future<void> clearAllDrafts() async {
     try {
       final drafts = getAllDrafts();
-      // 删除所有图片文件
+      // Delete all image files
       for (final draft in drafts) {
         await _deleteImageFiles(draft.imagePaths);
       }
-      // 清空数据库
+      // Clear database
       await _box.clear();
     } catch (e) {
-      print('清空草稿失败: $e');
+      print('Failed to clear draft: $e');
     }
   }
 
-  // 获取当前草稿（最新的一个，用于恢复编辑状态）
+  // Get the current draft (the latest one, used to restore editing status)
   static DraftModel? getCurrentDraft() {
     try {
       final drafts = getAllDrafts();
       return drafts.isNotEmpty ? drafts.first : null;
     } catch (e) {
-      print('获取当前草稿失败: $e');
+      print('Failed to get current draft: $e');
       return null;
     }
   }
 
-  // 将 AssetEntity 转换为本地文件路径
+  // Convert AssetEntity objects to local file paths
   static Future<List<String>> _saveImagesToLocal(List<AssetEntity> assets) async {
     List<String> imagePaths = [];
     
@@ -193,7 +193,7 @@ class DraftService {
       final appDir = await getApplicationDocumentsDirectory();
       final imageDir = Directory('${appDir.path}/draft_images');
       
-      // 确保目录存在
+      // Make sure the directory exists
       if (!await imageDir.exists()) {
         await imageDir.create(recursive: true);
       }
@@ -203,23 +203,23 @@ class DraftService {
         final file = await asset.file;
         
         if (file != null) {
-          // 创建唯一的文件名
+          // Create unique filename
           final fileName = '${DateTime.now().millisecondsSinceEpoch}_$i.jpg';
           final localPath = '${imageDir.path}/$fileName';
           
-          // 复制文件到应用目录
+          // Copy files to application directory
           await file.copy(localPath);
           imagePaths.add(localPath);
         }
       }
     } catch (e) {
-      print('保存图片到本地失败: $e');
+      print('Failed to save image locally: $e');
     }
     
     return imagePaths;
   }
 
-  // 删除图片文件
+  // Delete image files
   static Future<void> _deleteImageFiles(List<String> imagePaths) async {
     for (final path in imagePaths) {
       try {
@@ -228,12 +228,12 @@ class DraftService {
           await file.delete();
         }
       } catch (e) {
-        print('删除图片文件失败: $path, error: $e');
+        print('Failed to delete image file: $path, error: $e');
       }
     }
   }
 
-  // 从本地路径加载图片为 File 对象
+  // Load images from local path as File object
   static Future<File?> getImageFile(String imagePath) async {
     try {
       final file = File(imagePath);
@@ -241,38 +241,38 @@ class DraftService {
         return file;
       }
       
-      // 如果原路径的文件不存在，尝试在当前应用目录中查找
-      final fileName = imagePath.split('/').last; // 获取文件名
+      // If the file in the original path does not exist, try to find it in the current application directory.
+      final fileName = imagePath.split('/').last; // Get file name
       return await _tryFixDraftImagePath(fileName);
     } catch (e) {
-      print('获取图片文件失败: $imagePath, error: $e');
+      print('Failed to get image file: $imagePath, error: $e');
       return null;
     }
   }
 
-  // 尝试修复草稿图片路径
+  // Try fixing draft image path
   static Future<File?> _tryFixDraftImagePath(String fileName) async {
     try {
-      // 尝试在草稿图片目录中查找
+      // Try looking in the draft image directory
       final appDir = await getApplicationDocumentsDirectory();
       final draftImageDir = Directory('${appDir.path}/draft_images');
       if (await draftImageDir.exists()) {
         final fixedPath = '${draftImageDir.path}/$fileName';
         final file = File(fixedPath);
         if (await file.exists()) {
-          print('修复草稿图片路径成功: $fileName -> $fixedPath');
+          print('Repair draft image path successfully: $fileName -> $fixedPath');
           return file;
         }
       }
     } catch (e) {
-      print('修复草稿图片路径失败: $fileName, error: $e');
+      print('Failed to fix draft image path: $fileName, error: $e');
     }
     return null;
   }
 
-  // 文案草稿相关方法
+  // Caption draft methods
   
-  // 保存文案草稿
+  // Save draft copy
   static Future<DraftModel> saveCaptionDraft({
     String? draftId,
     required String title,
@@ -282,10 +282,10 @@ class DraftService {
     List<String>? existingImagePaths,
   }) async {
     try {
-      // 保存新选择的图片到本地并获取路径
+      // Save the newly selected image locally and get the path
       List<String> newImagePaths = await _saveImagesToLocal(selectedAssets);
       
-      // 合并已存在的图片路径和新图片路径
+      // Merge existing image paths and new image paths
       List<String> allImagePaths = [
         ...(existingImagePaths ?? []),
         ...newImagePaths,
@@ -296,10 +296,10 @@ class DraftService {
       DraftModel draft;
       
       if (draftId != null) {
-        // 更新现有草稿
+        // Update existing draft
         final existingDraft = _captionBox.get(draftId);
         if (existingDraft != null) {
-          // 如果没有提供 existingImagePaths，则保留原有的图片
+          // Preserve the original images when existingImagePaths is not provided
           if (existingImagePaths == null) {
             allImagePaths = [
               ...existingDraft.imagePaths,
@@ -315,7 +315,7 @@ class DraftService {
             updatedAt: now,
           );
         } else {
-          // 如果找不到现有草稿，创建新的
+          // If no existing draft is found, create a new one
           draft = DraftModel(
             id: draftId,
             title: title,
@@ -327,7 +327,7 @@ class DraftService {
           );
         }
       } else {
-        // 创建新草稿
+        // Create new draft
         final id = DateTime.now().millisecondsSinceEpoch.toString();
         draft = DraftModel(
           id: id,
@@ -340,82 +340,82 @@ class DraftService {
         );
       }
 
-      // 保存到文案草稿盒子
+      // Save to copy draft box
       await _captionBox.put(draft.id, draft);
       return draft;
     } catch (e) {
-      throw Exception('保存文案草稿失败: $e');
+      throw Exception('Failed to save caption draft: $e');
     }
   }
 
-  // 获取所有文案草稿
+  // Get all copy drafts
   static List<DraftModel> getAllCaptionDrafts() {
     try {
       final drafts = _captionBox.values.toList();
-      // 按更新时间倒序排列
+      // Sort by update time in descending order
       drafts.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
       return drafts;
     } catch (e) {
-      print('获取文案草稿列表失败: $e');
+      print('Failed to get copy draft list: $e');
       return [];
     }
   }
 
-  // 获取单个文案草稿
+  // Get a single copy draft
   static DraftModel? getCaptionDraft(String id) {
     try {
       return _captionBox.get(id);
     } catch (e) {
-      print('获取文案草稿失败: $e');
+      print('Failed to get copy draft: $e');
       return null;
     }
   }
 
-  // 删除文案草稿
+  // Delete draft copy
   static Future<bool> deleteCaptionDraft(String id) async {
     try {
       final draft = _captionBox.get(id);
       if (draft != null) {
-        // 删除关联的图片文件
+        // Delete associated image files
         await _deleteImageFiles(draft.imagePaths);
-        // 从数据库删除
+        // delete from database
         await _captionBox.delete(id);
         return true;
       }
       return false;
     } catch (e) {
-      print('删除文案草稿失败: $e');
+      print('Failed to delete draft copy: $e');
       return false;
     }
   }
 
-  // 清空所有文案草稿
+  // Clear all caption drafts
   static Future<void> clearAllCaptionDrafts() async {
     try {
       final drafts = getAllCaptionDrafts();
-      // 删除所有图片文件
+      // Delete all image files
       for (final draft in drafts) {
         await _deleteImageFiles(draft.imagePaths);
       }
-      // 清空数据库
+      // Clear database
       await _captionBox.clear();
     } catch (e) {
-      print('清空文案草稿失败: $e');
+      print('Failed to clear draft copy: $e');
     }
   }
 
-  // 获取当前文案草稿（最新的一个，用于恢复编辑状态）
+  // Get the current copy draft (the latest one, used to restore editing status)
   static DraftModel? getCurrentCaptionDraft() {
     try {
       final drafts = getAllCaptionDrafts();
       return drafts.isNotEmpty ? drafts.first : null;
     } catch (e) {
-      print('获取当前文案草稿失败: $e');
+      print('Failed to get the current caption draft: $e');
       return null;
     }
   }
 
-  // 关闭数据库
+  // Close database
   static Future<void> close() async {
     try {
       await _draftBox?.close();
@@ -423,14 +423,14 @@ class DraftService {
       _draftBox = null;
       _captionDraftBox = null;
     } catch (e) {
-      print('关闭草稿数据库失败: $e');
+      print('Failed to close draft database: $e');
     }
   }
 
-  // 启动时修复所有草稿的图片路径
+  // Fix image paths for all drafts on startup
   static Future<void> fixAllDraftImagePaths() async {
     try {
-      // 修复图片草稿
+      // Fix draft image
       final imageDrafts = getAllDrafts();
       for (final draft in imageDrafts) {
         bool hasChanges = false;
@@ -439,30 +439,30 @@ class DraftService {
         for (final path in draft.imagePaths) {
           File imageFile = File(path);
           
-          // 如果原路径的文件不存在，尝试修复
+          // If the file in the original path does not exist, try to repair it
           if (!imageFile.existsSync()) {
             final fileName = path.split('/').last;
             final fixedFile = await _tryFixDraftImagePath(fileName);
             if (fixedFile != null) {
               fixedPaths.add(fixedFile.path);
               hasChanges = true;
-              print('启动修复草稿图片路径: $fileName -> ${fixedFile.path}');
+              print('Repairing draft image path: $fileName -> ${fixedFile.path}');
             } else {
-              fixedPaths.add(path); // 保留原路径
+              fixedPaths.add(path); // Keep original path
             }
           } else {
-            fixedPaths.add(path); // 路径有效，保留
+            fixedPaths.add(path); // The path is valid, keep it
           }
         }
         
-        // 如果这个草稿有路径变化，更新它
+        // If this draft has path changes, update it
         if (hasChanges) {
           final updatedDraft = draft.copyWith(imagePaths: fixedPaths);
           await _box.put(draft.id, updatedDraft);
         }
       }
       
-      // 修复文案草稿
+      // Fix draft copy
       final captionDrafts = getAllCaptionDrafts();
       for (final draft in captionDrafts) {
         bool hasChanges = false;
@@ -471,32 +471,32 @@ class DraftService {
         for (final path in draft.imagePaths) {
           File imageFile = File(path);
           
-          // 如果原路径的文件不存在，尝试修复
+          // If the file in the original path does not exist, try to repair it
           if (!imageFile.existsSync()) {
             final fileName = path.split('/').last;
             final fixedFile = await _tryFixDraftImagePath(fileName);
             if (fixedFile != null) {
               fixedPaths.add(fixedFile.path);
               hasChanges = true;
-              print('启动修复文案草稿图片路径: $fileName -> ${fixedFile.path}');
+              print('Repairing caption draft image path: $fileName -> ${fixedFile.path}');
             } else {
-              fixedPaths.add(path); // 保留原路径
+              fixedPaths.add(path); // Keep original path
             }
           } else {
-            fixedPaths.add(path); // 路径有效，保留
+            fixedPaths.add(path); // The path is valid, keep it
           }
         }
         
-        // 如果这个草稿有路径变化，更新它
+        // If this draft has path changes, update it
         if (hasChanges) {
           final updatedDraft = draft.copyWith(imagePaths: fixedPaths);
           await _captionBox.put(draft.id, updatedDraft);
         }
       }
       
-      print('启动时修复了草稿图片路径');
+      print('Fixed draft image path on startup');
     } catch (e) {
-      print('启动时修复草稿图片路径失败: $e');
+      print('Fix draft image path failed on startup: $e');
     }
   }
 } 

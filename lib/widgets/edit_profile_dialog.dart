@@ -53,16 +53,16 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
     
     return Stack(
       children: [
-        // 背景模糊层（不变暗）
+        // Blurred background layer without darkening
         Positioned.fill(
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
             child: Container(
-              color: Colors.white.withOpacity(0.1), // 轻微提亮背景
+              color: Colors.white.withOpacity(0.1), // Light Highlighting Background
             ),
           ),
         ),
-        // 弹窗
+        // Dialog
         Dialog(
           backgroundColor: Colors.transparent,
           child: Container(
@@ -111,7 +111,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // 标题和关闭按钮
+                      // Title and Close button
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -133,7 +133,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                       ),
                       const SizedBox(height: 20),
                       
-                      // 输入框
+                      // Input Box
                       TextField(
                         controller: _controller,
                         maxLines: widget.maxLines,
@@ -171,11 +171,11 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                       ),
                       const SizedBox(height: 24),
                       
-                      // 按钮区域
+                      // Button Area
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          // 取消按钮
+                          // Cancel button
                           TextButton(
                             onPressed: () => Navigator.of(context).pop(),
                             style: TextButton.styleFrom(
@@ -189,10 +189,10 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                                 vertical: 12,
                               ),
                             ),
-                            child: const Text('取消'),
+                            child: const Text('Cancel'),
                           ),
                           const SizedBox(width: 12),
-                          // 确认按钮
+                          // Confirm button
                           ElevatedButton(
                             onPressed: _isValid
                                 ? () => Navigator.of(context).pop(_controller.text.trim())
@@ -210,7 +210,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                               elevation: 0,
                               shadowColor: Colors.transparent,
                             ),
-                            child: const Text('确认'),
+                            child: const Text('Confirm'),
                           ),
                         ],
                       ),

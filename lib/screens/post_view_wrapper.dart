@@ -20,7 +20,7 @@ class PostViewWrapper extends StatelessWidget {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          // 使用与MainScreen相同的背景
+          // Use the same background as MainScreen
           image: DecorationImage(
             image: AssetImage(_getBackgroundImagePath(effectiveThemeColor)),
             fit: BoxFit.cover,
@@ -30,14 +30,14 @@ class PostViewWrapper extends StatelessWidget {
         child: SafeArea(
           child: Stack(
             children: [
-              // 顶部导航按钮 - 复制MainScreen的导航栏
+              // Top navigation buttons - mirrors MainScreen's navigation bar
               Positioned(
                 top: 10,
                 right: 10,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // 分享按钮
+                    // Share button
                     IconButton(
                       icon: Icon(
                         Icons.share_outlined,
@@ -45,16 +45,16 @@ class PostViewWrapper extends StatelessWidget {
                         color: effectiveThemeColor,
                       ),
                       onPressed: () {
-                        // 分享功能
+                        // Share feature
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: const Text('帖子分享功能'),
+                            content: const Text('Post sharing'),
                             behavior: SnackBarBehavior.floating,
                           ),
                         );
                       },
                     ),
-                    // 设置按钮
+                    // Settings button
                     IconButton(
                       icon: Icon(
                         Icons.settings,
@@ -73,7 +73,7 @@ class PostViewWrapper extends StatelessWidget {
                 ),
               ),
               
-              // 返回按钮
+              // Back button
               Positioned(
                 top: 10,
                 left: 10,
@@ -89,10 +89,10 @@ class PostViewWrapper extends StatelessWidget {
                 ),
               ),
               
-              // PostViewPage 内容
+              // PostViewPage content
               Positioned.fill(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 60), // 为顶部导航栏留出空间
+                  padding: const EdgeInsets.only(top: 60), // Leave room for the top navigation bar
                   child: PostViewPage(
                     postData: postData,
                     themeColor: effectiveThemeColor,
@@ -106,9 +106,9 @@ class PostViewWrapper extends StatelessWidget {
     );
   }
 
-  // 根据主题色获取背景图片路径
+  // Get the background image path from the theme color
   String _getBackgroundImagePath(Color themeColor) {
-    // 简化的颜色匹配逻辑
+    // Simplified color-matching logic
     if (themeColor == const Color(0xFF2463b3)) {
       return 'assets/images/back/blue.png';
     } else if (themeColor == const Color(0xFFa18dc1)) {

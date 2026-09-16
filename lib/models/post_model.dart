@@ -1,49 +1,49 @@
 import 'dart:io';
 
 enum PostSource {
-  imagePost,    // 来自图片发布页面
-  captionSuggest, // 来自文案建议页面
+  imagePost,    // From the image post page
+  captionSuggest, // From the caption suggestions page
 }
 
 class PostModel {
-  final String id; // 添加唯一ID
+  final String id; // Unique ID
   final String title;
-  final String? description; // 可能为空
+  final String? description; // May be empty
   final List<String> topics;
-  final List<File> images; // 必须有图片
+  final List<File> images; // Must contain images
   final PostSource source;
   final DateTime createdAt;
-  final List<Map<String, dynamic>> comments; // 添加评论列表
-  final bool isGeneratingComments; // 添加评论生成状态
+  final List<Map<String, dynamic>> comments; // Comment list
+  final bool isGeneratingComments; // Comment generation state
 
   PostModel({
-    String? id, // 可选ID，如果不提供则自动生成
+    String? id, // Optional; generated automatically when omitted
     required this.title,
     this.description,
     required this.topics,
     required this.images,
     required this.source,
     required this.createdAt,
-    this.comments = const [], // 默认空评论列表
-    this.isGeneratingComments = false, // 默认不在生成中
+    this.comments = const [], // Empty by default
+    this.isGeneratingComments = false, // Not generating by default
   }) : id = id ?? DateTime.now().millisecondsSinceEpoch.toString();
 
-  // 验证帖子数据是否有效
+  // Validates the post data
   bool get isValid {
     return title.isNotEmpty && images.isNotEmpty;
   }
 
-  // 获取来源页面的中文名称
+  // Gets the display name of the source page
   String get sourceName {
     switch (source) {
       case PostSource.imagePost:
-        return '图片发布';
+        return 'Image Post';
       case PostSource.captionSuggest:
-        return '文案建议';
+        return 'Caption Suggestions';
     }
   }
 
-  // 复制并修改帖子数据
+  // Copies the post with selected changes
   PostModel copyWith({
     String? id,
     String? title,

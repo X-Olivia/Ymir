@@ -6,14 +6,14 @@ import '../widgets/color_slider_widget.dart';
 import 'image_post_page.dart';
 import 'caption_suggest_page.dart';
 import 'ai_character_select_page.dart';
-import 'post_view_page.dart'; // 导入PostViewPage
+import 'post_view_page.dart'; // Import PostViewPage
 import '../services/draft_service.dart';
-import '../models/post_model.dart'; // 导入PostModel
+import '../models/post_model.dart'; // Import PostModel
 import '../services/greeting_service.dart';
 import '../services/background_comment_service.dart';
-import '../services/user_service.dart'; // 添加UserService导入
+import '../services/user_service.dart'; // Import UserService
 import 'chat_page.dart';
-import '../utils/responsive_utils.dart'; // 添加响应式工具类导入
+import '../utils/responsive_utils.dart'; // Import responsive utilities
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -23,77 +23,77 @@ class MainScreen extends StatefulWidget {
 }
 
 class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
-  // 主题颜色选择，默认为蓝色
+  // Theme color, blue by default
   Color _themeColor = const Color(0xFF2463b3);
   
-  // 当前选中的导航项（视觉高亮）
+  // Currently selected navigation item (visual highlight)
   int _selectedIndex = 0;
   
-  // 当前激活的页面
+  // Currently active page
   int _activeIndex = 0;
   
-  // ImagePostPage 的 GlobalKey，用于调用其方法
+  // GlobalKey for invoking ImagePostPage methods
   final GlobalKey<ImagePostPageState> _imagePostPageKey = GlobalKey<ImagePostPageState>();
   
-  // CaptionSuggestPage 的 GlobalKey，用于调用其方法
+  // GlobalKey for invoking CaptionSuggestPage methods
   final GlobalKey<CaptionSuggestPageState> _captionSuggestPageKey = GlobalKey<CaptionSuggestPageState>();
   
-  // AICharacterSelectPage 的 GlobalKey，用于调用其方法
+  // GlobalKey for invoking AICharacterSelectPage methods
   final GlobalKey<AICharacterSelectPageState> _aiCharacterSelectPageKey = GlobalKey<AICharacterSelectPageState>();
   
-  // PostViewPage 的 GlobalKey，用于调用其方法
+  // GlobalKey for invoking PostViewPage methods
   final GlobalKey<PostViewPageState> _postViewPageKey = GlobalKey<PostViewPageState>();
   
-  // 可选的主题颜色
+  // Available theme colors
   final List<Color> _themeColors = [
-    const Color(0xFF2463b3), // 蓝色
-    const Color(0xFFa18dc1), // 紫色
-    const Color(0xFF8bb179), // 绿色
-    const Color(0xFFfbb93b), // 黄色
-    const Color(0xFFfeabcd), // 粉色
+    const Color(0xFF2463b3), // Blue
+    const Color(0xFFa18dc1), // Purple
+    const Color(0xFF8bb179), // Green
+    const Color(0xFFfbb93b), // Yellow
+    const Color(0xFFfeabcd), // Pink
   ];
   
-  // 当前颜色索引
+  // Current color index
   int _colorIndex = 0;
   
-  // 帖子数据，用于PostViewPage
+  // Post data for PostViewPage
   PostModel? _currentPostData;
   
-  // 草稿导航相关
-  String? _draftIdToLoad; // 要加载的草稿ID
-  bool _isDraftNavigation = false; // 是否是从草稿箱导航过来的
+  // Draft navigation
+  String? _draftIdToLoad; // ID of the draft to load
+  bool _isDraftNavigation = false; // Whether navigation originated from drafts
   
-  // 水波动画控制器
+  // Water wave animation controller
   late AnimationController _waveController;
   late AnimationController _colorChangeController;
   late Animation<double> _waveAnimation;
   late Animation<double> _colorChangeAnimation;
   
-  // 颜色球击球效果动画控制器
+  // Color ball bounce animation controller
   late AnimationController _ballBounceController;
   late Animation<Offset> _ballBounceAnimation;
   
-  // 滑动条偏移量（用于碰撞检测）
+  // Slider offset (used for collision detection)
   double _sliderOffset = 0.0;
   
-  // 颜色球是否正在被拖拽
+  // Whether the color ball is being dragged
   bool _isBallBeingDragged = false;
   
-  // 颜色球当前偏移量
+  // Current color ball offset
   Offset _ballCurrentOffset = Offset.zero;
   
   @override
   void initState() {
     super.initState();
     
-    // 检查是否需要显示问候
+    // Check whether to show the greeting
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      // [DEBUG] 清除所有问候记录，方便调试
+      // [DEBUG] Clear all greeting records for easier debugging
       await GreetingService.clearAllGreetingRecords();
       _checkDailyGreeting();
     });
     
-    // 初始化动画控制器
+    // Initialize animation controllers
     _waveController = AnimationController(
       duration: const Duration(seconds: 3),
       vsync: this,
@@ -104,9 +104,9 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       vsync: this,
     );
     
-    // 颜色球击球动画控制器
+    // Color ball bounce animation controller
     _ballBounceController = AnimationController(
-      duration: const Duration(milliseconds: 1000), // 减少持续时间让弹起更快
+      duration: const Duration(milliseconds: 1000), // Shorter duration for a faster bounce
       vsync: this,
     );
     
@@ -131,18 +131,18 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       curve: Curves.elasticOut,
     ));
     
-    // 初始化页面列表 - 首页内容不直接放入页面列表，单独处理
-    // 移除静态页面列表，改为动态创建
+    // Initialize pages - home content is handled separately rather than added to the list
+    // Pages are now created dynamically instead of using a static list
   }
 
-  // 检查并显示每日问候
+  // Check and show the daily greeting
   Future<void> _checkDailyGreeting() async {
-    print('🔍 检查每日问候...');
-    print('问候功能是否启用: ${GreetingService.isGreetingEnabled()}');
-    print('是否应该显示问候: ${GreetingService.shouldShowGreetingNow()}');
+    print('🔍 Checking daily greeting...');
+    print('Greeting enabled: ${GreetingService.isGreetingEnabled()}');
+    print('Should show greeting: ${GreetingService.shouldShowGreetingNow()}');
     
     if (GreetingService.shouldShowGreetingNow()) {
-      // 获取用户昵称
+      // Get the user's nickname
       final userNickname = await UserService.getNickname();
       
       await showDialog(
@@ -153,7 +153,7 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
           insetPadding: const EdgeInsets.symmetric(horizontal: 20),
           child: Stack(
             children: [
-              // 磨砂玻璃背景
+              // Frosted-glass background
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: BackdropFilter(
@@ -178,7 +178,7 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // 标题行
+                        // Title row
                         Row(
                           children: [
                             Icon(
@@ -188,7 +188,7 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                             ),
                             const SizedBox(width: 8),
                             const Text(
-                              '每日问候',
+                              'Daily Greeting',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -198,9 +198,9 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                         ),
                         const SizedBox(height: 20),
                         
-                        // 问候内容
+                        // Greeting content
                         Text(
-                          '今天你跟$userNickname说${GreetingService.getGreetingMessage()}了吗？',
+                          'Have you said ${GreetingService.getGreetingMessage()} to $userNickname today?',
                           style: const TextStyle(
                             fontSize: 25,
                             fontWeight: FontWeight.w500,
@@ -208,9 +208,9 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                         ),
                         const SizedBox(height: 12),
                         
-                        // 提示文字
+                        // Hint
                         Text(
-                          '在设置 > 隐私设置中关闭每日问候',
+                          'Turn off daily greetings in Settings > Privacy Settings',
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey[600],
@@ -218,14 +218,14 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                         ),
                         const SizedBox(height: 20),
                         
-                        // 按钮行
+                        // Button row
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             TextButton(
                               onPressed: () => Navigator.pop(context),
                               child: Text(
-                                '稍后再说',
+                                'Maybe Later',
                                 style: TextStyle(color: Colors.grey[600]),
                               ),
                             ),
@@ -241,7 +241,7 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
-                              child: const Text('说啦'),
+                              child: const Text('Yes, I Have'),
                             ),
                           ],
                         ),
@@ -251,7 +251,7 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                 ),
               ),
               
-              // 左上角反光效果
+              // Top-left reflection effect
               Positioned(
                 left: 0,
                 top: 0,
@@ -280,7 +280,7 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                 ),
               ),
               
-              // 右下角反光效果
+              // Bottom-right reflection effect
               Positioned(
                 right: 0,
                 bottom: 0,
@@ -313,31 +313,31 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
         ),
       );
     } else {
-      print('❌ 不需要显示问候');
+      print('❌ No greeting needed');
     }
   }
 
-  // 动态获取页面，确保主题色能够实时更新
+  // Get pages dynamically so the theme color updates in real time
   Widget _getPage(int index) {
     switch (index) {
       case 0:
-        return Container(); // 首页占位符，实际不会使用
+        return Container(); // Home placeholder; never actually used
       case 1:
         return ImagePostPage(
           key: _imagePostPageKey,
           themeColor: _themeColor,
-          draftId: _isDraftNavigation ? _draftIdToLoad : null, // 传递草稿ID
+          draftId: _isDraftNavigation ? _draftIdToLoad : null, // Pass the draft ID
           onBack: () {
-            // 返回到主页面状态
+            // Return to the main page state
             setState(() {
               _activeIndex = 0;
               _selectedIndex = 0;
-              _clearDraftNavigation(); // 清除草稿导航状态
+              _clearDraftNavigation(); // Clear the draft navigation state
             });
           },
           onPostPublished: (postData) {
-            // 发布帖子后显示帖子详情页面
-            _clearDraftNavigation(); // 清除草稿导航状态
+            // Show post details after publishing
+            _clearDraftNavigation(); // Clear the draft navigation state
             showPostView(postData, isNewlyPublished: true);
           },
         );
@@ -345,18 +345,18 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
         return CaptionSuggestPage(
           key: _captionSuggestPageKey,
           themeColor: _themeColor,
-          draftId: _isDraftNavigation ? _draftIdToLoad : null, // 传递草稿ID
+          draftId: _isDraftNavigation ? _draftIdToLoad : null, // Pass the draft ID
           onBack: () {
-            // 返回到主页面状态
+            // Return to the main page state
             setState(() {
               _activeIndex = 0;
               _selectedIndex = 0;
-              _clearDraftNavigation(); // 清除草稿导航状态
+              _clearDraftNavigation(); // Clear the draft navigation state
             });
           },
           onPostPublished: (postData) {
-            // 发布帖子后显示帖子详情页面
-            _clearDraftNavigation(); // 清除草稿导航状态
+            // Show post details after publishing
+            _clearDraftNavigation(); // Clear the draft navigation state
             showPostView(postData, isNewlyPublished: true);
           },
         );
@@ -365,17 +365,17 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
           key: _aiCharacterSelectPageKey, 
           themeColor: _themeColor,
         );
-      case 4: // 添加PostViewPage
+      case 4: // PostViewPage
         return PostViewPage(
           key: _postViewPageKey,
           postData: _currentPostData,
           themeColor: _themeColor,
           onBack: () {
-            // 从发布后进入的，返回到主页面
+            // If opened after publishing, return to the main page
             setState(() {
               _activeIndex = 0;
               _selectedIndex = 0;
-              _currentPostData = null; // 清空帖子数据
+              _currentPostData = null; // Clear post data
             });
           },
         );
@@ -384,7 +384,7 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     }
   }
 
-  // 根据颜色索引获取背景图片路径
+  // Get the background image path from the color index
   String _getBackgroundImagePath() {
     switch (_colorIndex) {
       case 0:
@@ -402,66 +402,66 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     }
   }
 
-  // 处理返回按键
+  // Handle the back button
   Future<bool> _handleBackButton() async {
-    // 如果当前在帖子详情页面
+    // If currently on the post details page
     if (_activeIndex == 4) {
-      // 从发布后进入的，返回到主页面
+      // If opened after publishing, return to the main page
       setState(() {
         _activeIndex = 0;
         _selectedIndex = 0;
-        _currentPostData = null; // 清空帖子数据
+        _currentPostData = null; // Clear post data
       });
-      return false; // 阻止默认返回行为
+      return false; // Prevent the default back action
     }
     
-    // 如果当前在AI选择页面
+    // If currently on the AI selection page
     if (_activeIndex == 3) {
       final aiCharacterSelectPageState = _aiCharacterSelectPageKey.currentState;
       if (aiCharacterSelectPageState != null) {
-        // 检查是否有选中的AI好友
+        // Check whether any AI friends are selected
         if (!aiCharacterSelectPageState.hasSelectedFriends()) {
-          // 没有选中任何好友，显示提示
+          // Show a message when no friends are selected
           _showSelectFriendsDialog();
-          return false; // 阻止返回
+          return false; // Prevent going back
         }
       }
       
-      // 有选中的好友，允许返回到主页面
+      // If friends are selected, allow returning to the main page
       setState(() {
         _activeIndex = 0;
         _selectedIndex = 0;
       });
-      return false; // 阻止默认返回行为
+      return false; // Prevent the default back action
     }
     
-    // 如果当前在图片发布页面
+    // If currently on the image post page
     if (_activeIndex == 1) {
       final imagePostPageState = _imagePostPageKey.currentState;
       if (imagePostPageState != null) {
-        // 检查内容是否为空
+        // Check whether the content is empty
         final isEmpty = imagePostPageState.isContentEmpty();
         
         if (isEmpty) {
-          // 内容为空，直接清空草稿箱并返回
+          // If empty, clear image drafts and return
           await DraftService.clearAllDrafts();
           setState(() {
             _activeIndex = 0;
             _selectedIndex = 0;
           });
-          return false; // 阻止默认返回行为
+          return false; // Prevent the default back action
         } else {
-          // 内容不为空，询问是否保存
+          // If not empty, ask whether to save
           final shouldSave = await _showSaveConfirmDialog();
           
           if (shouldSave == true) {
-            // 用户选择保存
+            // The user chose to save
             await imagePostPageState.saveDraftSilently();
           } else if (shouldSave == false) {
-            // 用户选择不保存，清空草稿箱
+            // The user chose not to save; clear image drafts
             await DraftService.clearAllDrafts();
           }
-          // 如果用户取消（shouldSave == null），则不返回
+          // If the user cancels (shouldSave == null), do not go back
           
           if (shouldSave != null) {
             setState(() {
@@ -470,38 +470,38 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
             });
           }
           
-          return false; // 阻止默认返回行为
+          return false; // Prevent the default back action
         }
       }
     }
 
-    // 如果当前在文案页面
+    // If currently on the caption page
     if (_activeIndex == 2) {
       final captionSuggestPageState = _captionSuggestPageKey.currentState;
       if (captionSuggestPageState != null) {
-        // 检查内容是否为空
+        // Check whether the content is empty
         final isEmpty = captionSuggestPageState.isContentEmpty();
         
         if (isEmpty) {
-          // 内容为空，直接清空草稿箱并返回
+          // If empty, clear caption drafts and return
           await DraftService.clearAllCaptionDrafts();
           setState(() {
             _activeIndex = 0;
             _selectedIndex = 0;
           });
-          return false; // 阻止默认返回行为
+          return false; // Prevent the default back action
         } else {
-          // 内容不为空，询问是否保存
+          // If not empty, ask whether to save
           final shouldSave = await _showSaveConfirmDialog();
           
           if (shouldSave == true) {
-            // 用户选择保存
+            // The user chose to save
             await captionSuggestPageState.saveDraftSilently();
           } else if (shouldSave == false) {
-            // 用户选择不保存，清空草稿箱
+            // The user chose not to save; clear caption drafts
             await DraftService.clearAllCaptionDrafts();
           }
-          // 如果用户取消（shouldSave == null），则不返回
+          // If the user cancels (shouldSave == null), do not go back
           
           if (shouldSave != null) {
             setState(() {
@@ -510,16 +510,16 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
             });
           }
           
-          return false; // 阻止默认返回行为
+          return false; // Prevent the default back action
         }
       }
     }
     
-    // 其他情况允许正常返回
+    // Allow the default back action in all other cases
     return true;
   }
 
-  // 显示保存确认对话框
+  // Show the save confirmation dialog
   Future<bool?> _showSaveConfirmDialog() async {
     return showDialog<bool>(
       context: context,
@@ -528,25 +528,25 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
           borderRadius: BorderRadius.circular(16),
         ),
         title: const Text(
-          '是否保存草稿？',
+          'Save Draft?',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         content: const Text(
-          '检测到您有未保存的内容，是否保存到草稿箱？',
+          'You have unsaved content. Would you like to save it to drafts?',
           style: TextStyle(fontSize: 16, color: Colors.grey),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, null),
             child: const Text(
-              '取消',
+              'Cancel',
               style: TextStyle(color: Colors.grey, fontSize: 16),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, false),
             child: Text(
-              '不保存',
+              'Don\'t Save',
               style: TextStyle(color: _themeColor, fontSize: 16),
             ),
           ),
@@ -560,7 +560,7 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
               ),
             ),
             child: const Text(
-              '保存',
+              'Save',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
             ),
           ),
@@ -569,7 +569,7 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     );
   }
 
-  // 显示选择AI好友提示对话框
+  // Show the AI friend selection dialog
   void _showSelectFriendsDialog() {
     showDialog(
       context: context,
@@ -578,11 +578,11 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
           borderRadius: BorderRadius.circular(16),
         ),
         title: const Text(
-          '请选择AI好友',
+          'Select AI Friends',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         content: const Text(
-          '至少需要选择一个AI好友才能继续使用，请返回选择页面进行选择。',
+          'Select at least one AI friend to continue. Please return to the selection page.',
           style: TextStyle(fontSize: 16, color: Colors.grey),
         ),
         actions: [
@@ -596,7 +596,7 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
               ),
             ),
             child: const Text(
-              '知道了',
+              'Got It',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
             ),
           ),
@@ -605,41 +605,41 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     );
   }
 
-  // 显示帖子详情页面
+  // Show the post details page
   void showPostView(PostModel postData, {bool isNewlyPublished = false}) async {
-    // 先立即跳转到帖子详情页面
+    // Navigate to the post details page immediately
     setState(() {
       _currentPostData = postData;
       _activeIndex = 4;
       _selectedIndex = 4;
     });
     
-    // 如果是新发布的帖子，异步启动AI评论生成（不阻塞页面跳转）
+    // For a newly published post, generate AI comments asynchronously without blocking navigation
     if (isNewlyPublished) {
-      print('🚀 新发布的帖子，异步启动AI评论生成任务');
-      // 使用unawaited来异步执行，不阻塞当前方法
+      print('🚀 New post published; starting AI comment generation asynchronously');
+      // Run asynchronously without blocking this method
       BackgroundCommentService.startCommentGeneration(postData).catchError((error) {
-        print('❌ AI评论生成任务启动失败: $error');
+        print('❌ Failed to start AI comment generation: $error');
       });
     }
   }
 
-  // 处理草稿导航 - 从草稿箱导航到编辑页面
+  // Handle draft navigation from drafts to the editor
   void navigateToDraft(String draftId, bool isCaptionDraft) {
     setState(() {
       _draftIdToLoad = draftId;
       _isDraftNavigation = true;
       if (isCaptionDraft) {
-        _activeIndex = 2; // 文案建议页面
+        _activeIndex = 2; // Caption suggestion page
         _selectedIndex = 2;
       } else {
-        _activeIndex = 1; // 图片发布页面
+        _activeIndex = 1; // Image post page
         _selectedIndex = 1;
       }
     });
   }
 
-  // 清除草稿导航状态
+  // Clear the draft navigation state
   void _clearDraftNavigation() {
     _draftIdToLoad = null;
     _isDraftNavigation = false;
@@ -653,28 +653,28 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  // 处理滑动条偏移变化（用于碰撞检测）
+  // Handle slider offset changes for collision detection
   void _handleSliderOffsetChanged(double offset) {
     setState(() {
       _sliderOffset = offset;
     });
     
-    // 碰撞检测：当滑动条向上移动且偏移量达到一定值时
+    // Detect a collision when the slider moves upward beyond the threshold
     if (offset < -80) {
-      // 进入拖拽模式，颜色球跟随滑动条移动
+      // Enter drag mode so the color ball follows the slider
       if (!_isBallBeingDragged && !_ballBounceController.isAnimating) {
         _isBallBeingDragged = true;
       }
       
-      // 颜色球跟随滑动条移动（但移动幅度稍小一些，营造被推动的感觉）
+      // Move the color ball with the slider at a smaller scale to create a pushed effect
       if (_isBallBeingDragged) {
-        final ballOffset = (offset + 80) * 0.6; // 颜色球移动幅度为滑动条的60%
+        final ballOffset = (offset + 80) * 0.6; // Move the color ball by 60% of the slider's distance
         setState(() {
           _ballCurrentOffset = Offset(0, ballOffset);
         });
       }
     } else {
-      // 滑动条回到安全区域，如果之前在拖拽状态，触发释放效果
+      // Trigger the release effect when the slider returns to the safe area
       if (_isBallBeingDragged) {
         _triggerBallRelease();
         _isBallBeingDragged = false;
@@ -682,39 +682,39 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     }
   }
   
-  // 触发颜色球释放效果（惯性向上运动后回弹）
+  // Trigger the color ball release effect: move upward with inertia, then bounce back
   void _triggerBallRelease() {
-    // 从当前位置开始，继续向上惯性运动，然后回弹到原位
+    // Continue upward from the current position with inertia, then return to the origin
     final currentOffset = _ballCurrentOffset;
-    final inertiaDistance = 40.0; // 惯性向上运动的距离
+    final inertiaDistance = 40.0; // Upward inertia distance
     
     _ballBounceAnimation = TweenSequence<Offset>([
-      // 第一阶段：快速惯性向上运动
+      // Phase 1: rapid upward inertial movement
       TweenSequenceItem(
         tween: Tween<Offset>(
           begin: currentOffset,
           end: Offset(0, currentOffset.dy - inertiaDistance),
         ).chain(CurveTween(curve: Curves.easeOut)),
-        weight: 25, // 25% 的时间用于惯性向上
+        weight: 25, // Spend 25% of the time moving upward
       ),
-      // 第二阶段：弹性回落到原位
+      // Phase 2: elastic return to the origin
       TweenSequenceItem(
         tween: Tween<Offset>(
           begin: Offset(0, currentOffset.dy - inertiaDistance),
           end: Offset.zero,
         ).chain(CurveTween(curve: Curves.elasticOut)),
-        weight: 75, // 75% 的时间用于回弹
+        weight: 75, // Spend 75% of the time bouncing back
       ),
     ]).animate(_ballBounceController);
     
-    // 添加动画监听器，更新颜色球当前位置
+    // Add an animation listener to update the color ball's current position
     _ballBounceAnimation.addListener(() {
       setState(() {
         _ballCurrentOffset = _ballBounceAnimation.value;
       });
     });
     
-    // 动画完成后重置状态
+    // Reset the state when the animation completes
     _ballBounceController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         setState(() {
@@ -742,26 +742,26 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
         }
       },
       child: Scaffold(
-        // 使用渐变背景
+        // Use a gradient background
         body: Container(
           decoration: BoxDecoration(
-            // 渐变背景
+            // Gradient background
             image: DecorationImage(
               image: AssetImage(_getBackgroundImagePath()),
               fit: ResponsiveUtils.isExtraLargeTablet(context) 
-                  ? BoxFit.cover // 13英寸iPad Pro使用cover以获得更大的背景
+                  ? BoxFit.cover // Use cover for a larger background on the 13-inch iPad Pro
                   : BoxFit.cover,
               alignment: ResponsiveUtils.isExtraLargeTablet(context)
-                  ? const Alignment(-0.5, -0.1) // 13英寸iPad Pro的背景对齐方式，稍微向右上偏移
-                  : const Alignment(0.15, 0), // 其他设备保持原有偏移
+                  ? const Alignment(-0.5, -0.1) // Shift the background slightly up and right on the 13-inch iPad Pro
+                  : const Alignment(0.15, 0), // Preserve the original offset on other devices
               scale: ResponsiveUtils.isExtraLargeTablet(context) 
-                  ? 0.8// 13英寸iPad Pro使用更小的scale值来放大背景
-                  : 1.0, // 其他设备保持默认
+                  ? 0.8// Use a smaller scale to enlarge the background on the 13-inch iPad Pro
+                  : 1.0, // Use the default on other devices
             ),
           ),
           child: Stack(
             children: [
-              // 磨砂玻璃效果层
+              // Frosted-glass effect layer
               Positioned.fill(
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
@@ -772,18 +772,18 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-              // 原有内容
+              // Original content
               SafeArea(
                 child: Stack(
                   children: [
-                    // 顶部导航按钮
+                    // Top navigation buttons
                     Positioned(
                       top: 10,
                       right: 10,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // 聊天按钮
+                          // Chat button
                           IconButton(
                             icon: Icon(
                               Icons.chat_bubble_outline,
@@ -799,7 +799,7 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                               );
                             },
                           ),
-                          // 设置按钮
+                          // Settings button
                           IconButton(
                             icon: Icon(
                               Icons.settings,
@@ -818,14 +818,14 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                       ),
                     ),
                     
-                    // 页面内容 - 使用_activeIndex决定显示哪个页面
+                    // Page content - _activeIndex determines which page is shown
                     _activeIndex == 0 
                         ? _buildHomeContent() 
                         : Padding(
                             padding: const EdgeInsets.only(bottom: 20),
                             child: Column(
                               children: [
-                                // 非主页时显示返回按钮
+                                // Show a back button outside the home page
                                 Padding(
                                   padding: const EdgeInsets.only(left: 16, top: 8),
                                   child: Align(
@@ -848,29 +848,29 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                             ),
                           ),
                     
-                    // 底部导航栏
+                    // Bottom navigation bar
                     Positioned(
                       left: 0,
                       right: 0,
                       bottom: 0,
                       child: Visibility(
-                        // 只在主页面（_activeIndex为0）时显示导航栏
+                        // Show the navigation bar only on the home page (_activeIndex is 0)
                         visible: _activeIndex == 0,
                         child: FloatingNavBar(
                           activeIndex: _activeIndex,
                           selectedIndex: _selectedIndex,
                           onTap: (index) {
-                            // 确保索引在有效范围内 (4个导航页面: 0,1,2,3)
-                            // PostViewPage (index 4) 不在导航栏中，只能通过发布帖子进入
+                            // Keep the index within the 4 navigation pages: 0, 1, 2, and 3
+                            // PostViewPage (index 4) is not in the navigation bar and opens only after publishing
                             if (index >= 4) return;
                             
                             if (_selectedIndex == index) {
-                              // 再次点击同一个图标，触发页面跳转
+                              // Tapping the same icon again navigates to the page
                               setState(() {
                                 _activeIndex = index;
                               });
                             } else {
-                              // 第一次点击，只更新视觉状态
+                              // The first tap updates only the visual state
                               setState(() {
                                 _selectedIndex = index;
                               });
@@ -890,15 +890,15 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     );
   }
   
-  // 主页内容
+  // Home content
   Widget _buildHomeContent() {
-    // 获取响应式参数
+    // Get responsive parameters
     final isTablet = ResponsiveUtils.isTablet(context);
     final titleFontSize = ResponsiveUtils.getResponsiveFontSize(context, 55);
     final responsivePadding = ResponsiveUtils.getResponsivePadding(context, 16);
     final waterGlassSize = ResponsiveUtils.getResponsiveSize(context, const Size(300, 300));
     
-    // 获取iPad专用布局参数
+    // Get iPad-specific layout parameters
     final layoutParams = ResponsiveUtils.getIPadHomeLayoutParams(context);
     
     return Padding(
@@ -907,11 +907,11 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
         layoutParams['titleTopPadding']!, 
         responsivePadding, 
         layoutParams['navBarBottomPadding']!
-      ), // 使用iPad专用的顶部和底部间距
+      ), // Use iPad-specific top and bottom spacing
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // 标题文字 - 响应式字体大小
+          // Title text - responsive font size
           Text(
             'YMIR',
             style: TextStyle(
@@ -923,51 +923,51 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
           ),
           SizedBox(height: ResponsiveUtils.getResponsivePadding(context, 10)),
     
-          SizedBox(height: layoutParams['titleToWaterGlassSpacing']!), // 使用iPad专用的标题到水杯间距
+          SizedBox(height: layoutParams['titleToWaterGlassSpacing']!), // Use iPad-specific title-to-glass spacing
           
-          // 滑动条颜色选择器
+          // Slider color selector
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: layoutParams['horizontalPadding']!), // 使用iPad专用的水平间距
+            padding: EdgeInsets.symmetric(horizontal: layoutParams['horizontalPadding']!), // Use iPad-specific horizontal spacing
             child: Column(
               children: [
-                // 玻璃水杯颜色展示器 - 响应式尺寸
+                // Water glass color preview - responsive size
                 Transform.translate(
-                  offset: _ballCurrentOffset, // 直接使用当前偏移量
+                  offset: _ballCurrentOffset, // Use the current offset directly
                   child: WaterGlassWidget(
                     waveAnimation: _waveAnimation,
                     colorChangeAnimation: _colorChangeAnimation,
                     themeColor: _themeColor,
-                    size: waterGlassSize, // 使用响应式尺寸
+                    size: waterGlassSize, // Use a responsive size
                   ),
                 ),
-                SizedBox(height: layoutParams['waterGlassToSliderSpacing']!), // 使用iPad专用的水杯到滑动条间距
+                SizedBox(height: layoutParams['waterGlassToSliderSpacing']!), // Use iPad-specific glass-to-slider spacing
                 
-                // 离散滑动条 - 添加拖拽移动功能和碰撞检测
+                // Discrete slider with drag movement and collision detection
                 LayoutBuilder(
                   builder: (context, constraints) {
-                    // 计算最大偏移量（向上和向下都适用）
+                    // Calculate maximum offsets in both directions
                     final screenHeight = MediaQuery.of(context).size.height;
                     final safeAreaTop = MediaQuery.of(context).padding.top;
                     final safeAreaBottom = MediaQuery.of(context).padding.bottom;
-                    final navBarHeight = layoutParams['navBarBottomPadding']!; // 使用iPad专用的导航栏高度
-                    final safeMargin = ResponsiveUtils.getResponsivePadding(context, 20); // 响应式安全边距
+                    final navBarHeight = layoutParams['navBarBottomPadding']!; // Use the iPad-specific navigation bar height
+                    final safeMargin = ResponsiveUtils.getResponsivePadding(context, 20); // Responsive safe margin
                     
-                    // 估算当前内容已使用的高度 - 使用iPad专用的布局参数
-                    final usedHeight = layoutParams['titleTopPadding']! + // 顶部padding
-                        titleFontSize + // 标题高度
-                        ResponsiveUtils.getResponsivePadding(context, 10) + // 标题下方间距
-                        layoutParams['titleToWaterGlassSpacing']! + // 标题到水杯间距
-                        waterGlassSize.height + // 水杯高度
-                        layoutParams['waterGlassToSliderSpacing']! + // 水杯和滑动条间距
-                        200 + // 滑动条高度
-                        100 + // 底部padding
+                    // Estimate the height used by current content with iPad-specific layout parameters
+                    final usedHeight = layoutParams['titleTopPadding']! + // Top padding
+                        titleFontSize + // Title height
+                        ResponsiveUtils.getResponsivePadding(context, 10) + // Spacing below the title
+                        layoutParams['titleToWaterGlassSpacing']! + // Title-to-glass spacing
+                        waterGlassSize.height + // Glass height
+                        layoutParams['waterGlassToSliderSpacing']! + // Glass-to-slider spacing
+                        200 + // Slider height
+                        100 + // Bottom padding
                         safeAreaBottom;
                     
-                    // 向下最大偏移量计算 - 针对iPad优化
-                    // 计算剩余可用空间
+                    // Calculate the maximum downward offset, optimized for iPad
+                    // Calculate remaining available space
                     final remainingSpace = screenHeight - usedHeight - navBarHeight - safeMargin;
                     
-                    // iPad上允许更大的拖动距离，13英寸iPad Pro允许最大的拖动距离
+                    // Allow greater drag distances on iPad, with the largest on the 13-inch iPad Pro
                     final baseMaxDownOffset = ResponsiveUtils.isExtraLargeTablet(context) ? 180.0 : 
                                             (ResponsiveUtils.isLargeTablet(context) ? 150.0 : 
                                             (isTablet ? 120.0 : 80.0));
@@ -975,12 +975,12 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                                         (ResponsiveUtils.isLargeTablet(context) ? 100.0 : 
                                         (isTablet ? 80.0 : 50.0));
                     
-                    // 确保向下偏移量适应设备类型
+                    // Adapt the downward offset to the device type
                     final maxDownOffset = remainingSpace > 0 
                         ? remainingSpace.clamp(minDownOffset, baseMaxDownOffset)
                         : minDownOffset;
                     
-                    // 向上最大偏移量（iPad上允许更大的击球距离）
+                    // Maximum upward offset, allowing a greater strike distance on iPad
                     final maxUpOffset = ResponsiveUtils.isExtraLargeTablet(context) ? 300.0 : 
                                       (ResponsiveUtils.isLargeTablet(context) ? 250.0 : 
                                       (isTablet ? 200.0 : 150.0));
@@ -990,13 +990,13 @@ class MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
                       currentIndex: _colorIndex,
                       currentColor: _themeColor,
                       maxDownwardOffset: maxDownOffset,
-                      maxUpwardOffset: maxUpOffset, // 添加独立的向上偏移量参数
-                      onOffsetChanged: _handleSliderOffsetChanged, // 添加偏移变化回调
+                      maxUpwardOffset: maxUpOffset, // Independent upward offset
+                      onOffsetChanged: _handleSliderOffsetChanged, // Offset change callback
                       onColorChanged: (index) {
                         setState(() {
                           _colorIndex = index;
                           _themeColor = _themeColors[_colorIndex];
-                          // 触发颜色变化动画
+                          // Trigger the color change animation
                           _colorChangeController.reset();
                           _colorChangeController.forward();
                         });

@@ -21,9 +21,9 @@ class PrivacySettingsPage extends StatefulWidget {
 }
 
 class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
-  // 系统权限状态
+  // System permission status
   Map<Permission, PermissionStatus> _permissionStatus = {};
-  // 每日问候设置
+  // Daily greeting setting
   bool _greetingEnabled = true;
   
   @override
@@ -33,14 +33,14 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
     _loadSettings();
   }
 
-  // 加载设置
+  // Load settings
   Future<void> _loadSettings() async {
     setState(() {
       _greetingEnabled = GreetingService.isGreetingEnabled();
     });
   }
 
-  // 初始化权限状态
+  // Initialize permission statuses
   Future<void> _initPermissions() async {
     final permissions = [
       Permission.camera,
@@ -60,7 +60,7 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
     });
   }
 
-  // 请求权限
+  // Request permission
   Future<void> _requestPermission(Permission permission) async {
     final status = await permission.request();
     
@@ -69,7 +69,7 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
     });
   }
 
-  // 打开系统设置
+  // Open system settings
   Future<void> _openSettings() async {
     try {
       if (Platform.isAndroid) {
@@ -82,11 +82,11 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
         await openAppSettings();
       }
     } catch (e) {
-      print('无法打开系统设置: $e');
+      print('Unable to open system settings: $e');
     }
   }
 
-  // 获取权限状态图标
+  // Get the permission status icon
   IconData _getPermissionIcon(PermissionStatus? status) {
     switch (status) {
       case PermissionStatus.granted:
@@ -103,7 +103,7 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
     }
   }
 
-  // 获取权限状态颜色
+  // Get the permission status color
   Color _getPermissionColor(PermissionStatus? status) {
     switch (status) {
       case PermissionStatus.granted:
@@ -120,7 +120,7 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
     }
   }
 
-  // 构建权限设置项
+  // Build a permission setting item
   Widget _buildPermissionItem(String title, Permission permission) {
     final status = _permissionStatus[permission];
     
@@ -169,7 +169,7 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
         ),
         child: CustomScrollView(
           slivers: [
-            // 顶部应用栏
+            // Top app bar
             SliverAppBar(
               expandedHeight: 120,
               floating: false,
@@ -182,7 +182,7 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
               ),
               flexibleSpace: FlexibleSpaceBar(
                 title: const Text(
-                  '隐私设置',
+                  'Privacy Settings',
                   style: TextStyle(
                     color: Colors.black87,
                     fontSize: 20,
@@ -197,12 +197,12 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
               ),
             ),
 
-            // 系统权限设置
+            // System permission settings
             SliverToBoxAdapter(
               child: Container(
                 margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                 child: const Text(
-                  '系统权限',
+                  'System Permissions',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -224,24 +224,24 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
                 ),
                 child: Column(
                   children: [
-                    _buildPermissionItem('相机', Permission.camera),
+                    _buildPermissionItem('Camera', Permission.camera),
                     const Divider(height: 1),
-                    _buildPermissionItem('相册', Permission.photos),
+                    _buildPermissionItem('Photos', Permission.photos),
                     const Divider(height: 1),
-                    _buildPermissionItem('麦克风', Permission.microphone),
+                    _buildPermissionItem('Microphone', Permission.microphone),
                     const Divider(height: 1),
-                    _buildPermissionItem('存储空间', Permission.storage),
+                    _buildPermissionItem('Storage', Permission.storage),
                   ],
                 ),
               ),
             ),
 
-            // 每日问候设置
+            // Daily greeting setting
             SliverToBoxAdapter(
               child: Container(
                 margin: const EdgeInsets.fromLTRB(16, 24, 16, 8),
                 child: const Text(
-                  '其他设置',
+                  'Other Settings',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -264,8 +264,8 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
                 child: Column(
                   children: [
                     SwitchListTile(
-                      title: const Text('每日问候'),
-                      subtitle: const Text('每天提醒我跟自己说早安午安晚安'),
+                      title: const Text('Daily Greeting'),
+                      subtitle: const Text('Remind me to wish myself a good morning, afternoon, and evening every day'),
                       value: _greetingEnabled,
                       activeColor: widget.themeColor ?? Colors.blue,
                       onChanged: (bool value) async {
@@ -280,7 +280,7 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
               ),
             ),
 
-            // 其他应用权限设置
+            // Additional app permission settings
             SliverToBoxAdapter(
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -295,8 +295,8 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
                 child: Column(
                   children: [
                     ListTile(
-                      title: const Text('系统权限设置'),
-                      subtitle: const Text('前往系统设置修改应用权限'),
+                      title: const Text('System Permission Settings'),
+                      subtitle: const Text('Open system settings to change app permissions'),
                       trailing: Icon(
                         Icons.arrow_forward_ios,
                         size: 16,
@@ -309,12 +309,12 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
               ),
             ),
 
-            // 法律文档
+            // Legal documents
             SliverToBoxAdapter(
               child: Container(
                 margin: const EdgeInsets.fromLTRB(16, 24, 16, 8),
                 child: const Text(
-                  '法律文档',
+                  'Legal Documents',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -337,8 +337,8 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
                 child: Column(
                   children: [
                     ListTile(
-                      title: const Text('隐私政策'),
-                      subtitle: const Text('了解我们如何保护您的隐私'),
+                      title: const Text('Privacy Policy'),
+                      subtitle: const Text('Learn how we protect your privacy'),
                       trailing: Icon(
                         Icons.arrow_forward_ios,
                         size: 16,
@@ -357,8 +357,8 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
                     ),
                     const Divider(height: 1),
                     ListTile(
-                      title: const Text('服务条款'),
-                      subtitle: const Text('使用应用前请阅读服务条款'),
+                      title: const Text('Terms of Service'),
+                      subtitle: const Text('Please read the terms before using the app'),
                       trailing: Icon(
                         Icons.arrow_forward_ios,
                         size: 16,
@@ -380,7 +380,7 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
               ),
             ),
 
-            // 底部间距
+            // Bottom spacing
             const SliverToBoxAdapter(
               child: SizedBox(height: 32),
             ),

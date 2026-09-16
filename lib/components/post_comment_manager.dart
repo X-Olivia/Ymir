@@ -8,7 +8,7 @@ import '../services/post_interaction_service.dart';
 import '../components/comment_input_modal.dart';
 import '../components/comment_item.dart';
 
-// 评论管理器控制器-从post_view_page中分离出来的
+// Comment manager controller extracted from post_view_page
 class PostCommentManagerController {
   _PostCommentManagerState? _state;
   
@@ -57,15 +57,15 @@ class PostCommentManager extends StatefulWidget {
 }
 
 class _PostCommentManagerState extends State<PostCommentManager> {
-  // 评论相关状态
+  // Comment-related state
   final TextEditingController _commentController = TextEditingController();
   final FocusNode _commentFocusNode = FocusNode();
   List<Map<String, dynamic>> _comments = [];
-  Map<String, bool> _commentLikes = {}; // 存储评论点赞状态
-  String? _replyingToCommentId; // 当前回复的评论ID
-  String? _replyingToUserName; // 当前回复的用户名
+  Map<String, bool> _commentLikes = {}; // Stores comment like states
+  String? _replyingToCommentId; // ID of the comment being replied to
+  String? _replyingToUserName; // Name of the user being replied to
   
-  // AI评论相关
+  // AI comment state
   bool _isLoadingAIComments = false;
   StreamSubscription<List<Map<String, dynamic>>>? _commentStreamSubscription;
 
@@ -73,9 +73,9 @@ class _PostCommentManagerState extends State<PostCommentManager> {
   void initState() {
     super.initState();
     widget.controller?._attach(this);
-    _loadExistingComments(); // 加载已有评论
-    _setupCommentStream(); // 设置评论流监听
-    _checkForInterruptedCommentGeneration(); // 检查并恢复被中断的评论生成任务
+    _loadExistingComments(); // Loads existing comments
+    _setupCommentStream(); // Subscribes to the comment stream
+    _checkForInterruptedCommentGeneration(); // Checks for and resumes interrupted comment generation
   }
 
   @override
@@ -83,11 +83,11 @@ class _PostCommentManagerState extends State<PostCommentManager> {
     widget.controller?._detach();
     _commentController.dispose();
     _commentFocusNode.dispose();
-    _commentStreamSubscription?.cancel(); // 取消流订阅
+    _commentStreamSubscription?.cancel(); // Cancels the stream subscription
     super.dispose();
   }
 
-  // 加载已有评论
+  // Loads existing comments
   Future<void> _loadExistingComments() async {
     try {
       final existingComments = await CommentService.getPostComments(widget.post.id);
@@ -96,10 +96,10 @@ class _PostCommentManagerState extends State<PostCommentManager> {
       if (mounted) {
         setState(() {
           _comments = existingComments;
-          // 加载已保存的点赞状态
+          // Loads saved like states
           _commentLikes = Map<String, bool>.from(savedLikes);
           
-          // 为没有点赞状态的评论初始化为false
+          // Initializes missing comment like states to false
           for (final comment in existingComments) {
             final commentId = comment['id'];
             if (commentId != null && commentId is String && !_commentLikes.containsKey(commentId)) {
@@ -108,69 +108,69 @@ class _PostCommentManagerState extends State<PostCommentManager> {
           }
         });
         
-        // 通知父组件评论已更新
+        // Notifies the parent that comments were updated
         widget.onCommentsUpdated(_comments);
       }
     } catch (e) {
-      print('加载评论失败: $e');
+      print('Failed to load comments: $e');
     }
   }
 
-  // 设置评论流监听
+  // Subscribes to the comment stream
   void _setupCommentStream() {
     final commentStream = BackgroundCommentService.getCommentStream(widget.post.id);
     if (commentStream != null) {
       _commentStreamSubscription = commentStream.listen((comments) {
         if (mounted) {
-          print('📱 收到评论更新，评论数: ${comments.length}');
+          print('📱 Comment update received, count: ${comments.length}');
           setState(() {
             _comments = comments;
-            // 初始化新评论的点赞状态
+            // Initializes like states for new comments
             for (final comment in comments) {
               final commentId = comment['id'];
               if (commentId != null && commentId is String && !_commentLikes.containsKey(commentId)) {
-                _commentLikes[commentId] = false; // 默认未点赞
+                _commentLikes[commentId] = false; // Not liked by default
               }
             }
-            // 更新加载状态：只根据后台任务是否停止来判断
+            // Updates loading state based only on whether the background task has stopped
             final isGenerating = BackgroundCommentService.isGeneratingComments(widget.post.id);
             _isLoadingAIComments = isGenerating;
-            print('🔄 更新加载状态: isGenerating=$isGenerating, commentsCount=${comments.length}, _isLoadingAIComments=$_isLoadingAIComments');
+            print('🔄 Update loading state: isGenerating=$isGenerating, commentsCount=${comments.length}, _isLoadingAIComments=$_isLoadingAIComments');
           });
-          // 更新帖子数据中的评论
+          // Updates comments in the post data
           _updatePostComments(comments);
-          // 通知父组件评论已更新
+          // Notifies the parent that comments were updated
           widget.onCommentsUpdated(comments);
         }
       });
     } else {
-      // 只在调试模式下打印，避免正常使用时的日志干扰
-      // print('⚠️ 无法获取评论流，postId: ${widget.post.id}');
+      // Logs only in debug mode to avoid noise during normal use
+      // print('⚠️ Unable to get comment stream, postId: ${widget.post.id}');
     }
   }
 
-  // 检查并恢复被中断的评论生成任务
+  // Checks for and resumes interrupted comment generation
   Future<void> _checkForInterruptedCommentGeneration() async {
-    // 检查是否有被中断的评论生成任务
+    // Checks for an interrupted comment generation task
     final isGenerating = await CommentService.getCommentGenerationStatus(widget.post.id);
     final hasBackgroundTask = BackgroundCommentService.isGeneratingComments(widget.post.id);
 
-    // 只有在状态显示正在生成但没有后台任务时，才重新启动（恢复中断的任务）
+    // Restarts only when generation is marked active but no background task is running
     if (isGenerating && !hasBackgroundTask) {
-      print('🔄 恢复被中断的评论生成任务: ${widget.post.id}');
+      print('🔄 Resuming interrupted comment generation task: ${widget.post.id}');
       await BackgroundCommentService.startCommentGeneration(widget.post);
-      _setupCommentStream(); // 重新设置流监听
+      _setupCommentStream(); // Resubscribes to the stream
       
       if (mounted) {
         setState(() {
           _isLoadingAIComments = true;
         });
         
-        // 启动交互功能
+        // Starts interactive features
         widget.interactionService.startInteractiveFeatures();
       }
     } else if (isGenerating && hasBackgroundTask) {
-      // 任务正在运行中，只需要设置UI状态（不打印日志，避免重复输出）
+      // The task is running; only updates UI state to avoid duplicate logs
       if (mounted) {
         setState(() {
           _isLoadingAIComments = true;
@@ -181,7 +181,7 @@ class _PostCommentManagerState extends State<PostCommentManager> {
     }
   }
 
-  // 更新帖子评论数据
+  // Updates post comment data
   void _updatePostComments(List<Map<String, dynamic>> comments) async {
     try {
       final updatedPost = widget.post.copyWith(
@@ -189,22 +189,22 @@ class _PostCommentManagerState extends State<PostCommentManager> {
         isGeneratingComments: BackgroundCommentService.isGeneratingComments(widget.post.id),
       );
       
-      // 更新笔记中的帖子数据
+      // Updates the post data stored in the note
       await NotesService.savePostAsNote(updatedPost);
     } catch (e) {
-      print('更新帖子评论失败: $e');
+      print('Failed to update post comments: $e');
     }
   }
 
-  // 切换评论点赞状态
+  // Toggles a comment's like state
   void _toggleCommentLike(String commentId) async {
     setState(() {
       final commentIndex = _comments.indexWhere((comment) => comment['id'] == commentId);
       if (commentIndex != -1) {
-        // 确保commentId在_commentLikes中有值，如果没有则初始化为false
+        // Ensures commentId has a value in _commentLikes
         _commentLikes[commentId] = !(_commentLikes[commentId] ?? false);
         
-        // 确保likes字段是int类型，如果为null则初始化为0
+        // Ensures the likes field is an int, defaulting to zero
         final currentLikes = _comments[commentIndex]['likes'] ?? 0;
         if (_commentLikes[commentId]!) {
           _comments[commentIndex]['likes'] = (currentLikes as int) + 1;
@@ -214,44 +214,44 @@ class _PostCommentManagerState extends State<PostCommentManager> {
       }
     });
 
-    // 保存点赞状态到持久化存储
+    // Saves the like state to persistent storage
     try {
-      // 更新评论到持久化存储
+      // Updates the comment in persistent storage
       final commentIndex = _comments.indexWhere((comment) => comment['id'] == commentId);
       if (commentIndex != -1) {
         await CommentService.updateCommentInPost(widget.post.id, _comments[commentIndex]);
       }
       
-      // 保存点赞状态
+      // Saves the like state
       await CommentService.saveCommentLikeStatus(widget.post.id, commentId, _commentLikes[commentId] ?? false);
     } catch (e) {
-      print('保存点赞状态失败: $e');
+      print('Failed to save like status: $e');
     }
   }
 
-  // 回复评论
+  // Replies to a comment
   void _replyToComment(String commentId, String userName) {
     setState(() {
       _replyingToCommentId = commentId;
       _replyingToUserName = userName;
     });
-    _showInputModal(); // 显示输入模态框而不是只聚焦输入框
+    _showInputModal(); // Shows the input modal instead of only focusing the field
   }
 
-  // 聚焦评论输入框
+  // Focuses the comment input field
   void _focusCommentInput() {
     _commentFocusNode.requestFocus();
   }
 
-  // 提交评论
+  // Submits a comment
   void _submitComment() async {
     final commentText = _commentController.text.trim();
     if (commentText.isEmpty) return;
 
     try {
-      // 如果是回复评论
+      // Handles a reply
       if (_replyingToCommentId != null) {
-        // 创建回复对象
+        // Creates the reply object
         final reply = {
           'id': DateTime.now().millisecondsSinceEpoch.toString(),
           'content': commentText,
@@ -268,21 +268,21 @@ class _PostCommentManagerState extends State<PostCommentManager> {
           'isMyComment': true,
         };
 
-        // 找到被回复的评论并添加回复
+        // Finds the target comment and adds the reply
         setState(() {
           final commentIndex = _comments.indexWhere((comment) => comment['id'] == _replyingToCommentId);
           if (commentIndex != -1) {
-            // 确保replies数组存在并且类型正确
+            // Ensures the replies array exists and has the correct type
             if (_comments[commentIndex]['replies'] == null) {
               _comments[commentIndex]['replies'] = <Map<String, dynamic>>[];
             }
-            // 安全地获取replies数组
+            // Safely accesses the replies array
             final replies = _comments[commentIndex]['replies'] as List;
             final repliesTyped = replies.cast<Map<String, dynamic>>();
-            // 添加回复到原评论的replies数组中
+            // Adds the reply to the original comment
             repliesTyped.add(reply);
             
-            // 初始化回复的点赞状态
+            // Initializes the reply's like state
             final replyId = reply['id'];
             if (replyId != null && replyId is String) {
               _commentLikes[replyId] = false;
@@ -294,10 +294,10 @@ class _PostCommentManagerState extends State<PostCommentManager> {
           _replyingToUserName = null;
         });
 
-        // 保存到持久化存储
+        // Saves to persistent storage
         await CommentService.savePostComments(widget.post.id, _comments);
       } else {
-        // 创建普通评论
+        // Creates a top-level comment
         final userComment = {
           'id': DateTime.now().millisecondsSinceEpoch.toString(),
           'content': commentText,
@@ -313,13 +313,13 @@ class _PostCommentManagerState extends State<PostCommentManager> {
           'isMyComment': true,
         };
 
-        // 保存到持久化存储
+        // Saves to persistent storage
         await CommentService.addCommentToPost(widget.post.id, userComment);
         
-        // 立即更新UI
+        // Updates the UI immediately
         setState(() {
           _comments.add(userComment);
-          // 初始化新评论的点赞状态
+          // Initializes the new comment's like state
           final commentId = userComment['id'];
           if (commentId != null && commentId is String) {
             _commentLikes[commentId] = false;
@@ -328,23 +328,23 @@ class _PostCommentManagerState extends State<PostCommentManager> {
         });
       }
 
-      // 更新帖子数据
+      // Updates the post data
       _updatePostComments(_comments);
-      // 通知父组件评论已更新
+      // Notifies the parent that comments were updated
       widget.onCommentsUpdated(_comments);
 
       _commentFocusNode.unfocus();
     } catch (e) {
-      print('提交评论失败: $e');
+      print('Failed to submit comment: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('评论发送失败，请重试')),
+          const SnackBar(content: Text('Failed to send comment. Please try again.')),
         );
       }
     }
   }
 
-  // 取消回复
+  // Cancels the reply
   void _cancelReply() {
     setState(() {
       _replyingToCommentId = null;
@@ -352,7 +352,7 @@ class _PostCommentManagerState extends State<PostCommentManager> {
     });
   }
 
-  // 显示输入模态框
+  // Shows the input modal
   void _showInputModal() {
     CommentInputModal.show(
       context: context,
@@ -365,11 +365,11 @@ class _PostCommentManagerState extends State<PostCommentManager> {
     );
   }
 
-  // 删除评论
+  // Deletes a comment
   Future<void> _deleteComment(String commentId) async {
     try {
       setState(() {
-        // 首先尝试删除顶级评论
+        // First attempts to delete a top-level comment
         bool found = false;
         _comments.removeWhere((comment) {
           if (comment['id'] == commentId) {
@@ -379,7 +379,7 @@ class _PostCommentManagerState extends State<PostCommentManager> {
           return false;
         });
         
-        // 如果不是顶级评论，则在回复中查找并删除
+        // Otherwise, finds and deletes it from the replies
         if (!found) {
           for (final comment in _comments) {
             if (comment['replies'] != null) {
@@ -390,28 +390,28 @@ class _PostCommentManagerState extends State<PostCommentManager> {
           }
         }
         
-        // 移除点赞状态
+        // Removes its like state
         _commentLikes.remove(commentId);
       });
 
-      // 更新持久化存储
+      // Updates persistent storage
       await CommentService.savePostComments(widget.post.id, _comments);
       
-      // 更新帖子数据
+      // Updates the post data
       _updatePostComments(_comments);
-      // 通知父组件评论已更新
+      // Notifies the parent that comments were updated
       widget.onCommentsUpdated(_comments);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('评论已删除')),
+          const SnackBar(content: Text('Comment deleted')),
         );
       }
     } catch (e) {
-      print('删除评论失败: $e');
+      print('Failed to delete comment: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('删除评论失败，请重试')),
+          const SnackBar(content: Text('Failed to delete comment, please try again')),
         );
       }
     }
@@ -422,11 +422,11 @@ class _PostCommentManagerState extends State<PostCommentManager> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 评论区标题
+        // Comment section title
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 16),
           child: Text(
-            '评论',
+            'Comments',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -434,7 +434,7 @@ class _PostCommentManagerState extends State<PostCommentManager> {
           ),
         ),
 
-        // 评论列表
+        // Comment list
         _comments.isEmpty && !_isLoadingAIComments
             ? Padding(
                 padding: const EdgeInsets.symmetric(vertical: 32),
@@ -448,7 +448,7 @@ class _PostCommentManagerState extends State<PostCommentManager> {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        '还没有评论，快来抢沙发吧！',
+                        'No comments yet. Be the first to comment!',
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey[600],
@@ -460,7 +460,7 @@ class _PostCommentManagerState extends State<PostCommentManager> {
               )
             : Column(
                 children: [
-                  // 现有评论列表
+                  // Existing comments
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -481,7 +481,7 @@ class _PostCommentManagerState extends State<PostCommentManager> {
                     },
                   ),
                   
-                  // AI评论加载状态
+                  // AI comment loading state
                   if (_isLoadingAIComments)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -498,7 +498,7 @@ class _PostCommentManagerState extends State<PostCommentManager> {
                           ),
                           const SizedBox(width: 12),
                           Text(
-                            '有人正在评论...',
+                            'Someone is commenting...',
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.grey[600],

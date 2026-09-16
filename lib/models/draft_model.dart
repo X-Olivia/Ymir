@@ -17,7 +17,7 @@ class DraftModel extends HiveObject {
   List<String> topics;
 
   @HiveField(4)
-  List<String> imagePaths; // 存储图片的本地路径
+  List<String> imagePaths; // Stores local image paths
 
   @HiveField(5)
   DateTime createdAt;
@@ -35,7 +35,7 @@ class DraftModel extends HiveObject {
     required this.updatedAt,
   });
 
-  // 复制方法，用于更新草稿
+  // Copies the draft with selected changes
   DraftModel copyWith({
     String? id,
     String? title,
@@ -56,7 +56,7 @@ class DraftModel extends HiveObject {
     );
   }
 
-  // 判断草稿是否为空
+  // Determines whether the draft is empty
   bool get isEmpty {
     return title.trim().isEmpty && 
            description.trim().isEmpty && 

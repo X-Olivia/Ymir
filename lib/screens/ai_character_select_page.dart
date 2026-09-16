@@ -14,84 +14,84 @@ class AICharacterSelectPage extends StatefulWidget {
 }
 
 class AICharacterSelectPageState extends State<AICharacterSelectPage> {
-  bool _isRandomMode = false; // 默认为自定义模式
-  Set<int> _selectedCharacters = {}; // 选中的角色索引
-  List<Map<String, dynamic>> _randomSelectedCharacters = []; // 随机选中的角色
+  bool _isRandomMode = false; // Custom mode by default
+  Set<int> _selectedCharacters = {}; // Indices of selected characters
+  List<Map<String, dynamic>> _randomSelectedCharacters = []; // Randomly selected characters
 
-  // 获取当前主题色
+  // Get the current theme color
   Color get _themeColor => widget.themeColor ?? Theme.of(context).colorScheme.primary;
 
-  // 模拟AI角色数据
+  // Mock AI character data
   final List<Map<String, dynamic>> _aiCharacters = [
     {
-      'name': '混沌原体Y',
-      'description': '生于冰火鸿沟的无名之源，一切视角的起点与终点。',
-      'personality': '"我看，个个都好"',
+      'name': 'Primordial Chaos Y',
+      'description': 'A nameless source born in the chasm between ice and fire, the beginning and end of every perspective.',
+      'personality': '"They all look good to me."',
       'avatarColor': Colors.deepPurple,
-      'avatar': 'assets/images/AI/混沌原体Y.png',
+      'avatar': 'assets/images/AI/\u6df7\u6c8c\u539f\u4f53Y.png',
     },
     {
-      'name': '烧起来不顾后果',
-      'description': '余烬中的第一声爆炸，情绪永远在前，后果在后。',
-      'personality': '"这张表情够拽！配文：\'就喜欢你看不惯我又干不掉我的样子\'。"',
+      'name': 'Burn First, Consequences Later',
+      'description': 'The first blast among the embers, always putting emotion before consequences.',
+      'personality': '"That expression has attitude! Caption: \'I love how you can\'t stand me but can\'t do anything about it.\'"',
       'avatarColor': Colors.red,
-      'avatar': 'assets/images/AI/烧起来不顾后果.png',
+      'avatar': 'assets/images/AI/\u70e7\u8d77\u6765\u4e0d\u987e\u540e\u679c.png',
     },
     {
-      'name': '零下社交圈',
-      'description': '无情的拆台机器，但是善良。',
-      'personality': '"第三章的滤镜遮住了黑眼圈……但确实好看，发吧。"',
+      'name': 'Subzero Social Circle',
+      'description': 'A merciless bubble-burster with a kind heart.',
+      'personality': '"The filter in the third one hides the dark circles... but it does look good. Post it."',
       'avatarColor': Colors.cyan,
-      'avatar': 'assets/images/AI/零下社交圈.png',
+      'avatar': 'assets/images/AI/\u96f6\u4e0b\u793e\u4ea4\u5708.png',
     },
     {
-      'name': '松软贴贴球',
-      'description': '柔软是一种武器，用轻触代替言语的共情体。',
-      'personality': '"啊啊啊这张笑得好甜！想捏脸！配文：\'今日份可爱已加载\'。"',
+      'name': 'Soft Snuggle Ball',
+      'description': 'An empath who wields softness as a weapon and replaces words with a gentle touch.',
+      'personality': '"Aww, that smile is so sweet! I want to pinch those cheeks! Caption: \'Today\'s dose of cuteness: loaded.\'"',
       'avatarColor': Colors.pink,
-      'avatar': 'assets/images/AI/松软贴贴球.png',
+      'avatar': 'assets/images/AI/\u677e\u8f6f\u8d34\u8d34\u7403.png',
     },
     {
-      'name': '中土',
-      'description': 'Ymir的睫毛所限之地，总能发现奇怪的细节。',
-      'personality': '"你背后那人的表情好搞笑，他是不是在翻白眼？"',
+      'name': 'Middle Earth',
+      'description': 'The realm bounded by Ymir\'s eyelashes, always spotting the strangest details.',
+      'personality': '"The person behind you is making such a funny face. Are they rolling their eyes?"',
       'avatarColor': Colors.brown,
-      'avatar': 'assets/images/AI/中土.png',
+      'avatar': 'assets/images/AI/\u4e2d\u571f.png',
     },
     {
-      'name': '左右互搏王',
-      'description': '生于腋下的对话体人格，永远在自我拉扯中找到黄金中值。',
-      'personality': '"M：这张光线好；W：但那张显瘦……算了，抓阄吧。"',
+      'name': 'King of Inner Conflict',
+      'description': 'A conversational persona born beneath the arms, forever finding the golden mean through internal conflict.',
+      'personality': '"M: The lighting is better in this one. W: But that one makes you look slimmer... Forget it, let\'s draw lots."',
       'avatarColor': Colors.amber,
-      'avatar': 'assets/images/AI/左右互搏王.png',
+      'avatar': 'assets/images/AI/\u5de6\u53f3\u4e92\u640f\u738b.png',
     },
     {
-      'name': '阴云之脑',
-      'description': 'Ymir脑中逸出的雾气，谜语人。',
-      'personality': '"……有意思。"',
+      'name': 'Clouded Mind',
+      'description': 'Mist drifting out of Ymir\'s mind, speaking only in riddles.',
+      'personality': '"...Interesting."',
       'avatarColor': Colors.blueGrey,
-      'avatar': 'assets/images/AI/阴云之脑.png',
+      'avatar': 'assets/images/AI/\u9634\u4e91\u4e4b\u8111.png',
     },
     {
-      'name': '天空罐头',
-      'description': '从巨人头骨中凿出的穹顶，喜欢大场面，背景如刀锋般锋利，人物如奶油般划开。',
-      'personality': '"第五张风景很绝，发！"',
+      'name': 'Canned Sky',
+      'description': 'A dome carved from a giant\'s skull, drawn to epic scenes where backgrounds cut like blades and figures part like cream.',
+      'personality': '"The scenery in the fifth one is incredible. Post it!"',
       'avatarColor': Colors.lightBlue,
-      'avatar': 'assets/images/AI/天空罐头.png',
+      'avatar': 'assets/images/AI/\u5929\u7a7a\u7f50\u5934.png',
     },
     {
-      'name': '山脊之骨',
-      'description': '白骨成山，逻辑清晰，是冷静中的秩序派代表。',
-      'personality': '"这张构图符合三分法则，点赞率预估+20%"',
+      'name': 'Ridgebone',
+      'description': 'White bones piled into mountains, clear-minded and a champion of order under pressure.',
+      'personality': '"This composition follows the rule of thirds. Estimated likes: +20%."',
       'avatarColor': Colors.grey,
-      'avatar': 'assets/images/AI/山脊之骨.png',
+      'avatar': 'assets/images/AI/\u5c71\u810a\u4e4b\u9aa8.png',
     },
     {
-      'name': '红潮之下',
-      'description': '海洋般的情绪流动者，温柔且汹涌，情绪波动即美感本身。',
-      'personality': '"这张夕阳的氛围绝了！配文：\'今天的心是橘子汽水做的\'。"',
+      'name': 'Beneath the Red Tide',
+      'description': 'An oceanic current of emotion, gentle yet surging, finding beauty in every emotional wave.',
+      'personality': '"The mood in this sunset is perfect! Caption: \'My heart is made of orange soda today.\'"',
       'avatarColor': Colors.redAccent,
-      'avatar': 'assets/images/AI/红潮之下.png',
+      'avatar': 'assets/images/AI/\u7ea2\u6f6e\u4e4b\u4e0b.png',
     },
   ];
 
@@ -101,30 +101,30 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
     _loadSettings();
   }
 
-  // 加载设置
+  // Load settings
   Future<void> _loadSettings() async {
     final isRandomMode = await AIService.getRandomMode();
     setState(() {
       _isRandomMode = isRandomMode;
       if (!_isRandomMode) {
-        // 自定义模式默认全选
+        // Select all by default in custom mode
         _selectedCharacters = Set<int>.from(List.generate(_aiCharacters.length, (index) => index));
       }
     });
     
-    // 加载已保存的选择
+    // Load the saved selection
     await _loadSavedSelections();
   }
   
-  // 加载已保存的选择
+  // Load the saved selection
   Future<void> _loadSavedSelections() async {
     final selectedAIs = await AIService.getSelectedAIFriends();
     
     if (_isRandomMode) {
-      // 随机模式：根据保存的AI重建随机选择列表
+      // Random mode: rebuild the random selection from saved AI characters
       _randomSelectedCharacters = selectedAIs;
     } else {
-      // 自定义模式：重建选择的索引集合
+      // Custom mode: rebuild the set of selected indices
       final selectedIndices = <int>{};
       for (final selectedAI in selectedAIs) {
         final index = _aiCharacters.indexWhere((ai) => ai['name'] == selectedAI['name']);
@@ -137,19 +137,19 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
       });
     }
     
-    // 如果随机模式下没有保存的选择，则生成新的随机选择
+    // Generate a new random selection if none was saved in random mode
     if (_isRandomMode && _randomSelectedCharacters.isEmpty) {
       _generateRandomSelection();
     }
   }
 
-  // 随机选择6个AI角色
+  // Randomly select 6 AI characters
   void _generateRandomSelection() {
     final shuffled = List<Map<String, dynamic>>.from(_aiCharacters);
     shuffled.shuffle();
     _randomSelectedCharacters = shuffled.take(6).toList();
     
-    // 保存随机选择的AI索引到持久化存储
+    // Persist the indices of randomly selected AI characters
     final randomIndices = _randomSelectedCharacters.map((character) {
       return _aiCharacters.indexWhere((ai) => ai['name'] == character['name']);
     }).where((index) => index != -1).toSet();
@@ -157,20 +157,20 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
     AIService.saveSelectedAIFriends(randomIndices);
   }
 
-  // 切换角色选择状态
+  // Toggle a character's selection state
   void _toggleCharacterSelection(int index) {
     setState(() {
       if (_selectedCharacters.contains(index)) {
         _selectedCharacters.remove(index);
       } else {
-        // 检查是否已经选择了6个角色
+        // Check whether 6 characters are already selected
         if (_selectedCharacters.length < 6) {
           _selectedCharacters.add(index);
         } else {
-          // 显示提示信息
+          // Show a message
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('最多只能选择6个AI角色'),
+              content: const Text('You can select up to 6 AI characters'),
               backgroundColor: _themeColor,
               duration: const Duration(seconds: 2),
             ),
@@ -179,33 +179,33 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
         }
       }
     });
-    // 保存选择状态
+    // Save the selection state
     AIService.saveSelectedAIFriends(_selectedCharacters);
   }
 
-  // 切换模式
+  // Switch modes
   void _toggleMode(bool value) {
     setState(() {
       _isRandomMode = value;
       if (value) {
-        // 切换到随机模式时重新生成随机选择
+        // Generate a new random selection when switching to random mode
         _generateRandomSelection();
       }
     });
-    // 保存模式设置
+    // Save the mode setting
     AIService.saveRandomMode(_isRandomMode);
   }
 
-  // 显示角色详细信息
+  // Show character details
   void _showCharacterDetails(Map<String, dynamic> character, int currentIndex) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        int dialogCurrentIndex = currentIndex; // 弹窗内部的当前索引
+        int dialogCurrentIndex = currentIndex; // Current index within the dialog
         
         return StatefulBuilder(
           builder: (context, setDialogState) {
-            // 获取当前显示的角色列表
+            // Get the currently displayed character list
             final currentList = _isRandomMode ? _randomSelectedCharacters : _aiCharacters;
             final currentCharacter = _isRandomMode 
                 ? _randomSelectedCharacters[dialogCurrentIndex]
@@ -213,10 +213,10 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
             
             return Stack(
               children: [
-                // 主弹窗
+                // Main dialog
                 Center(
                   child: Dialog(
-                    backgroundColor: Colors.transparent, // 透明背景
+                    backgroundColor: Colors.transparent, // Transparent background
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     child: Container(
                       width: MediaQuery.of(context).size.width * 0.85,
@@ -256,7 +256,7 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  // 关闭按钮
+                                  // Close button
                                   Align(
                                     alignment: Alignment.topRight,
                                     child: IconButton(
@@ -271,12 +271,12 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
                                   
                                   const SizedBox(height: 20),
                                   
-                                  // 角色头像
+                                  // Character avatar
                                   _buildDialogCharacterAvatar(currentCharacter, size: 120),
                                   
                                   const SizedBox(height: 24),
                                   
-                                  // 角色名称
+                                  // Character name
                                   Text(
                                     currentCharacter['name'],
                                     style: const TextStyle(
@@ -288,7 +288,7 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
                                   
                                   const SizedBox(height: 16),
                                   
-                                  // 角色描述
+                                  // Character description
                                   Text(
                                     currentCharacter['description'],
                                     style: TextStyle(
@@ -301,9 +301,9 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
                                   
                                   const SizedBox(height: 24),
                                   
-                                  // 性格特点标题
+                                  // Personality heading
                                   Text(
-                                    'TA说',
+                                    'They say',
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w600,
@@ -313,7 +313,7 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
                                   
                                   const SizedBox(height: 12),
                                   
-                                  // 性格特点内容
+                                  // Personality details
                                   Expanded(
                                     child: SingleChildScrollView(
                                       child: Text(
@@ -337,11 +337,11 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
                   ),
                 ),
                 
-                // 上箭头 - 磨砂玻璃效果
+                // Up arrow - frosted-glass effect
                 if (dialogCurrentIndex > 0)
                   Positioned(
-                    top: MediaQuery.of(context).size.height * 0.05, // 在弹窗上方
-                    left: MediaQuery.of(context).size.width / 2 - 25, // 水平居中
+                    top: MediaQuery.of(context).size.height * 0.05, // Above the dialog
+                    left: MediaQuery.of(context).size.width / 2 - 25, // Center horizontally
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(25),
@@ -379,11 +379,11 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
                     ),
                   ),
                 
-                // 下箭头 - 磨砂玻璃效果
+                // Down arrow - frosted-glass effect
                 if (dialogCurrentIndex < currentList.length - 1)
                   Positioned(
-                    bottom: MediaQuery.of(context).size.height * 0.05, // 在弹窗下方
-                    left: MediaQuery.of(context).size.width / 2 - 25, // 水平居中
+                    bottom: MediaQuery.of(context).size.height * 0.05, // Below the dialog
+                    left: MediaQuery.of(context).size.width / 2 - 25, // Center horizontally
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(25),
@@ -428,7 +428,7 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
     );
   }
 
-  // 检查是否有选中的AI好友
+  // Check whether any AI friends are selected
   bool hasSelectedFriends() {
     if (_isRandomMode) {
       return _randomSelectedCharacters.isNotEmpty;
@@ -456,13 +456,13 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // 模式切换区域
+              // Mode selector
               Container(
                 padding: const EdgeInsets.all(16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('自定义', style: TextStyle(fontSize: 16)),
+                    const Text('Custom', style: TextStyle(fontSize: 16)),
                     const SizedBox(width: 8),
                     Switch(
                       value: _isRandomMode,
@@ -473,32 +473,32 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
                       inactiveTrackColor: Colors.grey.withOpacity(0.3),
                     ),
                     const SizedBox(width: 8),
-                    const Text('随机', style: TextStyle(fontSize: 16)),
+                    const Text('Random', style: TextStyle(fontSize: 16)),
                   ],
                 ),
               ),
               
-              // 分隔线
+              // Divider
               const Divider(),
               
-              // 模式说明文字
+              // Mode description
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Text(
                   _isRandomMode 
-                      ? '随机模式：系统已随机选择6位AI好友为你生成评论' 
-                      : '自定义模式：点击头像选择/取消选择AI好友，点击箭头查看详细信息',
+                      ? 'Random mode: 6 AI friends have been selected at random to generate comments for you'
+                      : 'Custom mode: tap an avatar to select or deselect an AI friend, and tap the arrow to view details',
                   style: TextStyle(
                     color: Colors.grey[600],
                   ),
                 ),
               ),
               
-              // 随机模式下的随机角色展示
+              // Random character display in random mode
               if (_isRandomMode)
                 _buildRandomModeWidget(),
               
-              // 自定义模式下的角色列表
+              // Character list in custom mode
               if (!_isRandomMode)
                 _buildCustomModeWidget(),
             ],
@@ -508,9 +508,9 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
     );
   }
   
-  // 随机模式界面
+  // Random mode interface
   Widget _buildRandomModeWidget() {
-    // 获取响应式列数
+    // Get the responsive column count
     final crossAxisCount = ResponsiveUtils.getResponsiveColumns(context, 2);
     final responsivePadding = ResponsiveUtils.getResponsivePadding(context, 16);
     final responsiveSpacing = ResponsiveUtils.getResponsivePadding(context, 12);
@@ -539,7 +539,7 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
                 ),
               ),
               child: Text(
-                '重新随机选择',
+                'Pick Again',
                 style: TextStyle(
                   fontSize: ResponsiveUtils.getResponsiveFontSize(context, 16),
                 ),
@@ -550,8 +550,8 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
             child: GridView.builder(
               padding: EdgeInsets.symmetric(horizontal: responsivePadding),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: crossAxisCount, // 使用响应式列数
-                childAspectRatio: ResponsiveUtils.isTablet(context) ? 1.1 : 1.2, // iPad上稍微调整比例
+                crossAxisCount: crossAxisCount, // Use the responsive column count
+                childAspectRatio: ResponsiveUtils.isTablet(context) ? 1.1 : 1.2, // Slightly adjust the ratio on iPad
                 crossAxisSpacing: responsiveSpacing,
                 mainAxisSpacing: responsiveSpacing,
               ),
@@ -567,7 +567,7 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
     );
   }
   
-  // 自定义模式界面
+  // Custom mode interface
   Widget _buildCustomModeWidget() {
     final responsivePadding = ResponsiveUtils.getResponsivePadding(context, 16);
     final buttonPadding = ResponsiveUtils.getResponsivePadding(context, 20);
@@ -576,7 +576,7 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
     return Expanded(
       child: Column(
         children: [
-          // 全选/全不选按钮
+          // Select all / deselect all buttons
           Padding(
             padding: EdgeInsets.symmetric(
               horizontal: responsivePadding, 
@@ -588,11 +588,11 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
                 TextButton(
                   onPressed: () {
                     setState(() {
-                      // 全选所有角色
+                      // Select all characters
                       _selectedCharacters = Set<int>.from(
                           List.generate(_aiCharacters.length, (index) => index));
                     });
-                    // 保存选择状态
+                    // Save the selection state
                     AIService.saveSelectedAIFriends(_selectedCharacters);
                   },
                   style: TextButton.styleFrom(
@@ -607,7 +607,7 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
                     ),
                   ),
                   child: Text(
-                    '全选',
+                    'Select All',
                     style: TextStyle(fontSize: fontSize),
                   ),
                 ),
@@ -616,7 +616,7 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
                     setState(() {
                       _selectedCharacters.clear();
                     });
-                    // 保存选择状态
+                    // Save the selection state
                     AIService.saveSelectedAIFriends(_selectedCharacters);
                   },
                   style: TextButton.styleFrom(
@@ -631,7 +631,7 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
                     ),
                   ),
                   child: Text(
-                    '全不选',
+                    'Deselect All',
                     style: TextStyle(fontSize: fontSize),
                   ),
                 ),
@@ -655,7 +655,7 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
     );
   }
   
-  // 随机模式角色卡片
+  // Random mode character card
   Widget _buildRandomCharacterCard(Map<String, dynamic> character, int index) {
     return Container(
       decoration: BoxDecoration(
@@ -726,7 +726,7 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
     );
   }
   
-  // 自定义模式角色卡片
+  // Custom mode character card
   Widget _buildCharacterCard(Map<String, dynamic> character, int index, bool isSelected, [bool canSelect = true]) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -825,9 +825,9 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
     );
   }
   
-  // 角色头像
+  // Character avatar
   Widget _buildCharacterAvatar(Map<String, dynamic> character, {double size = 60}) {
-    // 检查是否有图片路径
+    // Check whether an image path is available
     final hasImage = character['avatar'] != null;
     
     return Container(
@@ -840,16 +840,16 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
       child: hasImage
           ? ClipOval(
               child: Transform.translate(
-                offset: const Offset(0, 5.2), // 图片向下偏移5像素，可以调整这个值
+                offset: const Offset(0, 5.2), // Shift the image down by 5 pixels; this value can be adjusted
                 child: Transform.scale(
-                  scale: 1.1, // 图片缩放比例，1.0为原始大小，大于1.0放大，小于1.0缩小
+                  scale: 1.1, // Image scale: 1.0 is original size, above 1.0 enlarges, below 1.0 shrinks
                   child: Image.asset(
                     character['avatar'],
                     fit: BoxFit.cover,
                     width: size,
                     height: size,
                     errorBuilder: (context, error, stackTrace) {
-                      // 图片加载失败时显示文字头像
+                      // Show a text avatar if the image fails to load
                       return Container(
                         width: size,
                         height: size,
@@ -886,9 +886,9 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
     );
   }
 
-  // 自定义对话框角色头像
+  // Character avatar in the custom dialog
   Widget _buildDialogCharacterAvatar(Map<String, dynamic> character, {double size = 120}) {
-    // 检查是否有图片路径
+    // Check whether an image path is available
     final hasImage = character['avatar'] != null;
     
     return Container(
@@ -897,7 +897,7 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
         maxHeight: size,
       ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16), // 圆角边框
+        borderRadius: BorderRadius.circular(16), // Rounded border
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.15),
@@ -913,12 +913,12 @@ class AICharacterSelectPageState extends State<AICharacterSelectPage> {
       ),
       child: hasImage
           ? ClipRRect(
-              borderRadius: BorderRadius.circular(16), // 确保图片也是圆角
+              borderRadius: BorderRadius.circular(16), // Ensure the image also has rounded corners
               child: Image.asset(
                 character['avatar'],
-                fit: BoxFit.contain, // 显示完整图片，保持原始比例
+                fit: BoxFit.contain, // Show the full image while preserving its aspect ratio
                 errorBuilder: (context, error, stackTrace) {
-                  // 图片加载失败时显示文字头像
+                  // Show a text avatar if the image fails to load
                   return Container(
                     width: size,
                     height: size,

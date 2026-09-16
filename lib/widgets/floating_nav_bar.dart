@@ -3,10 +3,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:ui' as ui;
 import '../utils/responsive_utils.dart';
 
-/// 浮动导航栏组件，支持双状态交互（预选和激活）
+/// Floating navigation column components to support dual-state interaction (preselection and activation)
 class FloatingNavBar extends StatelessWidget {
-  final int activeIndex;     // 当前激活的页面索引
-  final int selectedIndex;   // 当前视觉高亮的索引
+  final int activeIndex;     // Current Active Page Index
+  final int selectedIndex;   // Current High Visual Index
   final Function(int) onTap;
   final Color themeColor;
   
@@ -20,7 +20,7 @@ class FloatingNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 获取响应式参数
+    // Get Response Parameters
     final responsivePadding = ResponsiveUtils.getResponsivePadding(context, 24);
     final navBarHeight = ResponsiveUtils.isExtraLargeTablet(context) ? 140.0 : 
                         (ResponsiveUtils.isLargeTablet(context) ? 130.0 : 
@@ -30,9 +30,9 @@ class FloatingNavBar extends StatelessWidget {
                     (ResponsiveUtils.isTablet(context) ? 28.0 : 24.0));
     final fontSize = ResponsiveUtils.getResponsiveFontSize(context, 14);
     
-    // SECTION: 导航栏容器布局参数
+    // SECTION: Navigation column container layout parameters
     return Padding(
-      // 外边距 - 调整导航栏与屏幕边缘的距离
+      // Margin - Adjust the distance between the navigation bar and the edge of the screen
       padding: EdgeInsets.only(
         bottom: responsivePadding, 
         left: responsivePadding, 
@@ -41,7 +41,7 @@ class FloatingNavBar extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          // 底层带圆角的容器
+          // Base container with rounded corners
           Positioned.fill(
             child: ClipPath(
               clipper: NavBarNotchClipper(),
@@ -72,18 +72,18 @@ class FloatingNavBar extends StatelessWidget {
             ),
           ),
           
-          // 导航项布局
+          // Navigation Item Layout
           Container(
             height: navBarHeight,
             child: Row(
-              // 布局方式 - 控制导航项的水平分布
+              // Layout - Control the horizontal distribution of navigation items
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // 导航项配置 - 修改图标路径和标签文字
-                _buildNavItem(context, 0, 'assets/images/Icon/home-alt.svg', '首页', iconSize, fontSize),
-                _buildNavItem(context, 1, 'assets/images/Icon/image-select.svg', '图片', iconSize, fontSize),
-                _buildNavItem(context, 2, 'assets/images/Icon/message-text.svg', '文案', iconSize, fontSize),
-                _buildNavItem(context, 3, 'assets/images/Icon/ai-select.svg', '好友', iconSize, fontSize),
+                // Navigation Item Configuration - Modify Icon Path and Tab Text
+                _buildNavItem(context, 0, 'assets/images/Icon/home-alt.svg', 'Home', iconSize, fontSize),
+                _buildNavItem(context, 1, 'assets/images/Icon/image-select.svg', 'Images', iconSize, fontSize),
+                _buildNavItem(context, 2, 'assets/images/Icon/message-text.svg', 'Captions', iconSize, fontSize),
+                _buildNavItem(context, 3, 'assets/images/Icon/ai-select.svg', 'Friends', iconSize, fontSize),
               ],
             ),
           ),
@@ -92,18 +92,18 @@ class FloatingNavBar extends StatelessWidget {
     );
   }
   
-  /// 构建单个导航项
-  /// [index] 导航项索引
-  /// [iconPath] SVG图标路径
-  /// [label] 导航项标签文字
-  /// [iconSize] 图标尺寸
-  /// [fontSize] 字体大小
+  /// Build Single Navigator
+  /// [index] Navigator index
+  /// [iconPath] SVG icon path
+  /// [label] Navigation entry label text
+  /// [iconSize] Icon Size
+  /// [fontSize] Font size
   Widget _buildNavItem(BuildContext context, int index, String iconPath, String label, double iconSize, double fontSize) {
-    // 导航项状态
-    final isSelected = selectedIndex == index;  // 是否为视觉选中状态
-    final isActive = activeIndex == index;      // 是否为实际激活状态
+    // Navigator Status
+    final isSelected = selectedIndex == index;  // Whether to select the visual status
+    final isActive = activeIndex == index;      // Whether or not to be actually activated
     
-    // 响应式容器尺寸 - 针对不同iPad尺寸优化
+    // Responsive container size optimized for different iPad sizes
     final selectedWidth = ResponsiveUtils.isExtraLargeTablet(context) ? 160.0 : 
                          (ResponsiveUtils.isLargeTablet(context) ? 145.0 : 
                          (ResponsiveUtils.isTablet(context) ? 130.0 : 110.0));
@@ -116,23 +116,23 @@ class FloatingNavBar extends StatelessWidget {
     
     return GestureDetector(
       onTap: () => onTap(index),
-      // 根据选中状态决定是使用横向布局（Row）还是纵向布局（Column）
+      // Whether to use a horizontal layout (Row) or a vertical layout (Column) according to the selected status
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 350),
-        // 容器宽度 - 选中时宽度更大以容纳文字
+        // Container width expands to fit the label when selected
         width: isSelected ? selectedWidth : unselectedWidth, 
         height: isSelected ? containerHeight : unselectedWidth,
-        // 椭圆形边框
+        // Ellipse Border
         decoration: BoxDecoration(
-          // 容器形状 - 圆角矩形（椭圆形效果）
+          // Container shape - rounded rectangles (ellipse effect)
           borderRadius: BorderRadius.circular(50),
-          // 背景颜色 - 调整选中和未选中状态的背景色
+          // Background Colour - Adjusts the background of the selected and unselected status Colour
           color: isSelected ? themeColor : themeColor.withOpacity(0.2),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // 图标
+            // Icon
             SvgPicture.asset(
               iconPath,
               width: iconSize,
@@ -142,23 +142,23 @@ class FloatingNavBar extends StatelessWidget {
                 BlendMode.srcIn,
               ),
             ),
-            // 文字标签 - 使用AnimatedSize来处理文字显示过渡
+            // Text Label - Use AnimatedSize to process text to show transition
             AnimatedSize(
               duration: const Duration(milliseconds: 250),
-              // 延迟显示文字，确保容器已经展开
+              // Delay displaying text to make sure the container is active
               child: isSelected
                   ? Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // 图标和文字之间的间距
+                        // Space between icons and text
                         SizedBox(width: ResponsiveUtils.isExtraLargeTablet(context) ? 12 : 
                                        (ResponsiveUtils.isLargeTablet(context) ? 11 : 
                                        (ResponsiveUtils.isTablet(context) ? 10 : 8))),
-                        // 文字标签
+                        // Text Label
                         AnimatedOpacity(
-                          // 设置稍长一点的延迟，确保容器已完全展开
+                          // Set a slightly longer delay to ensure that the container is fully expanded
                           duration: const Duration(milliseconds: 350),
-                          // 延迟展开后再显示文字
+                          // Show text after delay in expanding
                           curve: const Interval(0.4, 1.0),
                           opacity: isSelected ? 1.0 : 0.0,
                           child: Text(
@@ -181,31 +181,31 @@ class FloatingNavBar extends StatelessWidget {
   }
 }
 
-/// 仅用于创建顶部小圆切口的裁剪器
+/// Clipper used only to create the small circular notch at the top
 class NavBarNotchClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
-    // 创建路径
+    // Create Path
     final path = Path();
     
-    // 定义缺口参数
+    // Define gap parameters
     final width = size.width;
     final height = size.height;
-    final notchRadius = 40.0; // 缺口半径
-    final notchDepth = 5.0;  // 缺口深度
+    final notchRadius = 40.0; // Gap Radius
+    final notchDepth = 5.0;  // Gap depth
     
-    // 使用矩形填充整个区域
+    // Use a rectangle to fill the entire area
     path.addRect(Rect.fromLTWH(0, 0, width, height));
     
-    // 绘制缺口 - 使用二次贝塞尔曲线创建平缓的缺口
+    // Draw a gap - Create a flat gap using a secondary Bézier curve
     final notchCenter = width / 2;
     final notchStart = notchCenter - notchRadius;
     final notchEnd = notchCenter + notchRadius;
     
-    // 控制缺口高度的参数
+    // Parameters to control the height of the gap
     final controlPointOffset = 15.0;
     
-    // 创建切口路径
+    // Create a cut path
     final notchPath = Path();
     notchPath.moveTo(notchStart, 0);
     notchPath.quadraticBezierTo(
@@ -215,7 +215,7 @@ class NavBarNotchClipper extends CustomClipper<Path> {
     notchPath.lineTo(notchStart, 0);
     notchPath.close();
     
-    // 从主路径中减去切口路径
+    // Deleting the cut path from the main path
     final result = Path.combine(PathOperation.difference, path, notchPath);
     
     return result;

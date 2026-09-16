@@ -23,12 +23,12 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   bool _isLoading = false;
   bool _isInitialized = false;
 
-  // 用户头像相关信息
+  // User avatar information
   String? _userAvatarPath;
   String _userAvatarPlaceholder = 'U';
   Color _userAvatarColor = Colors.blue;
 
-  // 获取当前主题色
+  // Get the current theme color
   Color get _themeColor => widget.themeColor ?? Theme.of(context).colorScheme.primary;
 
   @override
@@ -36,36 +36,36 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     super.initState();
     _initializeChat();
     
-    // 设置AI回复回调
+    // Set the AI reply callback
     ChatService.setMessageAddedCallback(_onAIMessageAdded);
   }
 
   @override
   void dispose() {
-    // 清除回调
+    // Clear the callback
     ChatService.clearMessageAddedCallback();
     _messageController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
 
-  /// 初始化聊天
+  /// Initialize chat
   Future<void> _initializeChat() async {
     setState(() {
       _isLoading = true;
     });
 
     try {
-      // 初始化聊天服务
+      // Initialize the chat service
       await ChatService.init();
       
-      // 获取用户头像信息
+      // Get user avatar information
       await _loadUserAvatarInfo();
       
-      // 获取选中的AI好友
+      // Get selected AI friends
       _selectedAIFriends = await AIService.getSelectedAIFriends();
       
-      // 创建新的聊天会话
+      // Create a new chat session
       _currentSession = await ChatService.createNewSession();
       
       setState(() {
@@ -73,17 +73,17 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         _isLoading = false;
       });
 
-      // 发送欢迎消息
+      // Send a welcome message
       _sendWelcomeMessage();
     } catch (e) {
       setState(() {
         _isLoading = false;
       });
-      _showErrorSnackBar('初始化聊天失败: $e');
+      _showErrorSnackBar('Failed to initialize chat: $e');
     }
   }
 
-  /// 加载用户头像信息
+  /// Load user avatar information
   Future<void> _loadUserAvatarInfo() async {
     try {
       final userInfo = await UserService.getUserInfo();
@@ -93,16 +93,16 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         _userAvatarColor = userInfo['avatarColor'] ?? Colors.blue;
       });
     } catch (e) {
-      print('加载用户头像信息失败: $e');
+      print('Failed to load user avatar information: $e');
     }
   }
 
-  /// 发送欢迎消息
+  /// Send a welcome message
   void _sendWelcomeMessage() {
     if (_selectedAIFriends.isNotEmpty) {
       final welcomeAI = _selectedAIFriends.first;
       final welcomeMessage = ChatMessage.ai(
-        content: '大家好！欢迎来到群聊～有什么想聊的吗？',
+        content: 'Hi everyone! Welcome to the group chat. What would you like to talk about?',
         aiName: welcomeAI['name'],
         aiAvatar: welcomeAI['avatar'] ?? '',
         aiColor: welcomeAI['avatarColor'],
@@ -116,7 +116,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     }
   }
 
-  /// AI消息添加回调
+  /// Callback invoked when an AI message is added
   void _onAIMessageAdded(ChatMessage message) {
     if (mounted) {
       setState(() {
@@ -126,15 +126,15 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     }
   }
 
-  /// 发送消息
+  /// Send a message
   Future<void> _sendMessage() async {
     final content = _messageController.text.trim();
     if (content.isEmpty || _currentSession == null) return;
 
-    // 清空输入框
+    // Clear the input field
     _messageController.clear();
 
-    // 发送用户消息
+    // Send the user message
     final userMessage = ChatService.sendUserMessage(content);
     setState(() {
       _currentSession = ChatService.currentSession;
@@ -142,16 +142,16 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
     _scrollToBottom();
 
-    // 显示加载状态
+    // Show the loading state
     setState(() {
       _isLoading = true;
     });
 
     try {
-      // 开始生成AI回复（异步，不等待完成）
+      // Start generating AI replies asynchronously
       await ChatService.generateAIReplies(content);
       
-      // 延迟一段时间后隐藏加载状态（给AI回复一些时间）
+      // Hide the loading state after allowing time for AI replies
       Future.delayed(Duration(seconds: 3), () {
         if (mounted) {
           setState(() {
@@ -164,11 +164,11 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       setState(() {
         _isLoading = false;
       });
-      _showErrorSnackBar('发送消息失败: $e');
+      _showErrorSnackBar('Failed to send message: $e');
     }
   }
 
-  /// 滚动到底部
+  /// Scroll to the bottom
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
@@ -181,7 +181,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     });
   }
 
-  /// 显示错误提示
+  /// Show an error message
   void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -192,7 +192,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     );
   }
 
-  /// 构建消息气泡
+  /// Build a message bubble
   Widget _buildMessageBubble(ChatMessage message) {
     final isUser = message.isUser;
     
@@ -202,18 +202,18 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // AI头像（左侧）
+          // AI avatar (left)
           if (!isUser) ...[
             _buildAvatar(message),
             const SizedBox(width: 8),
           ],
           
-          // 消息内容
+          // Message content
           Flexible(
             child: Column(
               crossAxisAlignment: isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
               children: [
-                // 发送者名称
+                // Sender name
                 if (!isUser)
                   Padding(
                     padding: const EdgeInsets.only(left: 12, bottom: 4),
@@ -227,7 +227,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                     ),
                   ),
                 
-                // 消息气泡
+                // Message bubble
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   decoration: BoxDecoration(
@@ -256,7 +256,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                   ),
                 ),
                 
-                // 时间戳
+                // Timestamp
                 Padding(
                   padding: const EdgeInsets.only(top: 4),
                   child: Text(
@@ -271,7 +271,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             ),
           ),
           
-          // 用户头像（右侧）
+          // User avatar (right)
           if (isUser) ...[
             const SizedBox(width: 8),
             _buildUserAvatar(),
@@ -281,7 +281,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     );
   }
 
-  /// 构建AI头像
+  /// Build an AI avatar
   Widget _buildAvatar(ChatMessage message) {
     return Container(
       width: 40,
@@ -338,7 +338,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     );
   }
 
-  /// 构建用户头像
+  /// Build the user avatar
   Widget _buildUserAvatar() {
     return Container(
       width: 40,
@@ -395,23 +395,23 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     );
   }
 
-  /// 格式化时间
+  /// Format a timestamp
   String _formatTime(DateTime time) {
     final now = DateTime.now();
     final difference = now.difference(time);
     
     if (difference.inMinutes < 1) {
-      return '刚刚';
+      return 'Just now';
     } else if (difference.inHours < 1) {
-      return '${difference.inMinutes}分钟前';
+      return '${difference.inMinutes} minutes ago';
     } else if (difference.inDays < 1) {
-      return '${difference.inHours}小时前';
+      return '${difference.inHours} hours ago';
     } else {
       return '${time.month}/${time.day} ${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
     }
   }
 
-  /// 构建输入区域
+  /// Build the input area
   Widget _buildInputArea() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -424,7 +424,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       child: SafeArea(
         child: Row(
           children: [
-            // 输入框
+            // Input field
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
@@ -435,7 +435,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                 child: TextField(
                   controller: _messageController,
                   decoration: const InputDecoration(
-                    hintText: '输入消息...',
+                    hintText: 'Type a message...',
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   ),
@@ -448,7 +448,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             
             const SizedBox(width: 8),
             
-            // 发送按钮
+            // Send button
             GestureDetector(
               onTap: _sendMessage,
               child: Container(
@@ -471,12 +471,12 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
     );
   }
 
-  /// 构建群成员列表
+  /// Build the group member list
   Widget _buildParticipantsList() {
     if (_selectedAIFriends.isEmpty) return const SizedBox.shrink();
     
     return Container(
-      height: 60, // 减少高度，因为不显示名字了
+      height: 60, // Reduced because names are hidden
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -484,7 +484,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
         itemCount: _selectedAIFriends.length + 1, // +1 for user
         itemBuilder: (context, index) {
           if (index == 0) {
-            // 用户自己 - 使用用户设置的头像
+            // Current user - use the avatar from user settings
             return Container(
               margin: const EdgeInsets.only(right: 12),
               child: Container(
@@ -611,7 +611,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
         title: Text(
-          _currentSession?.title ?? '群聊',
+          _currentSession?.title ?? 'Group Chat',
           style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -634,7 +634,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
             )
           : Column(
               children: [
-                // 消息列表
+                // Message list
                 Expanded(
                   child: _currentSession == null || _currentSession!.messages.isEmpty
                       ? Center(
@@ -648,7 +648,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                               ),
                               const SizedBox(height: 16),
                               Text(
-                                '开始聊天吧！',
+                                'Start chatting!',
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: Colors.grey[600],
@@ -668,7 +668,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                         ),
                 ),
                 
-                // 加载指示器
+                // Loading indicator
                 if (_isLoading && _isInitialized)
                   Container(
                     padding: const EdgeInsets.all(8),
@@ -685,7 +685,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'AI正在思考...',
+                          'AI is thinking...',
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey[600],
@@ -695,7 +695,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
                     ),
                   ),
                 
-                // 输入区域
+                // Input area
                 _buildInputArea(),
               ],
             ),

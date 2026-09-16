@@ -18,7 +18,7 @@ class DraftItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 获取第一张有效图片
+    // Get the first valid picture
     String? firstImagePath;
     for (final path in draft.imagePaths) {
       if (File(path).existsSync()) {
@@ -48,7 +48,7 @@ class DraftItemWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 图片区域
+              // Picture Area
               Expanded(
                 flex: 3,
                 child: Container(
@@ -62,7 +62,7 @@ class DraftItemWidget extends StatelessWidget {
                   ),
                   child: Stack(
                     children: [
-                      // 图片
+                      // Picture
                       firstImagePath != null
                           ? ClipRRect(
                               borderRadius: const BorderRadius.only(
@@ -84,7 +84,7 @@ class DraftItemWidget extends StatelessWidget {
                               ),
                             ),
                       
-                      // 草稿标识（右上角）
+                      // Draft identification (top right corner)
                       Positioned(
                         top: 8,
                         right: 8,
@@ -95,7 +95,7 @@ class DraftItemWidget extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: const Text(
-                            '草稿',
+                            'Draft',
                             style: TextStyle(
                               fontSize: 8,
                               color: Colors.white,
@@ -105,7 +105,7 @@ class DraftItemWidget extends StatelessWidget {
                         ),
                       ),
                       
-                      // 删除按钮（左上角）
+                      // Delete button (top left)
                       if (onDelete != null)
                         Positioned(
                           top: 8,
@@ -131,7 +131,7 @@ class DraftItemWidget extends StatelessWidget {
                 ),
               ),
               
-              // 内容区域
+              // Content Area
               Expanded(
                 flex: 2,
                 child: Padding(
@@ -139,9 +139,9 @@ class DraftItemWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // 标题
+                      // Title
                       Text(
-                        draft.title.isNotEmpty ? draft.title : '无标题',
+                        draft.title.isNotEmpty ? draft.title : 'Untitled',
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
@@ -152,7 +152,7 @@ class DraftItemWidget extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       
-                      // 话题标签（最多显示1个）
+                      // Topical labels (highest 1 shown)
                       if (draft.topics.isNotEmpty) ...[
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
@@ -174,7 +174,7 @@ class DraftItemWidget extends StatelessWidget {
                       
                       const Spacer(),
                       
-                      // 更新时间
+                      // Update Time
                       Text(
                         _formatDate(draft.updatedAt),
                         style: TextStyle(
@@ -193,19 +193,19 @@ class DraftItemWidget extends StatelessWidget {
     );
   }
 
-  // 格式化日期
+  // Formatting Date
   String _formatDate(DateTime dateTime) {
     final now = DateTime.now();
     final difference = now.difference(dateTime);
 
     if (difference.inDays > 0) {
-      return '${difference.inDays}天前';
+      return '${difference.inDays} days ago';
     } else if (difference.inHours > 0) {
-      return '${difference.inHours}小时前';
+      return '${difference.inHours} hours ago';
     } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes}分钟前';
+      return '${difference.inMinutes} minutes ago';
     } else {
-      return '刚刚';
+      return 'Just now';
     }
   }
 } 

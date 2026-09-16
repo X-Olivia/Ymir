@@ -15,8 +15,8 @@ import 'dart:io';
 
 class UserSettingsPage extends StatefulWidget {
   final Color? themeColor;
-  final Function(PostModel)? onNavigateToPost; // 添加导航到帖子的回调
-  final Function(DraftModel, bool)? onNavigateToDraft; // 添加导航到草稿的回调
+  final Function(PostModel)? onNavigateToPost; // Callback for navigating to a post
+  final Function(DraftModel, bool)? onNavigateToDraft; // Callback for navigating to a draft
   
   const UserSettingsPage({
     super.key,
@@ -39,15 +39,15 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
   bool _isLoading = true;
   String? _selectedAvatarPath;
   
-  // 添加性别选择
+  // Gender selection
   String _selectedGender = 'none'; // 'male', 'female', 'none', 'alien', 'robot', 'cat', 'star'
   
-  // 模拟用户统计数据
+  // Mock user statistics
   int _followingCount = 274;
   int _followersCount = 38;
   int _likesCount = 380;
   
-  // 可选的头像颜色
+  // Available avatar colors
   final List<Color> _avatarColors = [
     Colors.blue,
     Colors.red,
@@ -59,14 +59,14 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
     Colors.indigo,
   ];
 
-  // 添加 TabController
+  // Tab controller
   late TabController _tabController;
   
-  // 笔记相关状态
+  // Post state
   List<Map<String, dynamic>> _notes = [];
   bool _isLoadingNotes = false;
   
-  // 草稿相关状态
+  // Draft state
   List<DraftModel> _imageDrafts = [];
   List<DraftModel> _captionDrafts = [];
   bool _isLoadingDrafts = false;
@@ -78,11 +78,11 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
     _loadUserInfo();
     _loadNotes();
     _loadDrafts();
-    // 初始化 TabController
+    // Initialize the tab controller
     _tabController = TabController(length: 2, vsync: this);
   }
 
-  // 加载用户信息
+  // Load user information
   Future<void> _loadUserInfo() async {
     try {
       final userInfo = await UserService.getUserInfo();
@@ -92,21 +92,21 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
         _avatarColor = widget.themeColor ?? Colors.blue;
         _selectedAvatarPath = userInfo['avatarPath'];
         _ymirId = userInfo['ymirId'];
-        _selectedGender = userInfo['gender'] ?? 'none'; // 加载性别设置
+        _selectedGender = userInfo['gender'] ?? 'none'; // Load the gender setting
         _isLoading = false;
         
-        // 模拟加载其他信息
-        _bioController.text = '个性签名。';
+        // Mock loading other information
+        _bioController.text = 'Personal bio.';
       });
     } catch (e) {
-      print('加载用户信息失败: $e');
+      print('Failed to load user information: $e');
       setState(() {
         _isLoading = false;
       });
     }
   }
 
-  // 加载笔记
+  // Load posts
   Future<void> _loadNotes() async {
     setState(() {
       _isLoadingNotes = true;
@@ -119,14 +119,14 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
         _isLoadingNotes = false;
       });
     } catch (e) {
-      print('加载笔记失败: $e');
+      print('Failed to load posts: $e');
       setState(() {
         _isLoadingNotes = false;
       });
     }
   }
 
-  // 加载草稿
+  // Load drafts
   Future<void> _loadDrafts() async {
     setState(() {
       _isLoadingDrafts = true;
@@ -142,22 +142,22 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
         _isLoadingDrafts = false;
       });
     } catch (e) {
-      print('加载草稿失败: $e');
+      print('Failed to load drafts: $e');
       setState(() {
         _isLoadingDrafts = false;
       });
     }
   }
 
-  // 删除笔记
+  // Delete a post
   Future<void> _deleteNote(String noteId) async {
     try {
       await NotesService.deleteNote(noteId);
-      await _loadNotes(); // 重新加载笔记列表
+      await _loadNotes(); // Reload the post list
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('笔记已删除'),
+            content: const Text('Post deleted'),
             backgroundColor: _avatarColor,
           ),
         );
@@ -166,7 +166,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('删除失败: $e'),
+            content: Text('Failed to delete: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -174,7 +174,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
     }
   }
 
-  // 删除草稿
+  // Delete a draft
   Future<void> _deleteDraft(DraftModel draft, bool isCaptionDraft) async {
     try {
       if (isCaptionDraft) {
@@ -183,31 +183,31 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
         await DraftService.deleteDraft(draft.id);
       }
       
-      // 重新加载草稿列表
+      // Reload the draft list
       await _loadDrafts();
       
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('草稿已删除')),
+        const SnackBar(content: Text('Draft deleted')),
       );
     } catch (e) {
-      print('删除草稿失败: $e');
+      print('Failed to delete draft: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('删除草稿失败')),
+        const SnackBar(content: Text('Failed to delete draft')),
       );
     }
   }
 
-  // 点击笔记，导航到帖子详情页面
+  // Navigate to post details when a post is tapped
   void _handleNoteTap(Map<String, dynamic> note) async {
-    // 使用NotesService的createPostFromNote方法创建PostModel
+    // Create a PostModel with NotesService.createPostFromNote
     final post = await NotesService.createPostFromNote(note);
     
     if (post == null) {
-      // 如果创建失败（比如图片文件不存在），显示错误提示
+      // Show an error if creation fails, for example when an image file is missing
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('无法打开笔记，图片文件可能已丢失'),
+            content: const Text('Unable to open the post. Its image file may be missing.'),
             backgroundColor: Colors.red,
           ),
         );
@@ -215,11 +215,11 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
       return;
     }
     
-    // 使用回调函数进行导航，实现内嵌显示
+    // Use the callback to navigate within the embedded view
     if (widget.onNavigateToPost != null) {
       widget.onNavigateToPost!(post);
     } else {
-      // 向下兼容：如果没有回调，使用传统导航
+      // Backward compatibility: use standard navigation when no callback is provided
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -232,14 +232,14 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
     }
   }
 
-  // 处理草稿点击
+  // Handle a draft tap
   void _handleDraftTap(DraftModel draft, bool isCaptionDraft) {
     if (widget.onNavigateToDraft != null) {
       widget.onNavigateToDraft!(draft, isCaptionDraft);
     }
   }
 
-  // 保存用户信息
+  // Save user information
   Future<void> _saveUserInfo() async {
     try {
       await UserService.saveUserInfo(
@@ -247,13 +247,13 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
         avatarPlaceholder: _avatarPlaceholder,
         avatarColor: widget.themeColor ?? Colors.blue,
         avatarPath: _selectedAvatarPath,
-        gender: _selectedGender, // 保存性别设置
+        gender: _selectedGender, // Save the gender setting
       );
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('保存失败: $e'),
+            content: Text('Failed to save: $e'),
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -261,7 +261,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
     }
   }
 
-  // 显示头像选择弹窗
+  // Show the avatar picker
   Future<void> _showAvatarPicker() async {
     final selectedPath = await showDialog<String>(
       context: context,
@@ -275,7 +275,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
     }
   }
   
-  // 获取性别图标
+  // Get the gender icon
   IconData _getGenderIcon() {
     switch (_selectedGender) {
       case 'male':
@@ -299,7 +299,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
     }
   }
   
-  // 获取性别颜色
+  // Get the gender color
   Color _getGenderColor() {
     switch (_selectedGender) {
       case 'male':
@@ -323,52 +323,52 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
     }
   }
   
-  // 获取性别文本
+  // Get the gender label
   String _getGenderText() {
     switch (_selectedGender) {
       case 'male':
-        return '男';
+        return 'Male';
       case 'female':
-        return '女';
+        return 'Female';
       case 'alien':
-        return '外星人';
+        return 'Alien';
       case 'robot':
-        return '机器人';
+        return 'Robot';
       case 'cat':
-        return '猫咪';
+        return 'Cat';
       case 'star':
-        return '星星';
+        return 'Star';
       case 'rainbow':
-        return '彩虹';
+        return 'Rainbow';
       case 'fire':
-        return '火焰';
+        return 'Fire';
       default:
-        return '保密';
+        return 'Prefer not to say';
     }
   }
   
-  // 显示性别选择弹窗
+  // Show the gender picker
   Future<void> _showGenderPicker() async {
     final result = await showDialog<String>(
       context: context,
       builder: (context) => Stack(
         children: [
-          // 背景模糊层（不变暗）
+          // Background blur layer (without dimming)
           Positioned.fill(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
               child: Container(
-                color: Colors.white.withOpacity(0.1), // 轻微提亮背景
+                color: Colors.white.withOpacity(0.1), // Slightly brighten the background
               ),
             ),
           ),
-          // 弹窗
+          // Dialog
           Dialog(
             backgroundColor: Colors.transparent,
             child: Container(
               constraints: const BoxConstraints(
                 maxWidth: 350,
-                maxHeight: 500, // 减少最大高度
+                maxHeight: 500, // Reduced maximum height
               ),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.25),
@@ -410,12 +410,12 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // 标题
+                        // Title
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Text(
-                              '选一个就行了',
+                              'Just pick one',
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -429,20 +429,20 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
                           ],
                         ),
                         const SizedBox(height: 16),
-                        // 选项列表 - 使用 Flexible 和 ListView 使其可滚动
+                        // Option list - use Flexible and ListView for scrolling
                         Flexible(
                           child: ListView(
                             shrinkWrap: true,
                             children: [
-                              _buildGenderOption('male', Icons.male, Colors.blue, '男'),
-                              _buildGenderOption('female', Icons.female, Colors.pink, '女'),
-                              _buildGenderOption('alien', Icons.rocket_launch, Colors.green, '外星人'),
-                              _buildGenderOption('robot', Icons.smart_toy, Colors.grey, '机器人'),
-                              _buildGenderOption('cat', Icons.pets, Colors.orange, '猫咪'),
-                              _buildGenderOption('star', Icons.star, Colors.amber, '星星'),
-                              _buildGenderOption('rainbow', Icons.palette, Colors.purple, '彩虹'),
-                              _buildGenderOption('fire', Icons.local_fire_department, Colors.red, '火焰'),
-                              _buildGenderOption('none', Icons.help_outline, Colors.grey, '保密'),
+                              _buildGenderOption('male', Icons.male, Colors.blue, 'Male'),
+                              _buildGenderOption('female', Icons.female, Colors.pink, 'Female'),
+                              _buildGenderOption('alien', Icons.rocket_launch, Colors.green, 'Alien'),
+                              _buildGenderOption('robot', Icons.smart_toy, Colors.grey, 'Robot'),
+                              _buildGenderOption('cat', Icons.pets, Colors.orange, 'Cat'),
+                              _buildGenderOption('star', Icons.star, Colors.amber, 'Star'),
+                              _buildGenderOption('rainbow', Icons.palette, Colors.purple, 'Rainbow'),
+                              _buildGenderOption('fire', Icons.local_fire_department, Colors.red, 'Fire'),
+                              _buildGenderOption('none', Icons.help_outline, Colors.grey, 'Prefer not to say'),
                             ],
                           ),
                         ),
@@ -464,7 +464,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
     }
   }
 
-  // 构建性别选项
+  // Build a gender option
   Widget _buildGenderOption(String value, IconData icon, Color color, String label) {
     final isSelected = _selectedGender == value;
     return Container(
@@ -495,11 +495,11 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
     );
   }
   
-  // 分享个人资料
+  // Share the profile
   Future<void> _shareProfile() async {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('个人资料分享功能'),
+        content: const Text('Profile sharing'),
         behavior: SnackBarBehavior.floating,
         backgroundColor: _avatarColor,
       ),
@@ -555,7 +555,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
           ),
           child: CustomScrollView(
             slivers: [
-              // 自定义顶部区域
+              // Custom header
               SliverAppBar(
                 expandedHeight: 300,
                 floating: false,
@@ -572,7 +572,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
                   },
                 ),
                 actions: [
-                  // 隐私设置按钮在右上角
+                  // Privacy settings button in the top-right corner
                   IconButton(
                     icon: Icon(
                       Icons.privacy_tip_outlined,
@@ -598,11 +598,11 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // 头像和用户名区域
+                          // Avatar and username area
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // 头像区域
+                              // Avatar area
                               Stack(
                                 children: [
                                   Container(
@@ -658,21 +658,21 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
                               ),
                               const SizedBox(width: 16),
                               
-                              // 用户名和信息区域
+                              // Username and information area
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const SizedBox(height: 8),
-                                    // 用户名和下拉图标
+                                    // Username and dropdown icon
                                     Row(
                                       children: [
                                         Flexible(
                                           child: GestureDetector(
                                             onTap: () => _showEditDialog(
-                                              title: '修改昵称',
+                                              title: 'Change Nickname',
                                               initialValue: _nicknameController.text,
-                                              hintText: '请输入昵称',
+                                              hintText: 'Enter a nickname',
                                               maxLength: 20,
                                               onConfirm: (value) {
                                                 setState(() {
@@ -686,7 +686,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
                                             child: Text(
                                               _nicknameController.text.isNotEmpty 
                                                   ? _nicknameController.text 
-                                                  : '用户昵称',
+                                                  : 'Username',
                                               style: const TextStyle(
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.bold,
@@ -705,9 +705,9 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
                                     ),
                                     const SizedBox(height: 8),
                                     
-                                    // 用户ID
+                                    // User ID
                                     Text(
-                                      'Ymir号：$_ymirId',
+                                      'Ymir ID: $_ymirId',
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: Colors.grey[600],
@@ -720,11 +720,11 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
                           ),
                           const SizedBox(height: 16),
                           
-                          // 性别和分享按钮行
+                          // Gender and share button row
                           Row(
                             children: [
                               const SizedBox(width: 6),
-                              // 分享按钮
+                              // Share button
                               GestureDetector(
                                 onTap: _shareProfile,
                                 child: Container(
@@ -747,7 +747,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
                                       ),
                                       const SizedBox(width: 4),
                                       Text(
-                                        '分享',
+                                        'Share',
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: Colors.grey[700],
@@ -759,7 +759,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
                                 ),
                               ),
                               const SizedBox(width: 16),
-                              // 性别选择
+                              // Gender selector
                               GestureDetector(
                                 onTap: _showGenderPicker,
                                 child: Icon(
@@ -773,14 +773,14 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
                           ),
                           const SizedBox(height: 16),
                           
-                          // 个性签名
+                          // Bio
                           Padding(
                             padding: const EdgeInsets.only(left: 10),
                             child: GestureDetector(
                               onTap: () => _showEditDialog(
-                                title: '修改个性签名',
+                                title: 'Edit Bio',
                                 initialValue: _bioController.text,
-                                hintText: '介绍一下自己吧...',
+                                hintText: 'Tell us about yourself...',
                                 maxLength: 100,
                                 maxLines: 3,
                                 onConfirm: (value) {
@@ -805,7 +805,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
                 ),
               ),
 
-              // 统一的内容容器
+              // Unified content container
               SliverFillRemaining(
                 child: Container(
                   decoration: BoxDecoration(
@@ -824,7 +824,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
                   ),
                   child: Column(
                     children: [
-                      // 顶部装饰条
+                      // Top accent bar
                       Container(
                         margin: const EdgeInsets.only(top: 12),
                         width: 40,
@@ -843,21 +843,21 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
                         indicatorWeight: 3,
                         indicatorSize: TabBarIndicatorSize.label,
                         tabs: const [
-                          Tab(text: '笔记'),
-                          Tab(text: '草稿箱'),
+                          Tab(text: 'Posts'),
+                          Tab(text: 'Drafts'),
                         ],
                       ),
-                      // TabBarView 内容
+                      // TabBarView content
                       Expanded(
                         child: TabBarView(
                           controller: _tabController,
                           children: [
-                            // 笔记内容
+                            // Post content
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 20),
                               child: Column(
                                 children: [
-                                  // 笔记列表或空状态
+                                  // Post list or empty state
                                   Expanded(
                                     child: _isLoadingNotes
                                         ? const Center(
@@ -875,7 +875,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
                                                     ),
                                                     const SizedBox(height: 16),
                                                     Text(
-                                                      '还没有笔记',
+                                                      'No posts yet',
                                                       style: TextStyle(
                                                         fontSize: 16,
                                                         color: Colors.grey[500],
@@ -884,7 +884,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
                                                     ),
                                                     const SizedBox(height: 8),
                                                     Text(
-                                                      '发布帖子后会自动保存到这里',
+                                                      'Published posts will be saved here automatically',
                                                       style: TextStyle(
                                                         fontSize: 14,
                                                         color: Colors.grey[400],
@@ -900,7 +900,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
                                                     crossAxisCount: 2,
                                                     crossAxisSpacing: 12,
                                                     mainAxisSpacing: 12,
-                                                    childAspectRatio: 0.85, // 调整比例
+                                                    childAspectRatio: 0.85, // Adjust the aspect ratio
                                                   ),
                                                   itemCount: _notes.length,
                                                   itemBuilder: (context, index) {
@@ -918,7 +918,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
                                 ],
                               ),
                             ),
-                            // 草稿箱内容
+                            // Draft content
                             Container(
                               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                               child: _isLoadingDrafts
@@ -926,7 +926,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
                                   : _imageDrafts.isEmpty && _captionDrafts.isEmpty
                                       ? const Center(
                                           child: Text(
-                                            '暂无草稿',
+                                            'No drafts yet',
                                             style: TextStyle(
                                               fontSize: 16,
                                               color: Colors.grey,
@@ -945,7 +945,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
                                             itemCount: _imageDrafts.length + _captionDrafts.length,
                                             itemBuilder: (context, index) {
                                               if (index < _imageDrafts.length) {
-                                                // 显示图片草稿
+                                                // Display an image draft
                                                 final draft = _imageDrafts[index];
                                                 return DraftItemWidget(
                                                   draft: draft,
@@ -954,7 +954,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
                                                   onDelete: () => _deleteDraft(draft, false),
                                                 );
                                               } else {
-                                                // 显示文字草稿
+                                                // Display a text draft
                                                 final draft = _captionDrafts[index - _imageDrafts.length];
                                                 return DraftItemWidget(
                                                   draft: draft,
@@ -1044,7 +1044,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
     );
   }
 
-  // 添加显示编辑弹窗的方法
+  // Show the edit dialog
   Future<void> _showEditDialog({
     required String title,
     required String initialValue,
@@ -1070,21 +1070,21 @@ class _UserSettingsPageState extends State<UserSettingsPage> with SingleTickerPr
     }
   }
 
-  // 添加显示删除确认对话框的方法
+  // Show the delete confirmation dialog
   Future<void> _showDeleteConfirmDialog(String noteId) async {
     final result = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('确认删除'),
-        content: const Text('确定要删除这条笔记吗？'),
+        title: const Text('Confirm Deletion'),
+        content: const Text('Are you sure you want to delete this post?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('取消'),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('删除'),
+            child: const Text('Delete'),
           ),
         ],
       ),

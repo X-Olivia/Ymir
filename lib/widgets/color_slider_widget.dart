@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 
-/// 颜色滑动条组件 - 支持拖拽移动交互
+/// Color slider with drag-to-move interaction
 class ColorSliderWidget extends StatefulWidget {
   final List<Color> colors;
   final int currentIndex;
   final Color currentColor;
   final ValueChanged<int> onColorChanged;
-  final double maxDownwardOffset; // 最大向下偏移量
-  final double maxUpwardOffset; // 最大向上偏移量
-  final ValueChanged<double>? onOffsetChanged; // 偏移变化回调
+  final double maxDownwardOffset; // Maximum downward offset
+  final double maxUpwardOffset; // Maximum upward offset
+  final ValueChanged<double>? onOffsetChanged; // Offset change callback
 
   const ColorSliderWidget({
     super.key,
@@ -17,9 +17,9 @@ class ColorSliderWidget extends StatefulWidget {
     required this.currentIndex,
     required this.currentColor,
     required this.onColorChanged,
-    this.maxDownwardOffset = 100.0, // 默认最大向下偏移100像素
-    this.maxUpwardOffset = 100.0, // 默认最大向上偏移100像素
-    this.onOffsetChanged, // 偏移变化回调
+    this.maxDownwardOffset = 100.0, // Defaults to a 100-pixel downward offset
+    this.maxUpwardOffset = 100.0, // Defaults to a 100-pixel upward offset
+    this.onOffsetChanged, // Offset change callback
   });
 
   @override
@@ -28,27 +28,27 @@ class ColorSliderWidget extends StatefulWidget {
 
 class _ColorSliderWidgetState extends State<ColorSliderWidget>
     with TickerProviderStateMixin {
-  // 位置偏移动画控制器
+  // Position offset animation controller
   late AnimationController _offsetController;
   late Animation<Offset> _offsetAnimation;
   
-  // 当前偏移量
+  // Current Offset
   Offset _currentOffset = Offset.zero;
   
-  // 是否处于拖拽移动模式
+  // Whether drag-to-move mode is active
   bool _isDragMode = false;
   
-  // 拖拽起始位置
+  // Drag start position
   double _dragStartY = 0.0;
   
-  // 是否正在拖拽
+  // Whether the pointer is down
   bool _isPointerDown = false;
   
   @override
   void initState() {
     super.initState();
     
-    // 初始化偏移动画控制器
+    // Initializes the offset animation controller
     _offsetController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -66,7 +66,7 @@ class _ColorSliderWidgetState extends State<ColorSliderWidget>
       setState(() {
         _currentOffset = _offsetAnimation.value;
       });
-      // 在动画过程中也通知偏移变化
+      // Reports offset changes during the animation
       widget.onOffsetChanged?.call(_offsetAnimation.value.dy);
     });
   }
@@ -77,45 +77,45 @@ class _ColorSliderWidgetState extends State<ColorSliderWidget>
     super.dispose();
   }
   
-  // 处理指针按下
+  // Handles pointer down
   void _handlePointerDown(PointerDownEvent event) {
     _isPointerDown = true;
     _dragStartY = event.position.dy;
     
-    // 在最底部（蓝色，index=0）或最顶部（粉色，index=4）时才允许进入拖拽模式
+    // Allows drag mode only at the bottom (blue, index 0) or top (pink, index 4)
     if (widget.currentIndex == 0 || widget.currentIndex == 4) {
-      _isDragMode = false; // 初始不是拖拽模式，需要继续拖拽才进入
+      _isDragMode = false; // Further dragging is required to enter drag mode
     }
   }
   
-  // 处理指针移动
+  // Handles pointer movement
   void _handlePointerMove(PointerMoveEvent event) {
     if (!_isPointerDown) return;
     
     final currentY = event.position.dy;
     final deltaY = currentY - _dragStartY;
     
-    // 降低进入拖拽模式的阈值，提高真机响应性
-    // 如果在最底部且向下拖拽，或在最顶部且向上拖拽，进入拖拽移动模式
-    if ((widget.currentIndex == 0 && deltaY > 10) ||  // 从20降低到10像素
-        (widget.currentIndex == 4 && deltaY < -10)) { // 从-20提高到-10像素
+    // Lowers the drag-mode threshold for better responsiveness on physical devices
+    // Enters drag mode when pulling down at the bottom or up at the top
+    if ((widget.currentIndex == 0 && deltaY > 10) ||  // From 20 to 10 pixels.
+        (widget.currentIndex == 4 && deltaY < -10)) { // Changed from -20 to -10 pixels
       if (!_isDragMode) {
         _isDragMode = true;
-        _dragStartY = currentY; // 重置起始位置
+        _dragStartY = currentY; // Reset Start Location
       }
     }
     
     if (_isDragMode) {
-      // 计算新的偏移量 - 提高灵敏度
+      // Calculates the new offset with increased sensitivity
       final newOffsetY = _currentOffset.dy + event.delta.dy;
       
-      // 限制偏移范围
+      // Clamps the offset
       double clampedOffsetY;
       if (widget.currentIndex == 0) {
-        // 底部：只能向下移动，不能向上移动
+        // Bottom: only move down, not up
         clampedOffsetY = newOffsetY.clamp(0.0, widget.maxDownwardOffset);
       } else {
-        // 顶部：只能向上移动，不能向下移动
+        // Top: Only move up, not down
         clampedOffsetY = newOffsetY.clamp(-widget.maxUpwardOffset, 0.0);
       }
       
@@ -123,19 +123,19 @@ class _ColorSliderWidgetState extends State<ColorSliderWidget>
         _currentOffset = Offset(0, clampedOffsetY);
       });
       
-      // 通知偏移变化
+      // Reports the offset change
       widget.onOffsetChanged?.call(clampedOffsetY);
     }
   }
   
-  // 处理指针抬起
+  // Handles pointer up
   void _handlePointerUp(PointerUpEvent event) {
     _isPointerDown = false;
     
     if (_isDragMode) {
       _isDragMode = false;
       
-      // 执行回弹动画
+      // Runs the spring-back animation
       _offsetAnimation = Tween<Offset>(
         begin: _currentOffset,
         end: Offset.zero,
@@ -147,7 +147,7 @@ class _ColorSliderWidgetState extends State<ColorSliderWidget>
       _offsetController.reset();
       _offsetController.forward();
       
-      // 通知偏移重置
+      // Reports that the offset has reset
       widget.onOffsetChanged?.call(0.0);
     }
   }
@@ -175,18 +175,18 @@ class _ColorSliderWidgetState extends State<ColorSliderWidget>
             trackHeight: 30,
           ),
           child: SizedBox(
-            height: 200, // 设置竖直滑动条的高度
+            height: 200, // Set the height of the vertical slider
             child: RotatedBox(
-              quarterTurns: 3, // 旋转270度使滑动条竖直
+              quarterTurns: 3, // Rotating 270 degrees to keep the slide straight.
               child: AbsorbPointer(
-                absorbing: _isDragMode, // 在拖拽移动模式下完全阻止Slider接收触摸事件
+                absorbing: _isDragMode, // Stop S Lider completely from receiving touch events in drag-and-drop mode
                 child: Slider(
                   value: widget.currentIndex.toDouble(),
                   min: 0,
                   max: (widget.colors.length - 1).toDouble(),
                   divisions: widget.colors.length - 1,
                   onChanged: (value) {
-                    // 正常颜色选择
+                    // Normal Colour Selection
                     widget.onColorChanged(value.toInt());
                   },
                 ),
@@ -199,7 +199,7 @@ class _ColorSliderWidgetState extends State<ColorSliderWidget>
   }
 }
 
-// 自定义滑块形状，用于显示当前颜色
+// Customize slider shapes for displaying current colours
 class _CustomSliderThumbShape extends SliderComponentShape {
   final double thumbRadius;
   final List<Color> colors;
@@ -233,24 +233,24 @@ class _CustomSliderThumbShape extends SliderComponentShape {
   }) {
     final Canvas canvas = context.canvas;
 
-    // 绘制外圈
+    // Draw the outer circle
     final Paint borderPaint = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
     
-    // 绘制滑块填充
+    // Draw slider fill
     final Paint fillPaint = Paint()
       ..color = colors[currentIndex]
       ..style = PaintingStyle.fill;
 
-    // 绘制滑块
+    // Draw sliders
     canvas.drawCircle(center, thumbRadius, fillPaint);
     canvas.drawCircle(center, thumbRadius, borderPaint);
   }
 }
 
-// 自定义滑动条轨道形状，支持渐变色
+// Custom slider track shape with gradient support
 class _GradientRectSliderTrackShape extends SliderTrackShape {
   final LinearGradient gradient;
   final Radius radius;
@@ -301,18 +301,18 @@ class _GradientRectSliderTrackShape extends SliderTrackShape {
       isDiscrete: isDiscrete,
     );
 
-    // 创建圆角矩形
+    // Create a circular rectangle
     final RRect trackRRect = RRect.fromRectAndRadius(
       trackRect,
       radius,
     );
 
-    // 使用渐变色填充
+    // Fill with Gradient Colour
     final Paint paint = Paint()
       ..shader = gradient.createShader(trackRect)
       ..style = PaintingStyle.fill;
 
-    // 绘制轨道
+    // Draw Tracks
     context.canvas.drawRRect(trackRRect, paint);
   }
 } 

@@ -1,119 +1,119 @@
-# Ymir 法律文档总结
+# Ymir Legal Documents Summary
 
-## 📋 文档概述
+## 📋 Document Overview
 
-为Ymir应用创建了适合**单机应用且仅联网请求API**特点的法律文档，包括：
+Legal documents have been created to reflect Ymir's nature as a **standalone app that connects to the internet only for API requests**, including:
 
-1. **隐私政策** (`lib/screens/privacy_policy_page.dart`)
-2. **服务条款** (`lib/screens/terms_of_service_page.dart`)
-3. **用户协议确认对话框** (`lib/widgets/terms_agreement_dialog.dart`)
+1. **Privacy Policy** (`lib/screens/privacy_policy_page.dart`)
+2. **Terms of Service** (`lib/screens/terms_of_service_page.dart`)
+3. **User Agreement Confirmation Dialog** (`lib/widgets/terms_agreement_dialog.dart`)
 
-## 🔒 隐私政策要点
+## 🔒 Privacy Policy Highlights
 
-### 数据收集最小化
-- **本地存储优先**: 所有用户数据存储在设备本地
-- **透明的API使用**: 明确说明仅在AI功能时发送数据给第三方
-- **无服务器存储**: 强调我们不在服务器存储用户个人数据
+### Data Collection Minimization
+- **Local Storage First**: All user data is stored locally on the device
+- **Transparent API Usage**: Clearly states that data is sent to third parties only when AI features are used
+- **No Server Storage**: Emphasizes that we do not store users' personal data on our servers
 
-### 权限使用说明
-- **照片库权限**: 仅用于选择图片进行AI分析
-- **网络权限**: 仅用于AI API请求
-- **用户控制**: 用户可随时撤销权限
+### Permission Usage
+- **Photo Library Permission**: Used only to select images for AI analysis
+- **Network Permission**: Used only for AI API requests
+- **User Control**: Users can revoke permissions at any time
 
-### 数据安全
-- **加密存储**: 本地数据加密保护
-- **传输加密**: API请求使用HTTPS加密
-- **数据删除**: 卸载应用时自动删除所有数据
+### Data Security
+- **Encrypted Storage**: Local data is protected with encryption
+- **Encrypted Transmission**: API requests are encrypted using HTTPS
+- **Data Deletion**: All data is automatically deleted when the app is uninstalled
 
-## 📜 服务条款要点
+## 📜 Terms of Service Highlights
 
-### 服务范围
-- **AI功能**: 图片分析、文案生成、AI聊天
-- **本地功能**: 内容管理、草稿保存
-- **网络依赖**: 明确AI功能需要网络连接
+### Scope of Service
+- **AI Features**: Image analysis, caption generation, and AI chat
+- **Local Features**: Content management and draft storage
+- **Network Dependency**: Clearly states that AI features require an internet connection
 
-### 用户责任
-- **合法使用**: 不得上传违法内容
-- **内容责任**: 用户对上传内容负责
-- **设备安全**: 用户负责设备和数据安全
+### User Responsibilities
+- **Lawful Use**: Users must not upload illegal content
+- **Content Responsibility**: Users are responsible for the content they upload
+- **Device Security**: Users are responsible for the security of their devices and data
 
-### 免责声明
-- **AI准确性**: 不保证AI生成内容的准确性
-- **服务可用性**: 不保证100%无中断服务
-- **责任限制**: 限制开发者责任范围
+### Disclaimers
+- **AI Accuracy**: The accuracy of AI-generated content is not guaranteed
+- **Service Availability**: Uninterrupted service is not guaranteed
+- **Limitation of Liability**: The developer's liability is limited
 
-## 🎯 单机应用特色条款
+## 🎯 Provisions Specific to a Standalone App
 
-### 1. 数据本地化
+### 1. Local Data Storage
 ```
-• 所有用户数据存储在设备本地
-• 使用加密存储保护敏感信息
-• 卸载应用时，所有本地数据将被删除
-• 我们无法访问您设备上的任何数据
-```
-
-### 2. API使用透明
-```
-• 将您选择的图片发送给第三方AI服务提供商进行分析
-• 发送文本内容给AI服务以生成回复
-• 这些数据传输仅用于提供服务，不会被永久存储
+• All user data is stored locally on the device
+• Sensitive information is protected using encrypted storage
+• All local data is deleted when the app is uninstalled
+• We cannot access any data on your device
 ```
 
-### 3. 最小权限原则
+### 2. Transparent API Usage
 ```
-• 照片库访问权限：仅用于选择要分析的图片
-• 不会自动上传或备份您的照片
-• 您可以随时在系统设置中撤销此权限
+• Images you select are sent to third-party AI service providers for analysis
+• Text content is sent to AI services to generate responses
+• These transfers are used only to provide the service and are not stored permanently
 ```
 
-## 🔧 技术实现
+### 3. Principle of Least Privilege
+```
+• Photo library access: Used only to select images for analysis
+• Your photos are never uploaded or backed up automatically
+• You can revoke this permission in system settings at any time
+```
 
-### 页面集成
-- **隐私设置页面**: 添加了法律文档导航链接
-- **首次使用**: 可选择性显示用户协议确认对话框
-- **随时访问**: 用户可随时查看法律文档
+## 🔧 Technical Implementation
 
-### 用户体验
-- **清晰导航**: 从隐私设置直接访问法律文档
-- **可点击链接**: 协议对话框中可直接跳转查看详细条款
-- **本地化语言**: 使用中文，符合目标用户习惯
+### Page Integration
+- **Privacy Settings Page**: Navigation links to legal documents have been added
+- **First Use**: The user agreement confirmation dialog can optionally be shown
+- **Anytime Access**: Users can view the legal documents at any time
 
-## ⚖️ 法律合规性
+### User Experience
+- **Clear Navigation**: Legal documents are directly accessible from privacy settings
+- **Clickable Links**: Users can jump directly from the agreement dialog to the detailed terms
+- **Localized Language**: Uses the target users' preferred language
 
-### App Store要求
-- ✅ **隐私政策**: 满足App Store隐私政策要求
-- ✅ **数据使用说明**: 明确说明数据收集和使用方式
-- ✅ **第三方服务**: 说明AI API服务的使用
+## ⚖️ Legal Compliance
 
-### 数据保护法规
-- ✅ **GDPR兼容**: 虽然主要面向中国用户，但条款兼容GDPR要求
-- ✅ **用户权利**: 明确用户对数据的控制权
-- ✅ **透明度**: 清楚说明数据处理方式
+### App Store Requirements
+- ✅ **Privacy Policy**: Meets App Store privacy policy requirements
+- ✅ **Data Usage Disclosure**: Clearly explains how data is collected and used
+- ✅ **Third-Party Services**: Discloses the use of AI API services
 
-### 儿童保护
-- ✅ **年龄适宜**: 4+年龄分级，适合所有用户
+### Data Protection Regulations
+- ✅ **GDPR Compatible**: The terms are compatible with GDPR requirements
+- ✅ **User Rights**: Clearly defines users' control over their data
+- ✅ **Transparency**: Clearly explains how data is processed
 
-## 📝 需要自定义的内容
+### Child Protection
+- ✅ **Age Appropriate**: Rated 4+ and suitable for all users
 
-在正式发布前，请更新以下信息：
+## 📝 Content Requiring Customization
 
-1. **联系邮箱**: 
+Update the following information before release:
+
+1. **Contact Email**:
    - xj_olivia@outlook.com
 
 
-3. **生效日期**: 
-   - 根据实际发布时间调整日期
+3. **Effective Date**:
+   - Adjust the date based on the actual release date
 
-4. **AI服务提供商**: 
-   - 如果使用特定的AI服务，可以更具体地说明
+4. **AI Service Providers**:
+   - Name specific AI services where applicable
 
-## 🚀 使用建议
+## 🚀 Recommendations
 
-1. **首次启动**: 考虑在应用首次启动时显示用户协议确认
-2. **定期更新**: 根据功能变化及时更新法律文档
-3. **用户通知**: 重大变更时在应用内通知用户
-4. **法律咨询**: 如有疑问，建议咨询专业法律顾问
+1. **First Launch**: Consider displaying the user agreement confirmation when the app first launches
+2. **Regular Updates**: Update legal documents promptly as features change
+3. **User Notifications**: Notify users in the app of significant changes
+4. **Legal Advice**: Consult a qualified legal professional if you have questions
 
 ---
-*创建日期: 2025年6月*
-*适用版本: Ymir 1.0.0* 
+*Created: June 2025*
+*Applicable Version: Ymir 1.0.0*
